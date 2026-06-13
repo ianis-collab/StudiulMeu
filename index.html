@@ -50,7 +50,7 @@
     </a>
     <a href="#" class="nav-item" data-page="workbook" id="nav-workbook">
       <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" fill="none"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      Caiet de Lucru
+      Viața creștină și predicarea
     </a>
 
     <a href="#" class="nav-item" data-page="bible" id="nav-bible">
@@ -259,7 +259,7 @@
           </a>
           <a class="quick-link-item" href="#" onclick="navigateTo('workbook')">
             <span class="ql-icon">📋</span>
-            <span>Caiet de Lucru – Viața Creștină</span>
+            <span>Viața creștină și predicarea</span>
             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           </a>
 
@@ -347,7 +347,7 @@
   <!-- PAGE: WORKBOOK -->
   <section class="page" id="page-workbook">
     <div class="page-header">
-      <h2>📋 Caiet de Lucru – Viața Creștină</h2>
+      <h2>📋 Viața creștină și predicarea</h2>
       <p class="page-sub">Pregătire pentru întrunirea de mijlocul săptămânii</p>
     </div>
 
@@ -416,6 +416,36 @@
               <div class="form-group"><label>Student / Asistent</label><input type="text" class="form-input" placeholder="Nume"/></div>
             </div>
             <div class="form-group"><label>Notițe pregătire</label><textarea class="form-textarea small" placeholder="Ce vei spune, versete de folosit..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>🎤 Cuvântare</h3>
+          <span class="badge badge-purple" style="font-size:0.75rem;cursor:pointer" onclick="toggleTalkAiPanel()">✨ Asistent AI</span>
+        </div>
+        <div class="wb-section-items">
+          <div class="wb-item">
+            <div class="form-row">
+              <div class="form-group"><label>Subiect</label><input type="text" id="talk-subject" class="form-input" placeholder="Tema cuvântării" oninput="saveTalkDraft()"/></div>
+              <div class="form-group"><label>Durată</label><input type="text" id="talk-duration" class="form-input" value="5 minute" oninput="saveTalkDraft()"/></div>
+            </div>
+            
+            <!-- Talk AI Helper Panel -->
+            <div id="talkAiPanel" class="ai-assistant-panel" style="display:none; margin: 10px 0; padding: 12px; border: 1px dashed var(--accent); background: var(--bg-card-glow);">
+              <p style="font-size:0.8rem; font-weight:600; margin-bottom:6px">🔮 Asistent Plan Cuvântare</p>
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px">Introduceți subiectul cuvântării de mai sus, apoi selectați un stil de schiță:</p>
+              <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap">
+                <button type="button" class="btn-xs btn-primary" onclick="generateTalkOutline('explicativ')">📚 Schiță Explicativă</button>
+                <button type="button" class="btn-xs btn-primary" onclick="generateTalkOutline('practic')">🌱 Schiță Practică</button>
+                <button type="button" class="btn-xs btn-primary" onclick="generateTalkOutline('incurajator')">❤️ Schiță Încurajatoare</button>
+              </div>
+              <div id="talkAiSuggestions" style="font-size:0.8rem; line-height:1.4; color:var(--text-secondary); background:rgba(0,0,0,0.15); padding:8px; border-radius:4px; display:none; max-height:150px; overflow-y:auto; margin-bottom:6px"></div>
+              <button type="button" id="useTalkOutlineBtn" class="btn-xs btn-outline" style="display:none" onclick="applyTalkOutline()">✍️ Folosește această schiță</button>
+            </div>
+
+            <div class="form-group"><label>Notițe pregătire</label><textarea id="talk-notes" class="form-textarea small" style="min-height:120px" placeholder="Idei principale, introducere, concluzie..." oninput="saveTalkDraft()"></textarea></div>
           </div>
         </div>
       </div>
@@ -664,7 +694,7 @@
       <div class="filter-tabs" id="notesFilters">
         <button class="filter-tab active" data-filter="all">Toate</button>
         <button class="filter-tab" data-filter="watchtower">Turnul de Veghe</button>
-        <button class="filter-tab" data-filter="workbook">Caiet de Lucru</button>
+        <button class="filter-tab" data-filter="workbook">Viața creștină</button>
         <button class="filter-tab" data-filter="bible">Studiu Biblic</button>
         <button class="filter-tab" data-filter="fieldservice">Serviciu de Teren</button>
         <button class="filter-tab" data-filter="general">Generale</button>
@@ -723,7 +753,7 @@
           <div class="progress-label"><span>Pregătire</span><span id="weekdayProgress">0%</span></div>
           <div class="progress-bar"><div class="progress-fill" id="weekdayProgressBar" style="width:0%"></div></div>
         </div>
-        <button class="btn-outline w-full" style="margin-top:12px" onclick="navigateTo('workbook')">Pregătește Caietul de Lucru →</button>
+        <button class="btn-outline w-full" style="margin-top:12px" onclick="navigateTo('workbook')">Pregătește Viața creștină și predicarea →</button>
       </div>
 
       <!-- UPCOMING MEETINGS CALENDAR -->
@@ -759,7 +789,7 @@
           <select class="form-input" id="noteCategory">
             <option value="general">Generală</option>
             <option value="watchtower">Turnul de Veghe</option>
-            <option value="workbook">Caiet de Lucru</option>
+            <option value="workbook">Viața creștină și predicarea</option>
             <option value="bible">Studiu Biblic</option>
             <option value="fieldservice">Serviciu de Teren</option>
           </select>

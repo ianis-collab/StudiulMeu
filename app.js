@@ -68,9 +68,9 @@ function saveState() {
 const pageTitles = {
   dashboard: 'Panou Principal',
   watchtower: 'Turnul de Veghe – Studiu',
-  workbook: 'Caiet de Lucru – Viața Creștină',
+  workbook: 'Viața creștină și predicarea',
   bible: 'Studiu Biblic Personal',
-  biblereader: 'Biblia NWT – jw.org/ro',
+  biblereader: 'Biblia de Studiu – jw.org/ro',
   fieldservice: 'Întrunirea de Serviciu de Teren',
   notes: 'Notițele Mele',
   meetings: 'Programul Meu',
@@ -108,6 +108,7 @@ function renderPage(page) {
     case 'bible': renderVersesList('all'); break;
     case 'meetings': renderMeetings(); break;
     case 'watchtower': renderWtParagraphs(); break;
+    case 'workbook': loadTalkDraft(); break;
     case 'biblereader': initBibleReader(); break;
     case 'fieldservice': renderFieldServiceList(); break;
   }
@@ -670,7 +671,7 @@ function saveWorkbook() {
   state.workbooks.push(wb);
   markStudyDay();
   saveState();
-  showToast('Pregătire Caiet de Lucru salvată! 📋', 'success');
+  showToast('Pregătire Viața creștină și predicarea salvată! 📋', 'success');
 
   state.notes.push({
     id: wbId + '_wb',
@@ -681,6 +682,109 @@ function saveWorkbook() {
     date: wb.date,
   });
   saveState();
+}
+
+function saveTalkDraft() {
+  if (!state.talkDraft) state.talkDraft = {};
+  state.talkDraft = {
+    subject: document.getElementById('talk-subject')?.value || '',
+    duration: document.getElementById('talk-duration')?.value || '5 minute',
+    notes: document.getElementById('talk-notes')?.value || '',
+  };
+  saveState();
+}
+
+function loadTalkDraft() {
+  const draft = state.talkDraft || {};
+  const subject = document.getElementById('talk-subject');
+  const duration = document.getElementById('talk-duration');
+  const notes = document.getElementById('talk-notes');
+
+  if (subject) subject.value = draft.subject || '';
+  if (duration) duration.value = draft.duration || '5 minute';
+  if (notes) notes.value = draft.notes || '';
+}
+
+let generatedTalkOutlineText = '';
+
+function toggleTalkAiPanel() {
+  const panel = document.getElementById('talkAiPanel');
+  if (!panel) return;
+  const isHidden = panel.style.display === 'none';
+  panel.style.display = isHidden ? 'block' : 'none';
+}
+
+function generateTalkOutline(style) {
+  const subjectInput = document.getElementById('talk-subject');
+  const subject = subjectInput ? subjectInput.value.trim() : '';
+  const sugDiv = document.getElementById('talkAiSuggestions');
+  const useBtn = document.getElementById('useTalkOutlineBtn');
+
+  if (!subject) {
+    showToast('Introduceți mai întâi subiectul cuvântării.', 'error');
+    subjectInput?.focus();
+    return;
+  }
+
+  sugDiv.style.display = 'block';
+  sugDiv.innerHTML = `⏳ Se generează schița...`;
+  useBtn.style.display = 'none';
+
+  setTimeout(() => {
+    let outline = '';
+    const cleanSubject = subject.charAt(0).toUpperCase() + subject.slice(1);
+
+    if (style === 'explicativ') {
+      outline = `📌 DISCURS EXPLICATIV: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE (Atenție & Interes):\n` +
+                `   - De ce este important subiectul "${cleanSubject}" astăzi?\n` +
+                `   - Definirea termenilor principali.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Explicații cheie):\n` +
+                `   - Ce ne învață Biblia în mod direct despre acest aspect?\n` +
+                `   - Dovezi scripturale și principii de bază.\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - Rezumatul punctelor principale.\n` +
+                `   - Îndemn final bazat pe adevărul analizat.`;
+    } else if (style === 'practic') {
+      outline = `📌 DISCURS PRACTIC: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE:\n` +
+                `   - Impactul subiectului "${cleanSubject}" în activitățile zilnice.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Aplicare practică):\n` +
+                `   - Pasul 1: Cum implementăm acest lucru în familie sau la locul de muncă?\n` +
+                `   - Pasul 2: Obstacole comune și cum le putem depăși cu ajutorul spiritului sfânt.\n` +
+                `   - Ilustrare sugestivă potrivită pentru ilustrarea ideii.\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - O acțiune clară pe care o putem face în săptămâna următoare.`;
+    } else {
+      outline = `📌 DISCURS ÎNCURAJATOR: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE:\n` +
+                `   - Sentimentele noastre legate de "${cleanSubject}" în momente dificile.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Consolare și Sprijin):\n` +
+                `   - Promisiunile lui Iehova care ne dau putere.\n` +
+                `   - Exemple biblice de credință (cum au perseverat alții).\n` +
+                `   - Cum ne sprijină congregația creștină.\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - Un mesaj cald de speranță și încredere în viitor.`;
+    }
+
+    generatedTalkOutlineText = outline;
+    sugDiv.innerHTML = outline.replace(/\n/g, '<br>');
+    useBtn.style.display = 'inline-block';
+    showToast('Schiță AI generată! ✨', 'success');
+  }, 500);
+}
+
+function applyTalkOutline() {
+  const notesTextarea = document.getElementById('talk-notes');
+  if (notesTextarea && generatedTalkOutlineText) {
+    if (notesTextarea.value.trim()) {
+      notesTextarea.value += '\n\n' + generatedTalkOutlineText;
+    } else {
+      notesTextarea.value = generatedTalkOutlineText;
+    }
+    saveTalkDraft();
+    showToast('Schița a fost aplicată în notițe! ✍️', 'success');
+  }
 }
 
 // ============================================
@@ -1105,7 +1209,7 @@ function renderNotesList(filter) {
   }
 
   const catColors = { watchtower:'#4f8ef7', workbook:'#10c9a0', bible:'#a855f7', general:'#f97b4f', fieldservice:'#ec4899' };
-  const catLabels = { watchtower:'🗼 TV', workbook:'📋 CL', bible:'📖 Biblie', general:'📝 General', fieldservice:'🚗 Serviciu' };
+  const catLabels = { watchtower:'🗼 TV', workbook:'📋 VCP', bible:'📖 Biblie', general:'📝 General', fieldservice:'🚗 Serviciu' };
 
   const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
 
@@ -1132,7 +1236,7 @@ function renderNotesList(filter) {
 // MEETINGS
 // ============================================
 function addMeetingEntry() {
-  const name = prompt('Tipul întrunirii (ex: Turnul de Veghe, Caiet de Lucru):');
+  const name = prompt('Tipul întrunirii (ex: Turnul de Veghe, Viața creștină și predicarea):');
   if (!name) return;
   const date = prompt('Data (YYYY-MM-DD):') || new Date().toISOString().split('T')[0];
 
@@ -1465,7 +1569,7 @@ function openChapter(chapNum) {
   const noteData = state.bibleNotes[key] || { text: '', markedVerses: [] };
 
   // Build jw.org/ro URL
-  const jwUrl = `https://www.jw.org/ro/biblioteca/biblie/biblia-nwt/carti/${brState.bookSlug}/${chapNum}/`;
+  const jwUrl = `https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/${brState.bookSlug}/${chapNum}/`;
 
   // Show chapter view panel
   document.getElementById('bibleWelcome').style.display = 'none';
@@ -1504,10 +1608,10 @@ function navigateChapter(delta) {
 
 function openOnJwOrg() {
   if (!brState.bookSlug || !brState.chapter) {
-    window.open('https://www.jw.org/ro/biblioteca/biblie/biblia-nwt/carti/', '_blank');
+    window.open('https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/', '_blank');
     return;
   }
-  const url = `https://www.jw.org/ro/biblioteca/biblie/biblia-nwt/carti/${brState.bookSlug}/${brState.chapter}/`;
+  const url = `https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/${brState.bookSlug}/${brState.chapter}/`;
   window.open(url, '_blank');
 }
 
@@ -1610,7 +1714,7 @@ function renderChapterHighlights(list) {
       <div class="highlight-item">
         <span style="font-size:1.2rem">⭐</span>
         <span class="highlight-ref">${escHtml(brState.bookName)} ${brState.chapter}:${escHtml(v)}</span>
-        <a href="https://www.jw.org/ro/biblioteca/biblie/biblia-nwt/carti/${brState.bookSlug}/${brState.chapter}/" target="_blank"
+        <a href="https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/${brState.bookSlug}/${brState.chapter}/" target="_blank"
            style="font-size:0.78rem;color:var(--accent);text-decoration:none;font-weight:600">jw.org ↗</a>
       </div>`).join('')}`;
 }
