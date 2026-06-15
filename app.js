@@ -1996,13 +1996,14 @@ function applyFontScale(px) {
   localStorage.setItem('studiuMeu_fontScale', px);
 }
 
+function changeFontScale(delta) {
+  const current = parseInt(localStorage.getItem('studiuMeu_fontScale')) || 14;
+  const next = Math.min(24, Math.max(10, current + delta));
+  applyFontScale(next);
+}
+
 function initFontScale() {
   const saved = parseInt(localStorage.getItem('studiuMeu_fontScale')) || 14;
-  const slider = document.getElementById('fontScaleSlider');
-  if (slider) {
-    slider.value = saved;
-    slider.addEventListener('input', () => applyFontScale(parseInt(slider.value)));
-  }
   applyFontScale(saved);
 }
 

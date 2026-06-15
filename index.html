@@ -63,7 +63,7 @@
     </a>
     <a href="#" class="nav-item" data-page="fieldservice" id="nav-fieldservice">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
-      Serviciu de Teren
+      Serviciu de ieșire pe teren
     </a>
 
     <span class="nav-section-label" style="margin-top:12px">ÎNTRUNIRI</span>
@@ -75,9 +75,9 @@
 
   <div class="sidebar-footer">
     <div class="font-scale-control">
-      <span class="font-scale-label">🔤</span>
-      <input type="range" class="font-scale-slider" id="fontScaleSlider" min="1" max="24" step="1" value="14" title="Mărire text" />
+      <button class="font-scale-btn" id="fontDecreaseBtn" onclick="changeFontScale(-1)" title="Micșorează text">A</button>
       <span class="font-scale-value" id="fontScaleValue">14</span>
+      <button class="font-scale-btn font-scale-btn-lg" id="fontIncreaseBtn" onclick="changeFontScale(1)" title="Mărește text">A</button>
     </div>
     <div class="backup-buttons">
       <button class="backup-btn" onclick="exportData()" title="Export Backup">
@@ -238,7 +238,7 @@
         <blockquote class="verse-text" id="verseText">
           „El va șterge orice lacrimă din ochii lor și moartea nu va mai fi. Nici jale, nici strigăt, nici durere nu vor mai fi.”
         </blockquote>
-        <p class="verse-ref" id="verseRef">— Apocalipsa 21:4</p>
+        <p class="verse-ref" id="verseRef">— Revelația 21:4</p>
         <div style="display:flex;gap:8px">
           <button class="btn-ghost btn-sm" onclick="newVerse()">Alt verset 🎲</button>
           <button class="btn-outline btn-sm" onclick="readVerseInBible()" style="font-size:0.75rem;padding:5px 10px">Citește în Biblie 📖</button>
@@ -413,7 +413,7 @@
           <div class="wb-item">
             <div class="form-row">
               <div class="form-group"><label>Subiect / Tip</label><input type="text" class="form-input" placeholder="ex: Prezentarea inițială"/></div>
-              <div class="form-group"><label>Student / Asistent</label><input type="text" class="form-input" placeholder="Nume"/></div>
+              <div class="form-group"><label>Asistent / Student</label><input type="text" class="form-input" placeholder="Nume"/></div>
             </div>
             <div class="form-group"><label>Notițe pregătire</label><textarea class="form-textarea small" placeholder="Ce vei spune, versete de folosit..."></textarea></div>
           </div>
@@ -451,13 +451,36 @@
       </div>
 
       <div class="card">
-        <div class="card-header"><h3>❤️ Viața Noastră Creștină</h3></div>
+        <div class="card-header"><h3>❤️ VIAȚA DE CREȘTIN</h3></div>
         <div id="wbChristianLife" class="wb-section-items">
           <div class="wb-item">
             <div class="form-group"><label>Studiu biblic congregațional – Carte/Capitol</label><input type="text" class="form-input" placeholder="ex: Acesta este viața veșnică, Cap. 3"/></div>
             <div class="form-group"><label>Întrebări/Răspunsuri de pregătit</label><textarea class="form-textarea small" placeholder="Notițele tale..."></textarea></div>
           </div>
         </div>
+
+        <div class="book-card" style="margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--surface2)">
+          <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:10px;color:var(--text-primary)">Să umblăm cu Dumnezeu plini de curaj</h3>
+
+          <div class="book-item" style="padding:7px 0;border-bottom:1px solid var(--border)">
+            <a href="https://www.jw.org/ro/biblioteca/carti/sa-umblam-cu-dumnezeu-plini-de-curaj/" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.88rem">
+              Scrisoare din partea Corpului de Guvernare
+            </a>
+          </div>
+
+          <div class="book-item" style="padding:7px 0;border-bottom:1px solid var(--border)">
+            <a href="https://www.jw.org/ro/biblioteca/carti/sa-umblam-cu-dumnezeu-plini-de-curaj/" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.88rem">
+              INTRODUCERE
+            </a>
+          </div>
+
+          <div class="book-item" style="padding:7px 0">
+            <a href="https://www.jw.org/ro/biblioteca/carti/sa-umblam-cu-dumnezeu-plini-de-curaj/patriarhi-epoca-judecatorilor/" target="_blank" style="color:var(--accent);text-decoration:none;font-size:0.88rem">
+              SECȚIUNEA 1
+            </a>
+          </div>
+        </div>
+
       </div>
 
       <div class="card">
@@ -545,7 +568,7 @@
                 <button onclick="selectBook('matei',1,28,'nt')" class="bqb-btn">Matei</button>
                 <button onclick="selectBook('ioan',1,21,'nt')" class="bqb-btn">Ioan</button>
                 <button onclick="selectBook('romani',1,16,'nt')" class="bqb-btn">Romani</button>
-                <button onclick="selectBook('apocalipsa',1,22,'nt')" class="bqb-btn">Apocalipsa</button>
+                <button onclick="selectBook('revelația',1,22,'nt')" class="bqb-btn">Apocalipsa</button>
               </div>
             </div>
           </div>
@@ -594,7 +617,7 @@
             <label>Categoria</label>
             <select class="form-input" id="verse-category">
               <option>Credință</option>
-              <option>Dragoste</option>
+              <option>Iubire</option>
               <option>Speranță</option>
               <option>Rugăciune</option>
               <option>Înțelepciune</option>
@@ -622,7 +645,7 @@
           <div class="filter-tabs" id="verseFilters">
             <button class="filter-tab active" data-filter="all">Toate</button>
             <button class="filter-tab" data-filter="Credință">Credință</button>
-            <button class="filter-tab" data-filter="Dragoste">Dragoste</button>
+            <button class="filter-tab" data-filter="Dragoste">Iubire</button>
             <button class="filter-tab" data-filter="Speranță">Speranță</button>
             <button class="filter-tab" data-filter="Rugăciune">Rugăciune</button>
           </div>
@@ -641,14 +664,14 @@
   <!-- PAGE: FIELD SERVICE -->
   <section class="page" id="page-fieldservice">
     <div class="page-header">
-      <h2>🚗 Întrunirea pentru Serviciul de Teren</h2>
+      <h2>🚗 Serviciul de ieșire pe teren</h2>
       <p class="page-sub">Notițe și idei pentru lucrarea de predicare</p>
     </div>
 
     <div class="wt-container">
       <div class="card">
         <div class="card-header">
-          <h3>Adaugă Notiță Serviciu de Teren</h3>
+          <h3>Adaugă Notiță Serviciu de ieșire pe Teren</h3>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -746,7 +769,7 @@
           <li>🎵 Cântare & Rugăciune</li>
           <li>💎 Comori din Cuvântul lui Dumnezeu</li>
           <li>🌾 Să fim mai eficienți în Predicare</li>
-          <li>❤️ Viața Noastră Creștină</li>
+          <li>❤️ VIAȚA DE CREȘTIN</li>
           <li>🎵 Cântare & Rugăciune de Încheiere</li>
         </ul>
         <div class="progress-section">
@@ -791,7 +814,7 @@
             <option value="watchtower">Turnul de Veghe</option>
             <option value="workbook">Viața creștină și predicarea</option>
             <option value="bible">Studiu Biblic</option>
-            <option value="fieldservice">Serviciu de Teren</option>
+            <option value="fieldservice">Serviciu de iesirea pe teren</option>
           </select>
         </div>
       </div>
