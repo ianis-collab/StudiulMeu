@@ -1856,3 +1856,173 @@ select.form-input option { background: var(--bg-elevated); }
     gap: 16px;
   }
 }
+
+/* ============================================
+   DISCURS BIBLIC MODAL + TIMER
+   ============================================ */
+
+/* Make agenda item clickable */
+.agenda-item-link {
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.agenda-item-link:hover {
+  background: var(--accent-glow) !important;
+  color: var(--accent) !important;
+  border-radius: 6px;
+  padding-left: 6px;
+}
+.agenda-item-arrow {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Modal size */
+.modal.modal-discurs {
+  max-width: 700px;
+  width: 95%;
+}
+
+/* Timer bar */
+.discurs-timer-bar {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  transition: background 0.4s ease;
+}
+
+.discurs-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.discurs-timer-icon {
+  font-size: 1.2rem;
+}
+
+.discurs-timer-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  font-family: var(--font-main);
+  min-width: 80px;
+}
+
+.discurs-timer-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.discurs-timer-progress-wrap {
+  flex: 1;
+  min-width: 120px;
+}
+
+.discurs-timer-progress-bg {
+  height: 8px;
+  background: var(--bg-base);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.discurs-timer-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #6c63ff);
+  border-radius: 4px;
+  transition: width 1s linear, background 0.4s ease;
+}
+
+.discurs-timer-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Warning state (sub 5 min) */
+.discurs-timer-bar.timer-warning {
+  background: rgba(249,123,79,0.08);
+}
+.discurs-timer-bar.timer-warning .discurs-timer-value {
+  color: var(--orange);
+}
+.discurs-timer-bar.timer-warning .discurs-timer-progress-fill {
+  background: linear-gradient(90deg, var(--orange), #f97b4f88);
+}
+
+/* Danger state (sub 2 min) */
+.discurs-timer-bar.timer-danger {
+  background: rgba(248,81,73,0.10);
+  animation: timerPulse 1.2s ease-in-out infinite;
+}
+.discurs-timer-bar.timer-danger .discurs-timer-value {
+  color: var(--red);
+}
+.discurs-timer-bar.timer-danger .discurs-timer-progress-fill {
+  background: linear-gradient(90deg, var(--red), #f8514966);
+}
+
+/* Done state */
+.discurs-timer-bar.timer-done {
+  background: rgba(248,81,73,0.08);
+  animation: none;
+}
+.discurs-timer-bar.timer-done .discurs-timer-value {
+  color: var(--red);
+}
+
+@keyframes timerPulse {
+  0%, 100% { background: rgba(248,81,73,0.10); }
+  50% { background: rgba(248,81,73,0.22); }
+}
+
+/* Textarea for discurs - larger */
+.discurs-textarea {
+  min-height: 280px;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  resize: vertical;
+}
+
+.discurs-textarea:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--bg-base);
+  border-color: var(--red);
+}
+
+/* Blocked message */
+.discurs-blocked-msg {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: rgba(248,81,73,0.10);
+  border: 1px solid rgba(248,81,73,0.35);
+  border-radius: var(--radius-sm);
+  color: var(--red);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .discurs-timer-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .discurs-timer-progress-wrap {
+    width: 100%;
+  }
+}

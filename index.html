@@ -63,7 +63,7 @@
     </a>
     <a href="#" class="nav-item" data-page="fieldservice" id="nav-fieldservice">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
-      Serviciu de ieșire pe teren
+      Întrunirea de ieșire pe teren
     </a>
 
     <span class="nav-section-label" style="margin-top:12px">ÎNTRUNIRI</span>
@@ -240,7 +240,7 @@
         </blockquote>
         <p class="verse-ref" id="verseRef">— Revelația 21:4</p>
         <div style="display:flex;gap:8px">
-          <button class="btn-ghost btn-sm" onclick="newVerse()">Alt verset 🎲</button>
+          <button class="btn-ghost btn-sm" onclick="newVerse()">Alt verset 📖</button>
           <button class="btn-outline btn-sm" onclick="readVerseInBible()" style="font-size:0.75rem;padding:5px 10px">Citește în Biblie 📖</button>
         </div>
       </div>
@@ -749,7 +749,7 @@
         <h3>Întrunire de Weekend</h3>
         <ul class="meeting-agenda">
           <li>🎵 Cântare & Rugăciune</li>
-          <li>📢 Discurs public (30 min)</li>
+          <li class="agenda-item-link" onclick="openDiscursModal()" title="Deschide editorul de discurs">📢 Discurs public (30 min) <span class="agenda-item-arrow">✏️</span></li>
           <li>🗼 Studierea Turnului de Veghe (60 min)</li>
           <li>🎵 Cântare & Rugăciune de Încheiere</li>
         </ul>
@@ -757,7 +757,8 @@
           <div class="progress-label"><span>Pregătire</span><span id="weekendProgress">0%</span></div>
           <div class="progress-bar"><div class="progress-fill" id="weekendProgressBar" style="width:0%"></div></div>
         </div>
-        <button class="btn-outline w-full" style="margin-top:12px" onclick="navigateTo('watchtower')">Pregătește Turnul de Veghe →</button>
+        <button class="btn-primary w-full" style="margin-top:12px" onclick="openDiscursModal()">Pregătește un discurs Biblic 30 min →</button>
+        <button class="btn-outline w-full" style="margin-top:10px" onclick="navigateTo('watchtower')">Pregătește Turnul de Veghe →</button>
       </div>
 
       <div class="card meeting-type-card">
@@ -893,6 +894,66 @@
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeParagraphModal()">Anulează</button>
       <button class="btn-primary" onclick="saveParagraph()">Adaugă Paragraf</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Discurs Biblic (30 min) -->
+<div class="modal-overlay" id="discursModal">
+  <div class="modal modal-discurs">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:1.3rem">📢</span>
+        <div>
+          <h3 id="discursModalTitle">Discurs Biblic – 30 minute</h3>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">Programul Meu → Întrunire de Weekend</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeDiscursModal()">✕</button>
+    </div>
+
+    <!-- TIMER SECTION -->
+    <div class="discurs-timer-bar" id="discursTimerBar">
+      <div class="discurs-timer-display">
+        <span class="discurs-timer-icon" id="discursTimerIcon">⏱</span>
+        <span class="discurs-timer-value" id="discursTimerValue">30:00</span>
+        <span class="discurs-timer-label" id="discursTimerLabel">din 30 minute</span>
+      </div>
+      <div class="discurs-timer-progress-wrap">
+        <div class="discurs-timer-progress-bg">
+          <div class="discurs-timer-progress-fill" id="discursTimerFill" style="width:100%"></div>
+        </div>
+      </div>
+      <div class="discurs-timer-btns">
+        <button class="btn-primary btn-sm" id="discursTimerStartBtn" onclick="discursTimerStart()">▶ Start</button>
+        <button class="btn-ghost btn-sm" id="discursTimerPauseBtn" onclick="discursTimerPause()" style="display:none">⏸ Pauză</button>
+        <button class="btn-ghost btn-sm" onclick="discursTimerReset()">↺ Reset</button>
+      </div>
+    </div>
+
+    <div class="modal-body" style="padding-top:12px">
+      <div class="form-group">
+        <label>Titlul Discursului</label>
+        <input type="text" id="discursTitlu" class="form-input" placeholder="ex: Fidelitatea față de Iehova în vremuri dificile" oninput="saveDiscursDraft()" />
+      </div>
+      <div class="form-group">
+        <label>Versetul Principal</label>
+        <input type="text" id="discursVerset" class="form-input" placeholder="ex: Proverbe 3:5,6" oninput="saveDiscursDraft()" />
+      </div>
+      <div class="form-group">
+        <label id="discursNotesLabel">Notițele Discursului</label>
+        <textarea id="discursNote" class="form-textarea discurs-textarea"
+          placeholder="Scrie discursul tău aici... Introducere, punctele principale, concluzie."
+          oninput="saveDiscursDraft()"></textarea>
+        <div id="discursBlockedMsg" style="display:none" class="discurs-blocked-msg">
+          ⛔ Timpul de 30 minute s-a încheiat. Discursul a fost blocat. Poți salva notițele.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
+      <button class="btn-ghost" onclick="closeDiscursModal()">Închide</button>
+      <button class="btn-ghost" id="discursDeleteBtn" onclick="deleteDiscursDraft()" style="display:none;color:var(--red)">🗑 Șterge</button>
+      <button class="btn-primary" onclick="saveDiscursNote()">💾 Salvează ca Notiță</button>
     </div>
   </div>
 </div>

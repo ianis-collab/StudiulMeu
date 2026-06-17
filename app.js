@@ -1867,6 +1867,207 @@ function importData(file) {
   reader.readAsText(file);
 }
 
+
+// ============================================
+// DISCURS BIBLIC MODAL + TIMER 30 MIN
+// ============================================
+let discursTimerInterval = null;
+let discursTimerSeconds = 1800;
+let discursTimerRunning = false;
+let discursTimerFinished = false;
+
+function openDiscursModal() {
+  const modal = document.getElementById('discursModal');
+  if (!modal) return;
+
+  const draft = state.discursDraft || {};
+  const titluEl = document.getElementById('discursTitlu');
+  const versetEl = document.getElementById('discursVerset');
+  const noteEl = document.getElementById('discursNote');
+  const deleteBtn = document.getElementById('discursDeleteBtn');
+
+  if (titluEl) titluEl.value = draft.titlu || '';
+  if (versetEl) versetEl.value = draft.verset || '';
+  if (noteEl) noteEl.value = draft.note || '';
+
+  if (deleteBtn) deleteBtn.style.display = (draft.titlu || draft.note) ? 'inline-flex' : 'none';
+
+  discursTimerReset();
+  modal.classList.add('open');
+}
+
+function closeDiscursModal() {
+  document.getElementById('discursModal')?.classList.remove('open');
+  discursTimerStop();
+}
+
+function saveDiscursDraft() {
+  if (!state.discursDraft) state.discursDraft = {};
+  state.discursDraft = {
+    titlu: document.getElementById('discursTitlu')?.value || '',
+    verset: document.getElementById('discursVerset')?.value || '',
+    note: document.getElementById('discursNote')?.value || '',
+  };
+  saveState();
+}
+
+function deleteDiscursDraft() {
+  if (!confirm('Stergi ciorna discursului? Datele nu pot fi recuperate.')) return;
+  state.discursDraft = {};
+  saveState();
+  const titluEl = document.getElementById('discursTitlu');
+  const versetEl = document.getElementById('discursVerset');
+  const noteEl = document.getElementById('discursNote');
+  if (titluEl) titluEl.value = '';
+  if (versetEl) versetEl.value = '';
+  if (noteEl) { noteEl.value = ''; noteEl.disabled = false; }
+  document.getElementById('discursDeleteBtn').style.display = 'none';
+  discursTimerReset();
+  showToast('Ciorna stearsa.', 'success');
+}
+
+function saveDiscursNote() {
+  const titlu = document.getElementById('discursTitlu')?.value?.trim();
+  const verset = document.getElementById('discursVerset')?.value?.trim();
+  const note = document.getElementById('discursNote')?.value?.trim();
+
+  if (!titlu) {
+    showToast('Adauga titlul discursului.', 'error');
+    document.getElementById('discursTitlu')?.focus();
+    return;
+  }
+
+  const content = [
+    verset ? '📖 Verset principal: ' + verset : '',
+    note || 'Fara continut.'
+  ].filter(Boolean).join('\n\n');
+
+  state.notes.push({
+    id: Date.now().toString(),
+    title: '📢 Discurs: ' + titlu,
+    content,
+    category: 'general',
+    tags: ['discurs', 'weekend'],
+    date: new Date().toISOString().split('T')[0],
+  });
+
+  markStudyDay();
+  saveState();
+  showToast('Discursul a fost salvat ca notita! 📢', 'success');
+  closeDiscursModal();
+}
+
+function discursTimerStart() {
+  if (discursTimerFinished || discursTimerRunning) return;
+  discursTimerRunning = true;
+  document.getElementById('discursTimerStartBtn').style.display = 'none';
+  document.getElementById('discursTimerPauseBtn').style.display = 'inline-flex';
+  const ta = document.getElementById('discursNote');
+  if (ta) ta.disabled = false;
+
+  discursTimerInterval = setInterval(function() {
+    if (discursTimerSeconds <= 0) {
+      discursTimerFinish();
+      return;
+    }
+    discursTimerSeconds--;
+    discursTimerUpdateUI();
+  }, 1000);
+}
+
+function discursTimerPause() {
+  if (!discursTimerRunning) return;
+  clearInterval(discursTimerInterval);
+  discursTimerRunning = false;
+  var startBtn = document.getElementById('discursTimerStartBtn');
+  if (startBtn) { startBtn.style.display = 'inline-flex'; startBtn.textContent = '▶ Continua'; }
+  document.getElementById('discursTimerPauseBtn').style.display = 'none';
+}
+
+function discursTimerStop() {
+  clearInterval(discursTimerInterval);
+  discursTimerRunning = false;
+}
+
+function discursTimerReset() {
+  discursTimerStop();
+  discursTimerSeconds = 1800;
+  discursTimerFinished = false;
+
+  var startBtn = document.getElementById('discursTimerStartBtn');
+  var pauseBtn = document.getElementById('discursTimerPauseBtn');
+  var ta = document.getElementById('discursNote');
+  var blockedMsg = document.getElementById('discursBlockedMsg');
+  var timerBar = document.getElementById('discursTimerBar');
+
+  if (startBtn) { startBtn.style.display = 'inline-flex'; startBtn.textContent = '▶ Start'; }
+  if (pauseBtn) pauseBtn.style.display = 'none';
+  if (ta) ta.disabled = false;
+  if (blockedMsg) blockedMsg.style.display = 'none';
+  if (timerBar) { timerBar.classList.remove('timer-warning', 'timer-danger', 'timer-done'); }
+
+  discursTimerUpdateUI();
+}
+
+function discursTimerFinish() {
+  clearInterval(discursTimerInterval);
+  discursTimerRunning = false;
+  discursTimerFinished = true;
+  discursTimerSeconds = 0;
+
+  var ta = document.getElementById('discursNote');
+  if (ta) ta.disabled = true;
+
+  var blockedMsg = document.getElementById('discursBlockedMsg');
+  if (blockedMsg) blockedMsg.style.display = 'block';
+
+  var timerBar = document.getElementById('discursTimerBar');
+  if (timerBar) timerBar.classList.add('timer-done');
+
+  var startBtn = document.getElementById('discursTimerStartBtn');
+  var pauseBtn = document.getElementById('discursTimerPauseBtn');
+  if (startBtn) startBtn.style.display = 'none';
+  if (pauseBtn) pauseBtn.style.display = 'none';
+
+  document.getElementById('discursTimerValue').textContent = '00:00';
+  document.getElementById('discursTimerIcon').textContent = '🔴';
+  document.getElementById('discursTimerLabel').textContent = 'Timp expirat!';
+  document.getElementById('discursTimerFill').style.width = '0%';
+
+  saveDiscursDraft();
+  showToast('⏰ Cele 30 de minute s-au incheiat! Discursul a fost blocat.', 'error');
+}
+
+function discursTimerUpdateUI() {
+  var total = 1800;
+  var remaining = discursTimerSeconds;
+  var pct = (remaining / total) * 100;
+
+  var mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+  var ss = String(remaining % 60).padStart(2, '0');
+
+  var valEl = document.getElementById('discursTimerValue');
+  var fillEl = document.getElementById('discursTimerFill');
+  var iconEl = document.getElementById('discursTimerIcon');
+  var timerBar = document.getElementById('discursTimerBar');
+
+  if (valEl) valEl.textContent = mm + ':' + ss;
+  if (fillEl) fillEl.style.width = pct + '%';
+
+  if (timerBar) {
+    timerBar.classList.remove('timer-warning', 'timer-danger');
+    if (remaining <= 120) {
+      timerBar.classList.add('timer-danger');
+      if (iconEl) iconEl.textContent = '🔴';
+    } else if (remaining <= 300) {
+      timerBar.classList.add('timer-warning');
+      if (iconEl) iconEl.textContent = '🟠';
+    } else {
+      if (iconEl) iconEl.textContent = '⏱';
+    }
+  }
+}
+
 // ============================================
 // HELPERS
 // ============================================
@@ -1967,12 +2168,16 @@ function init() {
   document.getElementById('paragraphModal')?.addEventListener('click', function(e) {
     if (e.target === this) closeParagraphModal();
   });
+  document.getElementById('discursModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeDiscursModal();
+  });
 
   // Keyboard shortcut: Escape to close modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeNoteModal();
       closeParagraphModal();
+      closeDiscursModal();
     }
   });
 
