@@ -518,24 +518,8 @@ body {
   margin-bottom: 10px;
 }
 
-/* Verse Card */
+/* Bible Button Card */
 .verse-card { background: linear-gradient(135deg, var(--bg-surface), rgba(108,99,255,0.08)); }
-.verse-text {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: var(--text-primary);
-  font-style: italic;
-  border-left: 3px solid var(--accent);
-  padding-left: 16px;
-  margin-bottom: 10px;
-}
-.verse-ref {
-  font-size: 0.85rem;
-  color: var(--accent);
-  font-weight: 600;
-  margin-bottom: 14px;
-}
 
 /* Quick links */
 .quick-links { display: flex; flex-direction: column; gap: 6px; }
