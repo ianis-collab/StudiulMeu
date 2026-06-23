@@ -523,6 +523,12 @@ body {
 
 /* Quick links */
 .quick-links { display: flex; flex-direction: column; gap: 6px; }
+.quick-section-title {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0 0 2px;
+}
 .quick-link-item {
   display: flex;
   align-items: center;
@@ -2009,4 +2015,15 @@ select.form-input option { background: var(--bg-elevated); }
   .discurs-timer-progress-wrap {
     width: 100%;
   }
+}
+
+/* Inline variant (used in cards, not modal header) - Cuvântare 5 min */
+.discurs-timer-bar.timer-bar-inline {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+.discurs-timer-bar.timer-bar-inline .discurs-timer-value {
+  font-size: 1.5rem;
 }

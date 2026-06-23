@@ -244,6 +244,7 @@
           <span class="badge badge-green">Activ</span>
         </div>
         <div class="quick-links">
+          <h4 class="quick-section-title">Întrunirea Publică și Studiul Turnului de Veghe</h4>
           <a class="quick-link-item" href="#" onclick="navigateTo('watchtower')">
             <span class="ql-icon">🗼</span>
             <span>Turnul de Veghe – Studiu</span>
@@ -417,6 +418,26 @@
           <h3>🎤 Cuvântare</h3>
           <span class="badge badge-purple" style="font-size:0.75rem;cursor:pointer" onclick="toggleTalkAiPanel()">✨ Asistent AI</span>
         </div>
+
+        <!-- TIMER 5 MINUTE -->
+        <div class="discurs-timer-bar timer-bar-inline" id="talkTimerBar">
+          <div class="discurs-timer-display">
+            <span class="discurs-timer-icon" id="talkTimerIcon">⏱</span>
+            <span class="discurs-timer-value" id="talkTimerValue">05:00</span>
+            <span class="discurs-timer-label" id="talkTimerLabel">din 5 minute</span>
+          </div>
+          <div class="discurs-timer-progress-wrap">
+            <div class="discurs-timer-progress-bg">
+              <div class="discurs-timer-progress-fill" id="talkTimerFill" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="discurs-timer-btns">
+            <button class="btn-primary btn-sm" id="talkTimerStartBtn" onclick="talkTimerStart()">▶ Start</button>
+            <button class="btn-ghost btn-sm" id="talkTimerPauseBtn" onclick="talkTimerPause()" style="display:none">⏸ Pauză</button>
+            <button class="btn-ghost btn-sm" onclick="talkTimerReset()">↺ Reset</button>
+          </div>
+        </div>
+
         <div class="wb-section-items">
           <div class="wb-item">
             <div class="form-row">
@@ -545,9 +566,6 @@
               <a href="https://www.jw.org/ro/biblioteca/biblia/biblia-de-studiu/c%C4%83r%C8%9Bi/" target="_blank" class="btn-primary">
                 <svg viewBox="0 0 24 24" width="14" height="14"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="15 3 21 3 21 9" stroke="currentColor" stroke-width="2" fill="none"/><line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                 Deschide Biblia pe jw.org/ro
-              </a>
-              <a href="https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/" target="_blank" class="btn-outline">
-                Introducere Studiu
               </a>
             </div>
             <div class="bible-quick-books">
