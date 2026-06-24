@@ -68,6 +68,7 @@ function saveState() {
 const pageTitles = {
   dashboard: 'Panou Principal',
   watchtower: 'Turnul de Veghe – Studiu',
+  discurs: 'Discurs Biblic – 30 minute',
   workbook: 'Viața creștină și predicarea',
   bible: 'Studiu Biblic Personal',
   biblereader: 'Biblia de Studiu – jw.org/ro',
@@ -89,6 +90,9 @@ function navigateTo(page) {
 
   const navEl = document.getElementById(`nav-${page}`);
   if (navEl) navEl.classList.add('active');
+  if (page === 'watchtower' || page === 'discurs') {
+    document.getElementById('navGroup-watchtower')?.classList.add('open');
+  }
 
   document.getElementById('pageTitle').textContent = pageTitles[page] || page;
   currentPage = page;
@@ -108,10 +112,15 @@ function renderPage(page) {
     case 'bible': renderVersesList('all'); break;
     case 'meetings': renderMeetings(); break;
     case 'watchtower': renderWtParagraphs(); break;
+    case 'discurs': renderDiscursPage(); break;
     case 'workbook': loadTalkDraft(); break;
     case 'biblereader': initBibleReader(); break;
     case 'fieldservice': renderFieldServiceList(); break;
   }
+}
+
+function toggleNavGroup(id) {
+  document.getElementById(`navGroup-${id}`)?.classList.toggle('open');
 }
 
 // ============================================
@@ -1772,10 +1781,7 @@ let discursTimerSeconds = 1800;
 let discursTimerRunning = false;
 let discursTimerFinished = false;
 
-function openDiscursModal() {
-  const modal = document.getElementById('discursModal');
-  if (!modal) return;
-
+function renderDiscursPage() {
   const draft = state.discursDraft || {};
   const titluEl = document.getElementById('discursTitlu');
   const versetEl = document.getElementById('discursVerset');
@@ -1789,12 +1795,6 @@ function openDiscursModal() {
   if (deleteBtn) deleteBtn.style.display = (draft.titlu || draft.note) ? 'inline-flex' : 'none';
 
   discursTimerReset();
-  modal.classList.add('open');
-}
-
-function closeDiscursModal() {
-  document.getElementById('discursModal')?.classList.remove('open');
-  discursTimerStop();
 }
 
 function saveDiscursDraft() {
@@ -1850,7 +1850,6 @@ function saveDiscursNote() {
   markStudyDay();
   saveState();
   showToast('Discursul a fost salvat ca notita! 📢', 'success');
-  closeDiscursModal();
 }
 
 function discursTimerStart() {
@@ -2172,16 +2171,12 @@ function init() {
   document.getElementById('paragraphModal')?.addEventListener('click', function(e) {
     if (e.target === this) closeParagraphModal();
   });
-  document.getElementById('discursModal')?.addEventListener('click', function(e) {
-    if (e.target === this) closeDiscursModal();
-  });
 
   // Keyboard shortcut: Escape to close modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeNoteModal();
       closeParagraphModal();
-      closeDiscursModal();
     }
   });
 
