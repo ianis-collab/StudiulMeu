@@ -2030,7 +2030,7 @@ select.form-input option { background: var(--bg-elevated); }
 
 /* Textarea for discurs - larger */
 .discurs-textarea {
-  min-height: 280px;
+  min-height: 500px;
   font-size: 0.92rem;
   line-height: 1.7;
   resize: vertical;
