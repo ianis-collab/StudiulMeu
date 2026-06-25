@@ -387,7 +387,14 @@
             <input type="text" id="discursVerset" class="form-input" placeholder="ex: Proverbe 3:5,6" oninput="saveDiscursDraft()" />
           </div>
           <div class="form-group">
-            <label id="discursNotesLabel">Notițele Discursului</label>
+            <div class="note-label-row">
+              <label id="discursNotesLabel">Notițele Discursului</label>
+              <div class="note-font-control">
+                <button type="button" class="note-font-btn" onclick="changeDiscursNoteFontSize(-1)" title="Micșorează text">A</button>
+                <span class="note-font-value" id="discursNoteFontValue">14</span>
+                <button type="button" class="note-font-btn note-font-btn-lg" onclick="changeDiscursNoteFontSize(1)" title="Mărește text">A</button>
+              </div>
+            </div>
             <textarea id="discursNote" class="form-textarea discurs-textarea"
               placeholder="Scrie discursul tău aici... Introducere, punctele principale, concluzie."
               oninput="saveDiscursDraft()"></textarea>
@@ -525,7 +532,17 @@
               <button type="button" id="useTalkOutlineBtn" class="btn-xs btn-outline" style="display:none" onclick="applyTalkOutline()">✍️ Folosește această schiță</button>
             </div>
 
-            <div class="form-group"><label>Notițe pregătire</label><textarea id="talk-notes" class="form-textarea small" style="min-height:400px" placeholder="Idei principale, introducere, concluzie..." oninput="saveTalkDraft()"></textarea></div>
+            <div class="form-group">
+              <div class="note-label-row">
+                <label>Notițe pregătire</label>
+                <div class="note-font-control">
+                  <button type="button" class="note-font-btn" onclick="changeTalkNoteFontSize(-1)" title="Micșorează text">A</button>
+                  <span class="note-font-value" id="talkNoteFontValue">14</span>
+                  <button type="button" class="note-font-btn note-font-btn-lg" onclick="changeTalkNoteFontSize(1)" title="Mărește text">A</button>
+                </div>
+              </div>
+              <textarea id="talk-notes" class="form-textarea small" style="min-height:400px" placeholder="Idei principale, introducere, concluzie..." oninput="saveTalkDraft()"></textarea>
+            </div>
           </div>
         </div>
       </div>
