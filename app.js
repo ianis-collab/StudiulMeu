@@ -608,6 +608,70 @@ function loadTalkDraft() {
   if (subject) subject.value = draft.subject || '';
   if (duration) duration.value = draft.duration || '5 minute';
   if (notes) notes.value = draft.notes || '';
+  updateTalkWordCount();
+}
+
+// ============================================
+// ESTIMARE TIMP VORBIRE DUPĂ NUMĂR DE CUVINTE
+// ============================================
+var SPEECH_WPM = 130; // ritm mediu de vorbire (cuvinte/minut)
+
+function countWords(text) {
+  if (!text) return 0;
+  var trimmed = text.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
+
+function formatMMSS(totalSeconds) {
+  var s = Math.round(totalSeconds);
+  var mm = String(Math.floor(s / 60)).padStart(2, '0');
+  var ss = String(s % 60).padStart(2, '0');
+  return mm + ':' + ss;
+}
+
+function updateTalkWordCount() {
+  var ta = document.getElementById('talk-notes');
+  var counter = document.getElementById('talkWordCounter');
+  if (!ta || !counter) return;
+
+  var words = countWords(ta.value);
+  var estSeconds = (words / SPEECH_WPM) * 60;
+
+  counter.textContent = words + ' cuvinte • ~' + formatMMSS(estSeconds);
+  counter.classList.remove('wc-yellow', 'wc-orange', 'wc-red');
+
+  if (estSeconds >= 300) {
+    counter.classList.add('wc-red');
+    counter.textContent += ' ⚠️ Prea multe cuvinte pentru 5 minute!';
+  } else if (estSeconds >= 297) { // 4:57
+    counter.classList.add('wc-orange');
+    counter.textContent += ' — te apropii de limită';
+  } else if (estSeconds >= 270) { // 4:30
+    counter.classList.add('wc-yellow');
+  }
+}
+
+function updateDiscursWordCount() {
+  var ta = document.getElementById('discursNote');
+  var counter = document.getElementById('discursWordCounter');
+  if (!ta || !counter) return;
+
+  var words = countWords(ta.value);
+  var estSeconds = (words / SPEECH_WPM) * 60;
+
+  counter.textContent = words + ' cuvinte • ~' + formatMMSS(estSeconds);
+  counter.classList.remove('wc-yellow', 'wc-orange', 'wc-red');
+
+  if (estSeconds >= 1800) {
+    counter.classList.add('wc-red');
+    counter.textContent += ' ⚠️ Prea multe cuvinte pentru 30 minute!';
+  } else if (estSeconds >= 1770) { // 29:30
+    counter.classList.add('wc-orange');
+    counter.textContent += ' — te apropii de limită';
+  } else if (estSeconds >= 1620) { // 27:00
+    counter.classList.add('wc-yellow');
+  }
 }
 
 let generatedTalkOutlineText = '';
@@ -688,6 +752,93 @@ function applyTalkOutline() {
       notesTextarea.value = generatedTalkOutlineText;
     }
     saveTalkDraft();
+    updateTalkWordCount();
+    showToast('Schița a fost aplicată în notițe! ✍️', 'success');
+  }
+}
+
+let generatedDiscursOutlineText = '';
+
+function toggleDiscursAiPanel() {
+  const panel = document.getElementById('discursAiPanel');
+  if (!panel) return;
+  const isHidden = panel.style.display === 'none';
+  panel.style.display = isHidden ? 'block' : 'none';
+}
+
+function generateDiscursOutline(style) {
+  const subjectInput = document.getElementById('discursTitlu');
+  const subject = subjectInput ? subjectInput.value.trim() : '';
+  const sugDiv = document.getElementById('discursAiSuggestions');
+  const useBtn = document.getElementById('useDiscursOutlineBtn');
+
+  if (!subject) {
+    showToast('Introduceți mai întâi titlul discursului.', 'error');
+    subjectInput?.focus();
+    return;
+  }
+
+  sugDiv.style.display = 'block';
+  sugDiv.innerHTML = `⏳ Se generează schița...`;
+  useBtn.style.display = 'none';
+
+  setTimeout(() => {
+    let outline = '';
+    const cleanSubject = subject.charAt(0).toUpperCase() + subject.slice(1);
+
+    if (style === 'explicativ') {
+      outline = `📌 DISCURS EXPLICATIV: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE (Atenție & Interes):\n` +
+                `   - De ce este important subiectul "${cleanSubject}" astăzi?\n` +
+                `   - Definirea termenilor principali.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Explicații cheie):\n` +
+                `   - Ce ne învață Biblia în mod direct despre acest aspect?\n` +
+                `   - Dovezi scripturale și principii de bază.\n` +
+                `   - Exemple și ilustrări detaliate (potrivite pentru un discurs de 30 minute).\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - Rezumatul punctelor principale.\n` +
+                `   - Îndemn final bazat pe adevărul analizat.`;
+    } else if (style === 'practic') {
+      outline = `📌 DISCURS PRACTIC: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE:\n` +
+                `   - Impactul subiectului "${cleanSubject}" în activitățile zilnice.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Aplicare practică):\n` +
+                `   - Pasul 1: Cum implementăm acest lucru în familie sau la locul de muncă?\n` +
+                `   - Pasul 2: Obstacole comune și cum le putem depăși cu ajutorul spiritului sfânt.\n` +
+                `   - Pasul 3: Exemple din experiența congregației.\n` +
+                `   - Ilustrare sugestivă potrivită pentru ilustrarea ideii.\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - O acțiune clară pe care o putem face în săptămâna următoare.`;
+    } else {
+      outline = `📌 DISCURS ÎNCURAJATOR: "${cleanSubject}"\n\n` +
+                `1. INTRODUCERE:\n` +
+                `   - Sentimentele noastre legate de "${cleanSubject}" în momente dificile.\n\n` +
+                `2. CORPUL CUVÂNTĂRII (Consolare și Sprijin):\n` +
+                `   - Promisiunile lui Iehova care ne dau putere.\n` +
+                `   - Exemple biblice de credință (cum au perseverat alții).\n` +
+                `   - Cum ne sprijină congregația creștină.\n` +
+                `   - Experiențe practice și mărturii de încredere.\n\n` +
+                `3. CONCLUZIE:\n` +
+                `   - Un mesaj cald de speranță și încredere în viitor.`;
+    }
+
+    generatedDiscursOutlineText = outline;
+    sugDiv.innerHTML = outline.replace(/\n/g, '<br>');
+    useBtn.style.display = 'inline-block';
+    showToast('Schiță AI generată! ✨', 'success');
+  }, 500);
+}
+
+function applyDiscursOutline() {
+  const notesTextarea = document.getElementById('discursNote');
+  if (notesTextarea && generatedDiscursOutlineText) {
+    if (notesTextarea.value.trim()) {
+      notesTextarea.value += '\n\n' + generatedDiscursOutlineText;
+    } else {
+      notesTextarea.value = generatedDiscursOutlineText;
+    }
+    saveDiscursDraft();
+    updateDiscursWordCount();
     showToast('Schița a fost aplicată în notițe! ✍️', 'success');
   }
 }
@@ -1780,6 +1931,9 @@ let discursTimerInterval = null;
 let discursTimerSeconds = 1800;
 let discursTimerRunning = false;
 let discursTimerFinished = false;
+var DISCURS_TIMER_TOTAL = 1800;
+var DISCURS_TIMER_YELLOW_AT = 180;  // 27:00 -> 3:00 ramase (90%)
+var DISCURS_TIMER_ORANGE_AT = 90;   // 28:30 -> 1:30 ramase (95%)
 
 function renderDiscursPage() {
   const draft = state.discursDraft || {};
@@ -1795,6 +1949,7 @@ function renderDiscursPage() {
   if (deleteBtn) deleteBtn.style.display = (draft.titlu || draft.note) ? 'inline-flex' : 'none';
 
   discursTimerReset();
+  updateDiscursWordCount();
 }
 
 function saveDiscursDraft() {
@@ -1861,12 +2016,11 @@ function discursTimerStart() {
   if (ta) ta.disabled = false;
 
   discursTimerInterval = setInterval(function() {
-    if (discursTimerSeconds <= 0) {
-      discursTimerFinish();
-      return;
-    }
     discursTimerSeconds--;
     discursTimerUpdateUI();
+    if (discursTimerSeconds === -1) {
+      discursTimerFinish();
+    }
   }, 1000);
 }
 
@@ -1886,7 +2040,7 @@ function discursTimerStop() {
 
 function discursTimerReset() {
   discursTimerStop();
-  discursTimerSeconds = 1800;
+  discursTimerSeconds = DISCURS_TIMER_TOTAL;
   discursTimerFinished = false;
 
   var startBtn = document.getElementById('discursTimerStartBtn');
@@ -1899,7 +2053,7 @@ function discursTimerReset() {
   if (pauseBtn) pauseBtn.style.display = 'none';
   if (ta) ta.disabled = false;
   if (blockedMsg) blockedMsg.style.display = 'none';
-  if (timerBar) { timerBar.classList.remove('timer-warning', 'timer-danger', 'timer-done'); }
+  if (timerBar) { timerBar.classList.remove('timer-yellow', 'timer-warning', 'timer-danger', 'timer-done'); }
 
   discursTimerUpdateUI();
 }
@@ -1908,7 +2062,7 @@ function discursTimerFinish() {
   clearInterval(discursTimerInterval);
   discursTimerRunning = false;
   discursTimerFinished = true;
-  discursTimerSeconds = 0;
+  discursTimerSeconds = -1;
 
   var ta = document.getElementById('discursNote');
   if (ta) ta.disabled = true;
@@ -1924,19 +2078,18 @@ function discursTimerFinish() {
   if (startBtn) startBtn.style.display = 'none';
   if (pauseBtn) pauseBtn.style.display = 'none';
 
-  document.getElementById('discursTimerValue').textContent = '00:00';
+  document.getElementById('discursTimerValue').textContent = '+00:01';
   document.getElementById('discursTimerIcon').textContent = '🔴';
-  document.getElementById('discursTimerLabel').textContent = 'Timp expirat!';
+  document.getElementById('discursTimerLabel').textContent = 'Cuvântarea este prea lungă!';
   document.getElementById('discursTimerFill').style.width = '0%';
 
   saveDiscursDraft();
-  showToast('⏰ Cele 30 de minute s-au incheiat! Discursul a fost blocat.', 'error');
+  showToast('⏰ Cuvântarea este prea lungă! Discursul a fost blocat.', 'error');
 }
 
 function discursTimerUpdateUI() {
-  var total = 1800;
   var remaining = discursTimerSeconds;
-  var pct = (remaining / total) * 100;
+  var pct = Math.max(0, (remaining / DISCURS_TIMER_TOTAL) * 100);
 
   var mm = String(Math.floor(remaining / 60)).padStart(2, '0');
   var ss = String(remaining % 60).padStart(2, '0');
@@ -1950,13 +2103,16 @@ function discursTimerUpdateUI() {
   if (fillEl) fillEl.style.width = pct + '%';
 
   if (timerBar) {
-    timerBar.classList.remove('timer-warning', 'timer-danger');
-    if (remaining <= 120) {
+    timerBar.classList.remove('timer-yellow', 'timer-warning', 'timer-danger');
+    if (remaining <= 0) {
       timerBar.classList.add('timer-danger');
       if (iconEl) iconEl.textContent = '🔴';
-    } else if (remaining <= 300) {
+    } else if (remaining <= DISCURS_TIMER_ORANGE_AT) {
       timerBar.classList.add('timer-warning');
       if (iconEl) iconEl.textContent = '🟠';
+    } else if (remaining <= DISCURS_TIMER_YELLOW_AT) {
+      timerBar.classList.add('timer-yellow');
+      if (iconEl) iconEl.textContent = '🟡';
     } else {
       if (iconEl) iconEl.textContent = '⏱';
     }
@@ -1970,20 +2126,26 @@ let talkTimerInterval = null;
 let talkTimerSeconds = 300;
 let talkTimerRunning = false;
 let talkTimerFinished = false;
+let talkTimerOvertimeWarned = false;
+var TALK_TIMER_TOTAL = 300;
+var TALK_TIMER_YELLOW_AT = 30;  // 4:30 -> 30s ramase
+var TALK_TIMER_ORANGE_AT = 15;  // 4:45 -> 15s ramase
 
 function talkTimerStart() {
-  if (talkTimerFinished || talkTimerRunning) return;
+  if (talkTimerRunning) return;
   talkTimerRunning = true;
   document.getElementById('talkTimerStartBtn').style.display = 'none';
   document.getElementById('talkTimerPauseBtn').style.display = 'inline-flex';
 
   talkTimerInterval = setInterval(function() {
-    if (talkTimerSeconds <= 0) {
-      talkTimerFinish();
-      return;
-    }
     talkTimerSeconds--;
     talkTimerUpdateUI();
+
+    if (talkTimerSeconds === -1 && !talkTimerOvertimeWarned) {
+      talkTimerOvertimeWarned = true;
+      talkTimerFinished = true;
+      showToast('⏰ Cuvântarea este prea lungă!', 'error');
+    }
   }, 1000);
 }
 
@@ -2003,8 +2165,9 @@ function talkTimerStop() {
 
 function talkTimerReset() {
   talkTimerStop();
-  talkTimerSeconds = 300;
+  talkTimerSeconds = TALK_TIMER_TOTAL;
   talkTimerFinished = false;
+  talkTimerOvertimeWarned = false;
 
   var startBtn = document.getElementById('talkTimerStartBtn');
   var pauseBtn = document.getElementById('talkTimerPauseBtn');
@@ -2012,7 +2175,7 @@ function talkTimerReset() {
 
   if (startBtn) { startBtn.style.display = 'inline-flex'; startBtn.textContent = '▶ Start'; }
   if (pauseBtn) pauseBtn.style.display = 'none';
-  if (timerBar) { timerBar.classList.remove('timer-warning', 'timer-danger', 'timer-done'); }
+  if (timerBar) { timerBar.classList.remove('timer-yellow', 'timer-warning', 'timer-danger', 'timer-done'); }
 
   var labelEl = document.getElementById('talkTimerLabel');
   if (labelEl) labelEl.textContent = 'din 5 minute';
@@ -2020,52 +2183,36 @@ function talkTimerReset() {
   talkTimerUpdateUI();
 }
 
-function talkTimerFinish() {
-  clearInterval(talkTimerInterval);
-  talkTimerRunning = false;
-  talkTimerFinished = true;
-  talkTimerSeconds = 0;
-
-  var timerBar = document.getElementById('talkTimerBar');
-  if (timerBar) timerBar.classList.add('timer-done');
-
-  var startBtn = document.getElementById('talkTimerStartBtn');
-  var pauseBtn = document.getElementById('talkTimerPauseBtn');
-  if (startBtn) startBtn.style.display = 'none';
-  if (pauseBtn) pauseBtn.style.display = 'none';
-
-  document.getElementById('talkTimerValue').textContent = '00:00';
-  document.getElementById('talkTimerIcon').textContent = '🔴';
-  document.getElementById('talkTimerLabel').textContent = 'Timp expirat!';
-  document.getElementById('talkTimerFill').style.width = '0%';
-
-  showToast('⏰ Cele 5 minute pentru cuvântare s-au încheiat!', 'error');
-}
-
 function talkTimerUpdateUI() {
-  var total = 300;
   var remaining = talkTimerSeconds;
-  var pct = (remaining / total) * 100;
+  var pct = Math.max(0, (remaining / TALK_TIMER_TOTAL) * 100);
 
-  var mm = String(Math.floor(remaining / 60)).padStart(2, '0');
-  var ss = String(remaining % 60).padStart(2, '0');
+  var overtime = remaining < 0;
+  var displaySecs = Math.abs(remaining);
+  var mm = String(Math.floor(displaySecs / 60)).padStart(2, '0');
+  var ss = String(displaySecs % 60).padStart(2, '0');
 
   var valEl = document.getElementById('talkTimerValue');
   var fillEl = document.getElementById('talkTimerFill');
   var iconEl = document.getElementById('talkTimerIcon');
   var timerBar = document.getElementById('talkTimerBar');
+  var labelEl = document.getElementById('talkTimerLabel');
 
-  if (valEl) valEl.textContent = mm + ':' + ss;
+  if (valEl) valEl.textContent = (overtime ? '+' : '') + mm + ':' + ss;
   if (fillEl) fillEl.style.width = pct + '%';
 
   if (timerBar) {
-    timerBar.classList.remove('timer-warning', 'timer-danger');
-    if (remaining <= 20) {
+    timerBar.classList.remove('timer-yellow', 'timer-warning', 'timer-danger', 'timer-done');
+    if (remaining <= 0) {
       timerBar.classList.add('timer-danger');
       if (iconEl) iconEl.textContent = '🔴';
-    } else if (remaining <= 60) {
+      if (labelEl) labelEl.textContent = overtime ? 'Cuvântarea este prea lungă!' : 'Timp expirat!';
+    } else if (remaining <= TALK_TIMER_ORANGE_AT) {
       timerBar.classList.add('timer-warning');
       if (iconEl) iconEl.textContent = '🟠';
+    } else if (remaining <= TALK_TIMER_YELLOW_AT) {
+      timerBar.classList.add('timer-yellow');
+      if (iconEl) iconEl.textContent = '🟡';
     } else {
       if (iconEl) iconEl.textContent = '⏱';
     }
@@ -2214,7 +2361,7 @@ function initFontScale() {
 
 // ============================================
 // MĂRIRE TEXT ÎN CUVÂNTĂRI (Discurs Biblic 30 min & Cuvântare 5 min)
-// Control local, independent de mărirea generală – interval 10–30px
+// Control local, independent de mărirea generală – interval 10–40px
 // ============================================
 function applyNoteFontSize(textareaId, valueId, storageKey, px) {
   const ta = document.getElementById(textareaId);
@@ -2226,7 +2373,7 @@ function applyNoteFontSize(textareaId, valueId, storageKey, px) {
 
 function changeNoteFontSize(textareaId, valueId, storageKey, delta) {
   const current = parseInt(localStorage.getItem(storageKey)) || 14;
-  const next = Math.min(30, Math.max(10, current + delta));
+  const next = Math.min(40, Math.max(10, current + delta));
   applyNoteFontSize(textareaId, valueId, storageKey, next);
 }
 
