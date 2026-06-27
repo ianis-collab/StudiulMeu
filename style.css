@@ -946,6 +946,10 @@ select.form-input option { background: var(--bg-elevated); }
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
+.note-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
 .note-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .note-card-title { font-weight: 600; font-size: 0.95rem; flex: 1; }
 .note-card-body { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -2032,29 +2036,6 @@ select.form-input option { background: var(--bg-elevated); }
   gap: 8px;
   align-items: center;
   flex-shrink: 0;
-}
-
-/* Word counter under speech textareas */
-.word-counter {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 6px;
-  text-align: right;
-  transition: color 0.2s;
-}
-.word-counter.wc-yellow { color: #e0b400; font-weight: 600; }
-.word-counter.wc-orange { color: var(--orange); font-weight: 600; }
-.word-counter.wc-red { color: var(--red); font-weight: 700; }
-
-/* Yellow approach state */
-.discurs-timer-bar.timer-yellow {
-  background: rgba(240,200,40,0.08);
-}
-.discurs-timer-bar.timer-yellow .discurs-timer-value {
-  color: #e0b400;
-}
-.discurs-timer-bar.timer-yellow .discurs-timer-progress-fill {
-  background: linear-gradient(90deg, #e0b400, #f0c82888);
 }
 
 /* Warning state (sub 5 min) */
