@@ -2123,3 +2123,157 @@ select.form-input option { background: var(--bg-elevated); }
 .discurs-timer-bar.timer-bar-inline .discurs-timer-value {
   font-size: 1.5rem;
 }
+
+/* ============================================
+   TABEL PROFEȚII
+   ============================================ */
+.prophecy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.prophecy-table thead th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--accent);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--bg-surface);
+}
+
+.prophecy-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.prophecy-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.prophecy-table .prophecy-text {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.prophecy-table .prophecy-year {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.prophecy-table .prophecy-fulfillment {
+  color: var(--text-secondary);
+}
+
+.prophecy-table .prophecy-reference {
+  font-size: 0.8rem;
+  color: var(--purple);
+}
+
+.prophecy-table .prophecy-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.prophecy-table .prophecy-actions button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all var(--transition);
+}
+
+.prophecy-table .prophecy-actions button:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.prophecy-table .prophecy-actions .edit-btn:hover {
+  color: var(--accent);
+}
+
+.prophecy-table .prophecy-actions .delete-btn:hover {
+  color: var(--red);
+}
+
+.prophecy-table .editing td {
+  background: var(--accent-glow);
+  padding: 4px 8px;
+}
+
+.prophecy-table .editing textarea,
+.prophecy-table .editing input {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.prophecy-table .editing textarea {
+  min-height: 38px;
+  resize: vertical;
+}
+
+.prophecy-table .editing textarea:focus,
+.prophecy-table .editing input:focus {
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.prophecy-table .edit-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.prophecy-table .edit-actions button {
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.prophecy-table .edit-actions .save-edit {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.prophecy-table .edit-actions .save-edit:hover {
+  background: var(--accent-hover);
+}
+
+.prophecy-table .edit-actions .cancel-edit {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.prophecy-table .edit-actions .cancel-edit:hover {
+  background: var(--bg-hover);
+}
+
+@media (max-width: 768px) {
+  .prophecy-table {
+    font-size: 0.78rem;
+  }
+  .prophecy-table thead th,
+  .prophecy-table tbody td {
+    padding: 6px 8px;
+  }
+}

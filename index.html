@@ -785,6 +785,38 @@
           </div>
         </div>
       </div>
+
+      <!-- PROPHECIES -->
+      <div class="card prophecies-card">
+        <div class="card-header">
+          <h3>📜 Profeții și Împlinirea lor</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-primary btn-sm" onclick="addProphecy()">+ Adaugă Profeție</button>
+            <button class="btn-ghost btn-sm" onclick="exportProphecies()">📤 Export</button>
+            <button class="btn-ghost btn-sm" onclick="addExampleProphecies()">📖 Exemple</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto; margin-top: 4px;">
+          <table class="prophecy-table" id="prophecyTable">
+            <thead>
+              <tr>
+                <th style="width:30%;">📖 Profeția</th>
+                <th style="width:12%;">📅 Anul</th>
+                <th style="width:38%;">✅ Împlinirea</th>
+                <th style="width:15%;">🔗 Referință</th>
+                <th style="width:40px;">⚙️</th>
+              </tr>
+            </thead>
+            <tbody id="prophecyTableBody">
+            </tbody>
+          </table>
+        </div>
+
+        <div id="prophecyEmpty" class="empty-state-small">
+          Nicio profeție adăugată. Apasă „+ Adaugă Profeție" pentru a începe.
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1028,6 +1060,8 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<script src="storage.js"></script>
+<script src="utils.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
