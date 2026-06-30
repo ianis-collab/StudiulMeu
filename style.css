@@ -2277,3 +2277,12 @@ select.form-input option { background: var(--bg-elevated); }
     padding: 6px 8px;
   }
 }
+
+
+.word-counter{
+  margin-top:8px;
+  font-size:0.82rem;
+  color:var(--text-muted);
+  text-align:right;
+  font-weight:600;
+}

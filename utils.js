@@ -32,6 +32,18 @@ function formatDate(dateStr) {
   } catch { return dateStr; }
 }
 
+/**
+ * Construiește URL-ul canonic către Biblia de Studiu pe jw.org/ro,
+ * pentru un anumit slug de carte și capitol.
+ * Folosită oriunde se generează linkuri spre jw.org, ca să nu existe
+ * construcții manuale duplicate ale URL-ului.
+ * @param {string} slug - slug-ul cărții (ex: 'matei')
+ * @param {number|string} capitol - numărul capitolului
+ */
+function getBibleUrl(slug, capitol) {
+  return `https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/${slug}/${capitol}/`;
+}
+
 // Referință internă la timer-ul toast-ului curent, ca să putem
 // anula afișarea anterioară dacă apare un toast nou rapid.
 let toastTimer = null;

@@ -421,7 +421,8 @@
             </div>
             <textarea id="discursNote" class="form-textarea discurs-textarea"
               placeholder="Scrie discursul tău aici... Introducere, punctele principale, concluzie."
-              oninput="saveDiscursDraft()"></textarea>
+              oninput="saveDiscursDraft(); updateWordCounters()"></textarea>
+            <div class="word-counter" id="discursWordCounter">Cuvinte: 0</div>
             <div id="discursBlockedMsg" style="display:none" class="discurs-blocked-msg">
               ⛔ Timpul de 30 minute s-a încheiat. Discursul a fost blocat. Poți salva notițele.
             </div>
@@ -574,7 +575,8 @@
                   <button type="button" class="note-font-btn note-font-btn-lg" onclick="changeTalkNoteFontSize(1)" title="Mărește text">A</button>
                 </div>
               </div>
-              <textarea id="talk-notes" class="form-textarea small" style="min-height:400px" placeholder="Idei principale, introducere, concluzie..." oninput="saveTalkDraft()"></textarea>
+              <textarea id="talk-notes" class="form-textarea small" style="min-height:400px" placeholder="Idei principale, introducere, concluzie..." oninput="saveTalkDraft(); updateWordCounters()"></textarea>
+              <div class="word-counter" id="talkWordCounter">Cuvinte: 0</div>
             </div>
           </div>
         </div>
@@ -686,16 +688,7 @@
               </a>
             </div>
             <div class="bible-quick-books">
-              <p class="bible-section-label">Accces rapid</p>
-              <div class="bqb-grid">
-                <button onclick="selectBook('geneza',1,50,'ot')" class="bqb-btn">Geneza</button>
-                <button onclick="selectBook('psalmii',1,150,'ot')" class="bqb-btn">Psalmii</button>
-                <button onclick="selectBook('proverbele',1,31,'ot')" class="bqb-btn">Proverbe</button>
-                <button onclick="selectBook('isaia',1,66,'ot')" class="bqb-btn">Isaia</button>
-                <button onclick="selectBook('matei',1,28,'nt')" class="bqb-btn">Matei</button>
-                <button onclick="selectBook('ioan',1,21,'nt')" class="bqb-btn">Ioan</button>
-                <button onclick="selectBook('romani',1,16,'nt')" class="bqb-btn">Romani</button>
-                <button onclick="selectBook('revelația',1,22,'nt')" class="bqb-btn">Apocalipsa</button>
+              
               </div>
             </div>
           </div>
@@ -1062,6 +1055,13 @@
 
 <script src="storage.js"></script>
 <script src="utils.js"></script>
+<script src="nav.js"></script>
+<script src="dashboard.js"></script>
+<script src="watchtower.js"></script>
+<script src="workbook.js"></script>
+<script src="discurs.js"></script>
+<script src="bible-study.js"></script>
+<script src="notes-meetings.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
