@@ -8,7 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/bibleReader.css" />
+  <link rel="stylesheet" href="css/speech.css" />
 </head>
 <body>
 
@@ -1053,15 +1055,30 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<script src="storage.js"></script>
-<script src="utils.js"></script>
-<script src="nav.js"></script>
-<script src="dashboard.js"></script>
-<script src="watchtower.js"></script>
-<script src="workbook.js"></script>
-<script src="discurs.js"></script>
-<script src="bible-study.js"></script>
-<script src="notes-meetings.js"></script>
-<script src="app.js"></script>
+<!-- Date & funcții de bază (fără dependențe) -->
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+
+<!-- Module funcționale -->
+<script src="js/navigation.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/wtStudy.js"></script>
+<script src="js/workbook.js"></script>
+<script src="js/verses.js"></script>
+<script src="js/prophecies.js"></script>
+<script src="js/fieldService.js"></script>
+<script src="js/notes.js"></script>
+<script src="js/meetings.js"></script>
+<script src="js/search.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/bibleReader.js"></script>
+<script src="js/dataIO.js"></script>
+<script src="js/discursTimer.js"></script>
+<script src="js/talkTimer.js"></script>
+<script src="js/fontScale.js"></script>
+<script src="js/wordCounter.js"></script>
+
+<!-- Inițializare generală (trebuie încărcat ultimul) -->
+<script src="js/app.js"></script>
 </body>
 </html>
