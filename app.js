@@ -103,91 +103,10 @@ function init() {
 }
 
 // ============================================
-// SCALARE FONT GLOBAL (10–24px)
+// (Scalarea fontului global și pentru notițe este acum
+//  în fontScale.js; numărătoarea de cuvinte în wordCounter.js
+//  — nu se mai duplică aici pentru a evita erori de redeclarare)
 // ============================================
-function applyFontScale(px) {
-  document.documentElement.style.fontSize = px + 'px';
-  const val = document.getElementById('fontScaleValue');
-  if (val) val.textContent = px;
-  localStorage.setItem('studiuMeu_fontScale', px);
-}
-
-function changeFontScale(delta) {
-  const current = parseInt(localStorage.getItem('studiuMeu_fontScale')) || 14;
-  const next    = Math.min(24, Math.max(10, current + delta));
-  applyFontScale(next);
-}
-
-function initFontScale() {
-  const saved = parseInt(localStorage.getItem('studiuMeu_fontScale')) || 14;
-  applyFontScale(saved);
-}
-
-// ============================================
-// SCALARE FONT PENTRU NOTIȚE CUVÂNTĂRI (10–30px)
-// ============================================
-function applyNoteFontSize(textareaId, valueId, storageKey, px) {
-  const ta  = document.getElementById(textareaId);
-  const val = document.getElementById(valueId);
-  if (ta)  ta.style.fontSize  = px + 'px';
-  if (val) val.textContent    = px;
-  localStorage.setItem(storageKey, px);
-}
-
-function changeNoteFontSize(textareaId, valueId, storageKey, delta) {
-  const current = parseInt(localStorage.getItem(storageKey)) || 14;
-  const next    = Math.min(30, Math.max(10, current + delta));
-  applyNoteFontSize(textareaId, valueId, storageKey, next);
-}
-
-function changeDiscursNoteFontSize(delta) {
-  changeNoteFontSize('discursNote', 'discursNoteFontValue', 'studiuMeu_discursNoteSize', delta);
-}
-
-function changeTalkNoteFontSize(delta) {
-  changeNoteFontSize('talk-notes', 'talkNoteFontValue', 'studiuMeu_talkNoteSize', delta);
-}
-
-function initNoteFontSizes() {
-  const discursSize = parseInt(localStorage.getItem('studiuMeu_discursNoteSize')) || 14;
-  applyNoteFontSize('discursNote', 'discursNoteFontValue', 'studiuMeu_discursNoteSize', discursSize);
-  const talkSize = parseInt(localStorage.getItem('studiuMeu_talkNoteSize')) || 14;
-  applyNoteFontSize('talk-notes', 'talkNoteFontValue', 'studiuMeu_talkNoteSize', talkSize);
-}
-
-// ============================================
-// CALCULATOR CUVINTE
-// ============================================
-function countOnlyWords(text) {
-  if (!text) return 0;
-  return text.trim().split(/\s+/).filter(token => /[\p{L}\p{N}]/u.test(token)).length;
-}
-
-const SPEAKING_WORDS_PER_MINUTE = 120;
-
-function estimateSpeakingMinutes(wordCount) {
-  if (!wordCount) return 0;
-  return Math.max(1, Math.round(wordCount / SPEAKING_WORDS_PER_MINUTE));
-}
-
-function formatWordCounterText(wordCount) {
-  const minutes = estimateSpeakingMinutes(wordCount);
-  return minutes ? `Cuvinte: ${wordCount} · ~${minutes} min` : `Cuvinte: ${wordCount}`;
-}
-
-function updateWordCounters() {
-  const talkNotes   = document.getElementById('talk-notes');
-  const talkCounter = document.getElementById('talkWordCounter');
-  if (talkNotes && talkCounter) {
-    talkCounter.textContent = formatWordCounterText(countOnlyWords(talkNotes.value));
-  }
-
-  const discursNotes   = document.getElementById('discursNote');
-  const discursCounter = document.getElementById('discursWordCounter');
-  if (discursNotes && discursCounter) {
-    discursCounter.textContent = formatWordCounterText(countOnlyWords(discursNotes.value));
-  }
-}
 
 // ============================================
 // EXPORT / IMPORT BACKUP
