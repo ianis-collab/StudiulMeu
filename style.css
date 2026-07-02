@@ -186,6 +186,30 @@ body {
   transform: translateX(calc(-1 * var(--sidebar-width)));
 }
 
+.sidebar-expand-btn {
+  position: fixed;
+  top: 20px;
+  left: 12px;
+  z-index: 101;
+  width: 34px;
+  height: 34px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  transition: color var(--transition), background var(--transition);
+}
+.sidebar-expand-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+.sidebar.collapsed ~ .sidebar-expand-btn { display: flex; }
+@media (max-width: 768px) {
+  .sidebar-expand-btn { display: none !important; }
+}
+
 .sidebar-header {
   padding: 20px 16px 16px;
   border-bottom: 1px solid var(--border);
@@ -1316,6 +1340,21 @@ select.form-input option { background: var(--bg-elevated); }
   color: white;
 }
 
+/* Biblia - Studiu Offline (afișare pe lățime completă) */
+#offlineBooksList.bible-books-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  max-height: none;
+}
+#offlineChaptersList.bible-chapters-grid {
+  grid-template-columns: repeat(10, 1fr);
+}
+@media (max-width: 700px) {
+  #offlineBooksList.bible-books-grid { grid-template-columns: 1fr; }
+  #offlineChaptersList.bible-chapters-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
 /* Notes section */
 .bible-section-label {
   font-size: 0.72rem;
@@ -1661,7 +1700,38 @@ select.form-input option { background: var(--bg-elevated); }
 .year-text-actions {
   display: flex;
   gap: 6px;
+  position: relative;
 }
+.yt-menu-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition), background var(--transition);
+}
+.yt-menu-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+.year-text-dropdown {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  padding: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  z-index: 20;
+  min-width: 110px;
+}
+.year-text-dropdown.open { display: flex; }
 .yt-btn-edit, .yt-btn-delete {
   font-size: 0.72rem;
   font-weight: 600;
@@ -1670,6 +1740,7 @@ select.form-input option { background: var(--bg-elevated); }
   cursor: pointer;
   border: 1px solid;
   transition: background var(--transition);
+  text-align: left;
 }
 .yt-btn-edit {
   background: rgba(79,142,247,0.12);

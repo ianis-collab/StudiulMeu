@@ -47,6 +47,11 @@ function init() {
     document.getElementById('sidebar').classList.toggle('collapsed');
   });
 
+  // Sidebar extindere (vizibil doar când sidebar e restrâns)
+  document.getElementById('sidebarExpandBtn')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('collapsed');
+  });
+
   // Hamburger (mobil)
   document.getElementById('hamburger')?.addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('mobile-open');

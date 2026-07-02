@@ -111,6 +111,24 @@ function loadYearText() {
   }
 }
 
+function toggleYearTextMenu() {
+  const dropdown = document.getElementById('yearTextDropdown');
+  if (!dropdown) return;
+  dropdown.classList.toggle('open');
+}
+
+function closeYearTextMenu() {
+  document.getElementById('yearTextDropdown')?.classList.remove('open');
+}
+
+// Închide meniul „Textul Anului” la click în afara lui
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('yearTextActions');
+  if (menu && !menu.contains(e.target)) {
+    closeYearTextMenu();
+  }
+});
+
 function openYearTextEdit() {
   const editDiv = document.getElementById('yearTextEdit');
   const displayP = document.getElementById('yearTextDisplay');

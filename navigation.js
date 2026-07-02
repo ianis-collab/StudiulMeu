@@ -10,6 +10,7 @@ const pageTitles = {
   workbook: 'Viața creștină și predicarea',
   bible: 'Studiu Biblic Personal',
   biblereader: 'Biblia de Studiu – jw.org/ro',
+  bibleoffline: 'Biblia – Studiu Offline',
   fieldservice: 'Întrunirea de Serviciu de Teren',
   notes: 'Notițele Mele',
   meetings: 'Programul Meu',
@@ -53,6 +54,7 @@ function renderPage(page) {
     case 'discurs': renderDiscursPage(); break;
     case 'workbook': loadTalkDraft(); break;
     case 'biblereader': initBibleReader(); break;
+    case 'bibleoffline': initBibleOffline(); break;
     case 'fieldservice': renderFieldServiceList(); break;
   }
   updateWordCounters();
