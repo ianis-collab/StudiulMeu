@@ -9,6 +9,63 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+
+<style>
+.fullscreen-mode{
+ position:fixed !important;
+ top:0;
+ left:0;
+ width:100vw !important;
+ height:100vh !important;
+ z-index:99999;
+ background:white;
+ padding:20px;
+ box-sizing:border-box;
+ overflow:auto;
+}
+
+.fullscreen-mode textarea{
+ width:100% !important;
+ height:85vh !important;
+ font-size:18px;
+}
+
+#fullscreenBtn{
+ margin-bottom:10px;
+}
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2b5797" />
+<link rel="icon" href="icons/icon-192.png" type="image/png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="StudiuMeu" />
+<style>
+#pwaInstallBtn{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  z-index:100000;
+  display:none;
+  align-items:center;
+  gap:8px;
+  padding:12px 18px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(135deg,#4f8ef7,#6c63ff);
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  font-family:inherit;
+  box-shadow:0 6px 18px rgba(76,99,255,0.4);
+  cursor:pointer;
+}
+#pwaInstallBtn svg{flex-shrink:0}
+</style>
+<script>if("serviceWorker"in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("service-worker.js")})}</script>
 </head>
 <body>
 
@@ -648,6 +705,7 @@
         <!-- Book selector -->
         <div class="bible-nav-card">
           <div class="bible-nav-header">
+            <span class="bible-nav-title">📖 Citește Biblia</span>
             <a href="https://www.jw.org/ro/biblioteca/biblia/biblia-de-studiu/c%C4%83r%C8%9Bi/" target="_blank" class="jw-badge">jw.org/ro ↗</a>
           </div>
 
@@ -689,6 +747,21 @@
 
       <!-- RIGHT: Reading panel -->
       <div class="bible-reading-panel">
+        <!-- Welcome / no chapter selected -->
+        <div class="bible-welcome" id="bibleWelcome">
+          <div class="bible-welcome-inner">
+            <div class="bible-icon-big">📖</div>
+            
+              
+            </div>
+            <div class="bible-quick-books">
+              
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chapter view -->
         <div class="bible-chapter-view" id="bibleChapterView" style="display:none">
           <div class="chapter-view-header">
             <div class="chapter-nav-btns">
@@ -1125,5 +1198,98 @@
 
 <!-- Inițializare generală (trebuie încărcat ultimul) -->
 <script src="app.js"></script>
+
+<div id="talk5-toolbar" style="position:fixed;top:10px;right:10px;z-index:9999;">
+  <button id="menuBtn">☰</button>
+  <div id="menuPanel" style="display:none;background:#fff;padding:10px;border:1px solid #ccc;border-radius:8px;margin-top:5px;">
+    <button id="saveTalk5">Salvare</button>
+    <button id="deleteTalk5">Ștergere</button>
+    <div id="saveDate" style="margin-top:8px;font-size:12px;color:#666;"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const menuBtn = document.getElementById("menuBtn");
+    const menuPanel = document.getElementById("menuPanel");
+    const saveBtn = document.getElementById("saveTalk5");
+    const deleteBtn = document.getElementById("deleteTalk5");
+    const saveDate = document.getElementById("saveDate");
+    const textarea = document.querySelector("textarea");
+
+    menuBtn.addEventListener("click", () => {
+        menuPanel.style.display =
+            menuPanel.style.display === "none" ? "block" : "none";
+    });
+
+    const STORAGE_KEY = "cuvantare5min";
+
+    if (textarea) {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) textarea.value = saved;
+
+        const dateSaved = localStorage.getItem(STORAGE_KEY + "_date");
+        if (dateSaved) {
+            saveDate.textContent = "Salvat: " + dateSaved;
+        }
+    }
+
+    saveBtn.addEventListener("click", () => {
+        if (!textarea) return;
+
+        localStorage.setItem(STORAGE_KEY, textarea.value);
+
+        const now = new Date().toLocaleString("ro-RO");
+        localStorage.setItem(STORAGE_KEY + "_date", now);
+
+        saveDate.textContent = "Salvat: " + now;
+    });
+
+    deleteBtn.addEventListener("click", () => {
+        if (!textarea) return;
+
+        textarea.value = "";
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY + "_date");
+        saveDate.textContent = "";
+    });
+});
+</script>
+
+<!-- BUTON INSTALARE PWA (apare doar pe Android/Chrome, când aplicația e instalabilă) -->
+<button id="pwaInstallBtn">
+  <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>Instalează aplicația</span>
+</button>
+
+<script>
+let deferredInstallPrompt = null;
+const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  pwaInstallBtn.style.display = 'flex';
+});
+
+pwaInstallBtn.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  pwaInstallBtn.style.display = 'none';
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+});
+
+window.addEventListener('appinstalled', () => {
+  pwaInstallBtn.style.display = 'none';
+  deferredInstallPrompt = null;
+});
+
+// Ascunde butonul dacă aplicația rulează deja instalată (standalone)
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+  pwaInstallBtn.style.display = 'none';
+}
+</script>
+
 </body>
 </html>

@@ -9,7 +9,7 @@ const pageTitles = {
   discurs: 'Discurs Biblic – 30 minute',
   workbook: 'Viața creștină și predicarea',
   bible: 'Studiu Biblic Personal',
-  biblereader: 'Biblia de Studiu – jw.org/ro',
+  biblereader: 'Citește Biblia',
   bibleoffline: 'Biblia – Studiu Offline',
   fieldservice: 'Întrunirea de Serviciu de Teren',
   notes: 'Notițele Mele',
