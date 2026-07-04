@@ -483,6 +483,75 @@ body {
 }
 
 /* ============================================
+   ECRAN COMPLET NOTIȚE (fundal alb, pe tot ecranul)
+   ============================================ */
+.page-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  padding: 15px;
+  box-sizing: border-box;
+}
+.page-fullscreen.active { display: flex; }
+
+.page-fullscreen .top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.page-fullscreen .top-bar button {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  color: #222;
+  cursor: pointer;
+}
+.page-fullscreen .top-bar button:hover { background: #f2f2f2; }
+.page-fullscreen .top-bar h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+}
+
+.page-fullscreen textarea {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  font-size: 18px;
+  font-family: var(--font-main);
+  color: #111;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.page-fullscreen textarea:focus { outline: none; border-color: var(--accent); }
+
+.note-fullscreen-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-left: 6px;
+}
+.note-fullscreen-btn:hover { color: var(--text-primary); border-color: var(--accent); }
+
+/* ============================================
    DASHBOARD
    ============================================ */
 .dashboard-greeting {

@@ -8,6 +8,7 @@ const pageTitles = {
   watchtower: 'Turnul de Veghe – Studiu',
   discurs: 'Discurs Biblic – 30 minute',
   workbook: 'Viața creștină și predicarea',
+  talk5cuv: 'Cuvântare – 5 minute',
   bible: 'Studiu Biblic Personal',
   biblereader: 'Citește Biblia',
   bibleoffline: 'Biblia – Studiu Offline',
@@ -29,7 +30,7 @@ function navigateTo(page) {
 
   const navEl = document.getElementById(`nav-${page}`);
   if (navEl) navEl.classList.add('active');
-  if (page === 'watchtower' || page === 'discurs') {
+  if (page === 'watchtower' || page === 'discurs' || page === 'talk5cuv') {
     document.getElementById('navGroup-watchtower')?.classList.add('open');
   }
 
@@ -52,7 +53,8 @@ function renderPage(page) {
     case 'meetings': renderMeetings(); break;
     case 'watchtower': renderWtParagraphs(); break;
     case 'discurs': renderDiscursPage(); break;
-    case 'workbook': loadTalkDraft(); break;
+    case 'workbook': break;
+    case 'talk5cuv': loadTalkDraft(); break;
     case 'biblereader': initBibleReader(); break;
     case 'bibleoffline': initBibleOffline(); break;
     case 'fieldservice': renderFieldServiceList(); break;
@@ -62,6 +64,40 @@ function renderPage(page) {
 
 function toggleNavGroup(id) {
   document.getElementById(`navGroup-${id}`)?.classList.toggle('open');
+}
+
+// ============================================
+// ECRAN COMPLET NOTIȚE (fundal alb, pe tot ecranul)
+// ============================================
+let fullscreenNoteState = null; // { textarea, placeholder }
+
+function openFullscreenNote(textareaId, title) {
+  const textarea = document.getElementById(textareaId);
+  const overlay = document.getElementById('noteFullscreenOverlay');
+  const slot = document.getElementById('noteFullscreenSlot');
+  if (!textarea || !overlay || !slot) return;
+
+  // marcator ca să știm unde să punem textarea înapoi
+  const placeholder = document.createComment(`fullscreen-placeholder-${textareaId}`);
+  textarea.parentNode.insertBefore(placeholder, textarea);
+  fullscreenNoteState = { textarea, placeholder };
+
+  document.getElementById('noteFullscreenTitle').textContent = title || 'Notițe';
+  slot.appendChild(textarea);
+  overlay.classList.add('active');
+  textarea.focus();
+}
+
+function closeFullscreenNote() {
+  const overlay = document.getElementById('noteFullscreenOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+
+  if (fullscreenNoteState) {
+    const { textarea, placeholder } = fullscreenNoteState;
+    placeholder.parentNode.replaceChild(textarea, placeholder);
+    fullscreenNoteState = null;
+  }
 }
 
 // ============================================
