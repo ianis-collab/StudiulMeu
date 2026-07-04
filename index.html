@@ -632,6 +632,8 @@
     <div class="page-header">
       <h2>🎤 Cuvântare – 5 minute</h2>
       <p class="page-sub">Pregătirea și cronometrul pentru cuvântarea de 5 minute din cadrul Vieții creștine</p>
+      <div style="margin:10px 0"><button id="deleteTalk5" class="btn-danger">🗑 Ștergere</button></div>
+
     </div>
 
     <div class="wt-container">
@@ -1203,61 +1205,6 @@
 <script src="app.js"></script>
 
 <div id="talk5-toolbar" style="position:fixed;top:10px;right:10px;z-index:9999;">
-  <button id="menuBtn">☰</button>
-  <div id="menuPanel" style="display:none;background:#fff;padding:10px;border:1px solid #ccc;border-radius:8px;margin-top:5px;">
-    <button id="saveTalk5">Salvare</button>
-    <button id="deleteTalk5">Ștergere</button>
-    <div id="saveDate" style="margin-top:8px;font-size:12px;color:#666;"></div>
-  </div>
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const menuBtn = document.getElementById("menuBtn");
-    const menuPanel = document.getElementById("menuPanel");
-    const saveBtn = document.getElementById("saveTalk5");
-    const deleteBtn = document.getElementById("deleteTalk5");
-    const saveDate = document.getElementById("saveDate");
-    const textarea = document.querySelector("textarea");
-
-    menuBtn.addEventListener("click", () => {
-        menuPanel.style.display =
-            menuPanel.style.display === "none" ? "block" : "none";
-    });
-
-    const STORAGE_KEY = "cuvantare5min";
-
-    if (textarea) {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) textarea.value = saved;
-
-        const dateSaved = localStorage.getItem(STORAGE_KEY + "_date");
-        if (dateSaved) {
-            saveDate.textContent = "Salvat: " + dateSaved;
-        }
-    }
-
-    saveBtn.addEventListener("click", () => {
-        if (!textarea) return;
-
-        localStorage.setItem(STORAGE_KEY, textarea.value);
-
-        const now = new Date().toLocaleString("ro-RO");
-        localStorage.setItem(STORAGE_KEY + "_date", now);
-
-        saveDate.textContent = "Salvat: " + now;
-    });
-
-    deleteBtn.addEventListener("click", () => {
-        if (!textarea) return;
-
-        textarea.value = "";
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(STORAGE_KEY + "_date");
-        saveDate.textContent = "";
-    });
-});
-</script>
 
 <!-- ECRAN COMPLET NOTIȚE (reutilizat de Cuvântare 5 min și Cuvântare 30 min) -->
 <div id="noteFullscreenOverlay" class="page-fullscreen">
@@ -1303,5 +1250,32 @@ if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.
 }
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteBtn = document.getElementById("deleteTalk5");
+    const textarea = document.querySelector("#page-talk5cuv textarea") || document.querySelector("textarea");
+
+    const STORAGE_KEY = "cuvantare5min";
+
+    if (textarea) {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) textarea.value = saved;
+
+        const dateSaved = localStorage.getItem(STORAGE_KEY + "_date");
+        if (dateSaved) {
+
+        }
+    }
+
+    deleteBtn.addEventListener("click", () => {
+        if (!textarea) return;
+
+        textarea.value = "";
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY + "_date");
+
+    });
+});
+</script>
 </body>
 </html>
