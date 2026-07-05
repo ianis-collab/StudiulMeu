@@ -2426,3 +2426,22 @@ select.form-input option { background: var(--bg-elevated); }
   text-align:right;
   font-weight:600;
 }
+
+
+/* Fullscreen mobile fix */
+.page-fullscreen textarea {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .page-fullscreen {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .page-fullscreen textarea {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+}
