@@ -128,21 +128,6 @@
       <span class="font-scale-value" id="fontScaleValue">14</span>
       <button class="font-scale-btn font-scale-btn-lg" id="fontIncreaseBtn" onclick="changeFontScale(1)" title="Mărește text">A</button>
     </div>
-    <div class="backup-buttons">
-      <button class="backup-btn" onclick="exportData()" title="Export Backup">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Export</span>
-      </button>
-      <button class="backup-btn" onclick="triggerImport()" title="Import Backup">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Import</span>
-      </button>
-    </div>
-    <button class="theme-btn" id="themeToggle" title="Schimbă tema">
-      <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-      <span id="themeLabel">Mod Luminos</span>
-    </button>
   </div>
 </aside>
 
@@ -161,13 +146,8 @@
     </button>
     <h1 class="topbar-title" id="pageTitle">Panou Principal</h1>
     <div class="topbar-actions">
-      <div class="search-box">
-        <svg viewBox="0 0 24 24" width="15" height="15"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" fill="none"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input type="text" placeholder="Caută notițe..." id="globalSearch" />
-      </div>
-      <button class="btn-primary" id="quickAddBtn">
-        <svg viewBox="0 0 24 24" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-        Adaugă
+      <button class="icon-btn" id="settingsBtn" onclick="openSettingsModal()" title="Setări">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
       </button>
     </div>
   </header>
@@ -1072,6 +1052,49 @@
 </div>
 
 <!-- MODAL: Note Editor -->
+<div class="modal-overlay" id="settingsModal" onclick="if(event.target===this) closeSettingsModal()">
+  <div class="modal modal-settings">
+    <div class="modal-header">
+      <h3>⚙️ Setări</h3>
+      <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-row">
+        <span class="settings-label">Versiune aplicație</span>
+        <span class="settings-value">v0.8.0</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Limbă</span>
+        <span class="settings-value">Română</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Mod Afișare</span>
+        <button type="button" class="theme-switch" id="settingsThemeSwitch" onclick="toggleSettingsTheme()" title="Comută tema" aria-label="Comută tema întunecat/luminos">
+          <span class="theme-switch-icon theme-switch-icon-moon">🌙</span>
+          <span class="theme-switch-icon theme-switch-icon-sun">☀️</span>
+          <span class="theme-switch-knob"></span>
+        </button>
+      </div>
+
+      <div class="settings-section-label">Export</div>
+      <button type="button" class="settings-action-btn" onclick="exportData()">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Exportă date (JSON)</span>
+      </button>
+      <button type="button" class="settings-action-btn" onclick="exportTalksWord()">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Exportă Cuvântări (Word)</span>
+      </button>
+
+      <div class="settings-section-label">Import</div>
+      <button type="button" class="settings-action-btn" onclick="triggerImport()">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Importă date (JSON)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="noteModal">
   <div class="modal">
     <div class="modal-header">
@@ -1196,6 +1219,7 @@
 <script src="theme.js"></script>
 <script src="bibleReader.js"></script>
 <script src="dataIO.js"></script>
+<script src="settings.js"></script>
 <script src="discursTimer.js"></script>
 <script src="talkTimer.js"></script>
 <script src="fontScale.js"></script>
