@@ -269,7 +269,7 @@ function renderNotesList(filter) {
   }
 
   const catColors = { watchtower:'#4f8ef7', workbook:'#10c9a0', bible:'#a855f7', general:'#f97b4f', fieldservice:'#ec4899' };
-  const catLabels = { watchtower:'🗼 TV', workbook:'📋 VCP', bible:'📖 Biblie', general:'📝 General', fieldservice:'🚗 Serviciu' };
+  const catLabels = { watchtower:'<svg viewBox="0 0 130 60" width="13" height="6" style="vertical-align:middle;margin-right:3px"><path d="M19,56 L19,43 L11,43 L11,36 L2,36 L2,2 L21,2 L21,12 L32,12 L32,2 L46,2 L46,12 L57,12 L57,2 L72,2 L72,12 L83,12 L83,2 L98,2 L98,12 L109,12 L109,2 L127,2 L127,36 L119,36 L119,43 L111,43 L111,56" stroke="currentColor" stroke-width="10" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>TV', workbook:'📋 VCP', bible:'📖 Biblie', general:'📝 General', fieldservice:'🧑‍🤝‍🧑 Serviciu' };
 
   const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
 

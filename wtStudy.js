@@ -172,7 +172,7 @@ function saveWtStudy() {
   state.wtStudies.push(study);
   markStudyDay();
   saveState();
-  showToast('Studiu Turnul de Veghe salvat! 🗼', 'success');
+  showToast('Studiu Turnul de Veghe salvat!', 'success');
 
   // Add auto-note
   state.notes.push({

@@ -39,16 +39,20 @@ function exportTalksWord() {
 
     let body = `<h1>Cuvântări – StudiuMeu</h1><p class="meta">Exportat la data de ${escHtml(today)}</p>`;
 
-    // --- Cuvântarea de 5 minute ---
-    const talk5 = state.talkDraft || {};
-    body += `<h2>🎤 Cuvântarea de 5 minute</h2>`;
-    if (talk5.subject || talk5.notes) {
-      body += `<p><strong>Subiect:</strong> ${escHtml(talk5.subject || '—')}</p>`;
-      body += `<p><strong>Durată:</strong> ${escHtml(talk5.duration || '5 minute')}</p>`;
-      body += `<p><strong>Notițe:</strong></p>`;
-      body += `<p>${escHtml(talk5.notes || '').replace(/\n/g, '<br>') || '—'}</p>`;
+    // --- Cuvântările de 5 minute ---
+    body += `<h2>🎤 Cuvântările de 5 minute</h2>`;
+    const talks5 = Array.isArray(state.talk5Talks) ? state.talk5Talks : [];
+
+    if (talks5.length === 0) {
+      body += `<p>Nicio cuvântare de 5 minute salvată încă.</p>`;
     } else {
-      body += `<p>Nicio cuvântare de 5 minute completată încă.</p>`;
+      const sorted5 = [...talks5].sort((a, b) => new Date(b.date) - new Date(a.date));
+      sorted5.forEach(talk => {
+        body += `<h3>${escHtml(talk.subject || 'Fără subiect')} — ${escHtml(formatDate(talk.date))} (${escHtml(talk.duration || '5 minute')})</h3>`;
+        body += `<p><strong>Notițe:</strong></p>`;
+        body += `<p>${escHtml(talk.notes || '').replace(/\n/g, '<br>') || '—'}</p>`;
+        body += `<hr>`;
+      });
     }
 
     // --- Cuvântările de 30 minute (Discurs Biblic) ---

@@ -30,8 +30,11 @@ function navigateTo(page) {
 
   const navEl = document.getElementById(`nav-${page}`);
   if (navEl) navEl.classList.add('active');
-  if (page === 'watchtower' || page === 'discurs' || page === 'talk5cuv') {
+  if (page === 'watchtower' || page === 'discurs') {
     document.getElementById('navGroup-watchtower')?.classList.add('open');
+  }
+  if (page === 'workbook' || page === 'talk5cuv') {
+    document.getElementById('navGroup-workbook')?.classList.add('open');
   }
 
   document.getElementById('pageTitle').textContent = pageTitles[page] || page;
@@ -54,7 +57,7 @@ function renderPage(page) {
     case 'watchtower': renderWtParagraphs(); break;
     case 'discurs': renderDiscursPage(); break;
     case 'workbook': break;
-    case 'talk5cuv': loadTalkDraft(); break;
+    case 'talk5cuv': renderTalk5Page(); break;
     case 'biblereader': initBibleReader(); break;
     case 'bibleoffline': initBibleOffline(); break;
     case 'fieldservice': renderFieldServiceList(); break;

@@ -26,7 +26,7 @@ function saveFieldServiceNote() {
   state.notes.push(note);
   markStudyDay();
   saveState();
-  showToast('Notiță serviciu de teren salvată! 🚗', 'success');
+  showToast('Notiță serviciu de teren salvată! 🧑‍🤝‍🧑', 'success');
 
   // Clear inputs
   const titleInput = document.getElementById('fs-title');
@@ -58,7 +58,7 @@ function renderFieldServiceList() {
       <div class="note-card-header">
         <span class="note-card-title">${escHtml(note.title)}</span>
         <span class="badge" style="background:#ec489922;color:#ec4899;flex-shrink:0">
-          🚗 Serviciu
+          🧑‍🤝‍🧑 Serviciu
         </span>
       </div>
       <p class="note-card-body">${escHtml(note.content || 'Fără conținut')}</p>
