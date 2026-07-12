@@ -20,6 +20,7 @@ let state = {
   workbooks: [],
   discursTalks: [],
   meetings: [],
+  temeCursant: [],
   prophecies: [],
   streak: 0,
   lastStudyDate: null,

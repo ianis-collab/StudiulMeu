@@ -76,6 +76,10 @@
       <svg viewBox="0 0 24 24" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2" fill="none"/></svg>
       Panou Principal
     </a>
+    <a href="#" class="nav-item" data-page="temacursant" id="nav-temacursant">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Temă pentru cursant
+    </a>
     <div class="nav-group" id="navGroup-workbook">
       <a href="#" class="nav-item nav-group-toggle" onclick="toggleNavGroup('workbook')">
         <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="2" fill="none"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="2" fill="none"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="16" x2="13" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -317,6 +321,12 @@
             <span>Turnul de Veghe – Studiu</span>
             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           </a>
+          <a class="quick-link-item" href="#" onclick="showToast('În curând vom adăuga această funcție.', 'success')">
+            <span class="ql-icon">📝</span>
+            <span>Temă pentru cursant</span>
+            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </a>
+
           <a class="quick-link-item" href="#" onclick="navigateTo('workbook')">
             <span class="ql-icon">📋</span>
             <span>Viața creștină și predicarea</span>
@@ -505,7 +515,70 @@
     </div>
   </section>
 
-  <!-- PAGE: WORKBOOK -->
+  <!-- PAGE: TEMĂ PENTRU CURSANT -->
+  <section class="page" id="page-temacursant">
+    <div class="page-header">
+      <h2>📝 Temă pentru cursant</h2>
+      <p class="page-sub">Notează-ți datele pentru tema de la întrunirea „Viața creștină și predicarea", salvează-le și generează fișa de printat.</p>
+    </div>
+
+    <div class="wt-container">
+      <div class="card">
+        <div class="card-header"><h3>✏️ Temă nouă</h3></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nume</label>
+            <input type="text" id="tc-nume" class="form-input" placeholder="Numele tău" />
+          </div>
+          <div class="form-group">
+            <label>Partener</label>
+            <input type="text" id="tc-partener" class="form-input" placeholder="Nume partener (opțional)" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="tc-data" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label>Tema nr.</label>
+            <input type="text" id="tc-temanr" class="form-input" placeholder="ex: 1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Se va ține în</label>
+          <select id="tc-sala" class="form-input">
+            <option value="principala">Sala principală</option>
+            <option value="secundara1">Prima sală secundară</option>
+            <option value="secundara2">A doua sală secundară</option>
+          </select>
+        </div>
+        <div class="action-row">
+          <button class="btn-ghost" id="tcDeleteBtn" onclick="deleteTemaCursant()" style="display:none;color:var(--red)">🗑 Șterge</button>
+          <button class="btn-ghost" onclick="resetTemaCursantForm()">↩ Temă nouă</button>
+          <button class="btn-primary" onclick="saveTemaCursant()">💾 Salvează Tema</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 id="tcCalendarTitle">📅 Calendar</h3>
+          <div style="display:flex;gap:6px">
+            <button class="btn-ghost btn-sm" onclick="shiftTemaCursantCalendar(-1)">◀</button>
+            <button class="btn-ghost btn-sm" onclick="shiftTemaCursantCalendar(0)">Azi</button>
+            <button class="btn-ghost btn-sm" onclick="shiftTemaCursantCalendar(1)">▶</button>
+          </div>
+        </div>
+        <div id="tcCalendarGrid" class="tc-calendar-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>📋 Teme salvate</h3></div>
+        <div id="tcList" class="notes-grid"></div>
+      </div>
+    </div>
+  </section>
+
   <section class="page" id="page-workbook">
     <div class="page-header">
       <h2>📋 Viața creștină și predicarea</h2>
@@ -1430,6 +1503,7 @@
 <script src="dashboard.js"></script>
 <script src="wtStudy.js"></script>
 <script src="workbook.js"></script>
+<script src="temacursant.js"></script>
 <script src="verses.js"></script>
 <script src="prophecies.js"></script>
 <script src="fieldService.js"></script>

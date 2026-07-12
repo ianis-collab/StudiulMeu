@@ -5,6 +5,7 @@
 // ============================================
 const pageTitles = {
   dashboard: 'Panou Principal',
+  temacursant: 'Temă pentru cursant',
   watchtower: 'Turnul de Veghe – Studiu',
   discurs: 'Discurs Biblic – 30 minute',
   workbook: 'Viața creștină și predicarea',
@@ -52,6 +53,7 @@ function navigateTo(page) {
 function renderPage(page) {
   switch(page) {
     case 'dashboard': renderDashboard(); break;
+    case 'temacursant': renderTemaCursantPage(); break;
     case 'notes': renderNotesList(); break;
     case 'bible': renderVersesList('all'); renderProphecies(); break;
     case 'library': renderLibraryPage(); break;

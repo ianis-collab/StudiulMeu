@@ -1201,6 +1201,53 @@ select.form-input option { background: var(--bg-elevated); }
 .meeting-cal-progress { font-size: 0.8rem; color: var(--accent); font-weight: 600; }
 
 /* ============================================
+   TEMĂ PENTRU CURSANT - CALENDAR
+   ============================================ */
+.tc-calendar-grid { display: flex; flex-direction: column; gap: 6px; }
+.tc-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 2px;
+}
+.tc-cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.tc-cal-day {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.tc-cal-day:hover { background: var(--bg-hover); }
+.tc-cal-day.empty { background: transparent; cursor: default; }
+.tc-cal-day.today { border: 1px solid var(--accent); font-weight: 700; color: var(--accent); }
+.tc-cal-day.has-entry { background: var(--accent-glow); }
+.tc-cal-dot {
+  position: absolute;
+  bottom: 5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+@media (max-width: 480px) {
+  .tc-cal-day { font-size: 0.75rem; }
+}
+
+/* ============================================
    EMPTY STATE
    ============================================ */
 .empty-state {
