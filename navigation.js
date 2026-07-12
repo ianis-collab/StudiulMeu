@@ -10,6 +10,7 @@ const pageTitles = {
   workbook: 'Viața creștină și predicarea',
   talk5cuv: 'Cuvântare – 5 minute',
   bible: 'Studiu Biblic Personal',
+  library: 'Bibliotecă',
   biblereader: 'Citește Biblia',
   bibleoffline: 'Biblia – Studiu Offline',
   fieldservice: 'Întrunirea de Serviciu de Teren',
@@ -53,6 +54,7 @@ function renderPage(page) {
     case 'dashboard': renderDashboard(); break;
     case 'notes': renderNotesList(); break;
     case 'bible': renderVersesList('all'); renderProphecies(); break;
+    case 'library': renderLibraryPage(); break;
     case 'meetings': renderMeetings(); break;
     case 'watchtower': renderWtParagraphs(); break;
     case 'discurs': renderDiscursPage(); break;

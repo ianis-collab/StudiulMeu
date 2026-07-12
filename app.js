@@ -201,6 +201,9 @@ function importData(file) {
         lastStudyDate:importedState.lastStudyDate || null,
         bibleNotes:   importedState.bibleNotes && typeof importedState.bibleNotes === 'object'
           ? importedState.bibleNotes : {},
+        publications: Array.isArray(importedState.publications) ? importedState.publications : [],
+        videoMeta:    importedState.videoMeta && typeof importedState.videoMeta === 'object'
+          ? importedState.videoMeta : {},
       };
       saveState();
 

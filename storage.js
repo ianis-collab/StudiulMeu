@@ -23,6 +23,8 @@ let state = {
   prophecies: [],
   streak: 0,
   lastStudyDate: null,
+  publications: [],
+  videoMeta: {},
 };
 
 /**
