@@ -204,6 +204,8 @@ function importData(file) {
         publications: Array.isArray(importedState.publications) ? importedState.publications : [],
         videoMeta:    importedState.videoMeta && typeof importedState.videoMeta === 'object'
           ? importedState.videoMeta : {},
+        songs:        Array.isArray(importedState.songs) ? importedState.songs : [],
+        lastPlayedSongId: importedState.lastPlayedSongId || null,
       };
       saveState();
 

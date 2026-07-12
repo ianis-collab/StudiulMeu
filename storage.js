@@ -25,6 +25,8 @@ let state = {
   lastStudyDate: null,
   publications: [],
   videoMeta: {},
+  songs: [],
+  lastPlayedSongId: null,
 };
 
 /**

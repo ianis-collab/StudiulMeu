@@ -2552,8 +2552,8 @@ select.form-input option { background: var(--bg-elevated); }
    ============================================ */
 .lib-big-tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   margin-bottom: 20px;
 }
 .lib-big-tab {
@@ -2950,3 +2950,58 @@ select.form-input option { background: var(--bg-elevated); }
 }
 .vplayer-exit-btn svg { width: 16px; height: 16px; }
 .vplayer-exit-btn:hover { color: var(--red); border-color: var(--red); }
+
+/* ============================================
+   MUZICĂ (Bibliotecă)
+   ============================================ */
+@media (max-width: 560px) {
+  .lib-big-tabs { gap: 6px; }
+  .lib-big-tab { padding: 14px 6px; }
+  .lib-big-icon { width: 40px; height: 40px; }
+  .lib-big-icon svg { width: 20px; height: 20px; }
+  .lib-big-label { font-size: 0.66rem; letter-spacing: 0.04em; }
+}
+
+.continue-listen-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.continue-listen-card.hidden { display: none; }
+.continue-listen-icon { font-size: 1.6rem; flex-shrink: 0; }
+.continue-listen-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.continue-listen-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.continue-listen-title {
+  font-size: 0.92rem; font-weight: 700; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.continue-listen-time { font-size: 0.75rem; color: var(--text-secondary); }
+.continue-listen-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+.continue-listen-btn svg { width: 18px; height: 18px; }
+.continue-listen-btn:hover { transform: scale(1.1); }
+
+/* Song list uses .video-slot as a base; small tweaks below */
+.song-slot .vslot-num { font-size: 1.1rem; }
+.song-slot.playing { background: var(--accent-glow); }
+.song-slot.playing .vslot-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.aplayer-art {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.6rem;
+  padding: 24px 0 8px;
+  background: var(--bg-base);
+}
+.aplayer-el { width: 100%; display: block; padding: 8px 16px 16px; box-sizing: border-box; background: var(--bg-base); }
