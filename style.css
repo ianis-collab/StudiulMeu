@@ -3143,3 +3143,119 @@ select.form-input option { background: var(--bg-elevated); }
   background: var(--bg-base);
 }
 .aplayer-el { width: 100%; display: block; padding: 8px 16px 16px; box-sizing: border-box; background: var(--bg-base); }
+
+/* ============================================
+   PROGRAM ÎNTRUNIRE DE IEȘIRE PE TEREN
+   ============================================ */
+.fs-sched-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  padding: 4px;
+}
+
+.fs-sched-table {
+  border: 2px solid var(--text-primary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.fs-sched-header {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+}
+
+.fs-sched-header-label,
+.fs-sched-header-day {
+  padding: 8px 10px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  color: #1a1a1a;
+  border-bottom: 2px solid var(--text-primary);
+}
+
+.fs-sched-header-label {
+  background: #ffffff;
+  border-right: 2px solid var(--text-primary);
+}
+
+.fs-sched-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.fs-sched-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 28px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.fs-sched-row:last-child { border-bottom: none; }
+
+.fs-sched-cell {
+  border: none;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  padding: 7px 8px;
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.fs-sched-cell-data {
+  background: #a9d18e;
+  color: #1a1a1a;
+  font-weight: 600;
+  text-align: center;
+  border-right: 1px solid var(--border-strong);
+}
+
+.fs-sched-cell-nume {
+  background: #ffffff;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+.fs-sched-cell:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  z-index: 1;
+  position: relative;
+}
+
+.fs-sched-del {
+  border: none;
+  background: transparent;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.85rem;
+  opacity: 0.55;
+  transition: opacity var(--transition);
+}
+
+.fs-sched-del:hover { opacity: 1; }
+
+.fs-sched-add {
+  border: none;
+  border-top: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  padding: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.fs-sched-add:hover {
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .fs-sched-grid { grid-template-columns: 1fr; }
+}

@@ -1225,6 +1225,14 @@
           </div>
         </div>
       </div>
+
+      <!-- PROGRAM ÎNTRUNIRE DE IEȘIRE PE TEREN -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Program pentru Întrunirea de Ieșire pe Teren</h3>
+        </div>
+        <div id="fsScheduleGrid" class="fs-sched-grid"></div>
+      </div>
     </div>
   </section>
 
@@ -1363,6 +1371,20 @@
           <span class="theme-icon-sun">☀️</span>
         </button>
       </div>
+
+      <div class="settings-section-label">🔔 Notificări Program Teren</div>
+      <div class="settings-row">
+        <span class="settings-label">Stare</span>
+        <span class="settings-value" id="notifStatusLabel">Dezactivate</span>
+      </div>
+      <button type="button" class="settings-action-btn" id="notifToggleBtn" onclick="toggleNotifSettings()">
+        Activează
+      </button>
+      <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:6px;line-height:1.4;">
+        Te anunță cu o zi înainte și în ziua respectivă cine e programat (Marți/Vineri/Sâmbătă).
+        Funcționează și cu aplicația închisă pe Chrome/Edge (Android sau Desktop, instalată ca aplicație);
+        pe iPhone (Safari) verificarea se face automat când deschizi aplicația.
+      </p>
 
       <div class="settings-section-label">Export</div>
       <button type="button" class="settings-action-btn" onclick="exportData()">
@@ -1586,6 +1608,7 @@
 <script src="fontScale.js"></script>
 <script src="wordCounter.js"></script>
 <script src="transfer.js"></script>
+<script src="notifications.js"></script>
 
 <!-- Inițializare generală (trebuie încărcat ultimul) -->
 <script src="app.js"></script>

@@ -27,6 +27,7 @@ function init() {
   updateGreeting();
   loadYearText();
   renderDashboard();
+  if (typeof initNotifChecks === 'function') initNotifChecks();
 
   // Textul anului – click pentru editare
   document.getElementById('yearTextBox')?.addEventListener('click', toggleYearTextEdit);
