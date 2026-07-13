@@ -26,12 +26,22 @@ function formatWordCounterText(wordCount) {
   return minutes ? `Cuvinte: ${wordCount} · ~${minutes} min` : `Cuvinte: ${wordCount}`;
 }
 
+// Mărește automat înălțimea unui textarea în funcție de câte cuvinte/rânduri
+// conține, ca textul scris să rămână mereu vizibil, fără scroll intern.
+// Nu micșorează niciodată sub min-height-ul definit în CSS.
+function autoGrowTextarea(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
 function updateWordCounters() {
   const talkNotes = document.getElementById('talk-notes');
   const talkCounter = document.getElementById('talkWordCounter');
 
   if (talkNotes && talkCounter) {
     talkCounter.textContent = formatWordCounterText(countOnlyWords(talkNotes.value));
+    autoGrowTextarea(talkNotes);
   }
 
   const discursNotes = document.getElementById('discursNote');
@@ -39,6 +49,7 @@ function updateWordCounters() {
 
   if (discursNotes && discursCounter) {
     discursCounter.textContent = formatWordCounterText(countOnlyWords(discursNotes.value));
+    autoGrowTextarea(discursNotes);
   }
 }
 

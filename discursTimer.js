@@ -286,10 +286,14 @@ function renderDiscursTalksList() {
           <span class="note-card-title">📢 ${escHtml(talk.titlu)}</span>
           <span class="badge" style="background:#f97b4f22;color:#f97b4f;flex-shrink:0">${minutes} min</span>
         </div>
+        ${talk.receivedFrom ? `<span class="badge" style="background:var(--accent-glow);color:var(--accent);margin-bottom:6px;display:inline-block">📥 Primit de la ${escHtml(talk.receivedFrom)}</span>` : ''}
         <p class="note-card-body">${escHtml(talk.note || 'Fără conținut')}</p>
         <div class="note-card-footer">
           <span class="note-card-date">${formatDate(talk.data)}</span>
-          <button class="btn-ghost btn-sm" style="color:var(--red)" onclick="deleteDiscursTalk('${talk.id}', event)">Șterge</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-ghost btn-sm" style="color:var(--accent)" onclick="event.stopPropagation();openSendModal('discurs30','${talk.id}')">📤 Trimite</button>
+            <button class="btn-ghost btn-sm" style="color:var(--red)" onclick="event.stopPropagation();deleteDiscursTalk('${talk.id}', event)">Șterge</button>
+          </div>
         </div>
       </div>
     `;

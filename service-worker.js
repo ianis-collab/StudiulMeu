@@ -1,7 +1,7 @@
 // StudiuMeu — Service Worker
 // Cache-first pentru fisierele aplicatiei = functionare completa offline.
 
-const CACHE_VERSION = 'studiumeu-v3';
+const CACHE_VERSION = 'studiumeu-v4';
 const CACHE_NAME = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -25,6 +25,7 @@ const APP_SHELL = [
   './storage.js',
   './talkTimer.js',
   './theme.js',
+  './transfer.js',
   './utils.js',
   './verses.js',
   './wordCounter.js',

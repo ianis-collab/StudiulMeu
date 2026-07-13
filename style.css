@@ -492,42 +492,126 @@ body {
 }
 .settings-action-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg-hover); }
 
-/* Switch modern de temă: cerc alb care glisează stânga ↔ dreapta */
-.theme-switch {
-  position: relative;
-  display: inline-flex;
+/* ============================================
+   TRIMITE CUVÂNTĂRI (peer-to-peer)
+   ============================================ */
+.t-status-row {
+  display: flex;
   align-items: center;
-  width: 56px;
-  height: 30px;
-  padding: 0 6px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 4px 0 10px;
+}
+.t-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+.t-status-dot.t-online { background: var(--green); }
+
+.t-id-copy {
+  background: var(--accent-glow);
+  color: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: var(--font-main);
+}
+.t-id-copy:hover { background: var(--accent); color: #fff; }
+
+.t-contacts-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.t-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  padding: 6px 10px;
   background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.t-contact-row span:first-child { flex: 1; color: var(--text-primary); }
+
+.t-contact-id {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  background: var(--bg-hover);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.t-contacts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.t-contact-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.t-contact-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Comutator de temă (portat din aplicația "index"): buton cu 🌙 / ☀️
+   și un cerc alb care glisează pe o pistă */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background var(--transition), border-color var(--transition);
 }
-.theme-switch-icon {
-  font-size: 0.75rem;
-  line-height: 1;
-  z-index: 1;
-  pointer-events: none;
+.theme-toggle-btn .toggle-track {
+  width: 48px;
+  height: 26px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: 13px;
+  position: relative;
+  transition: background var(--transition);
 }
-.theme-switch-knob {
+[data-theme="light"] .theme-toggle-btn .toggle-track {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  border-color: transparent;
+}
+.theme-toggle-btn .toggle-thumb {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: transform var(--transition);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-/* Întunecat = cercul la stânga (spre 🌙); Luminos = cercul la dreapta (spre ☀️) */
-[data-theme="dark"] .theme-switch-knob { transform: translateX(0); }
-[data-theme="light"] .theme-switch-knob { transform: translateX(26px); }
-[data-theme="light"] .theme-switch { background: var(--accent-glow); border-color: var(--accent); }
+[data-theme="light"] .theme-toggle-btn .toggle-thumb { transform: translateX(22px); }
+.theme-toggle-btn .theme-icon-moon,
+.theme-toggle-btn .theme-icon-sun { font-size: 1rem; }
 
 .search-box {
   display: flex;
@@ -917,6 +1001,12 @@ body {
   line-height: 1.6;
 }
 .form-textarea.small { min-height: 70px; }
+
+/* Cuvântarea de 5 minute: se mărește automat pe măsură ce scrii */
+#talk-notes {
+  resize: none;
+  overflow-y: hidden;
+}
 
 select.form-input option { background: var(--bg-elevated); }
 
@@ -2362,12 +2452,13 @@ select.form-input option { background: var(--bg-elevated); }
   50% { background: rgba(248,81,73,0.22); }
 }
 
-/* Textarea for discurs - larger */
+/* Textarea for discurs - larger; se mărește automat pe măsură ce scrii */
 .discurs-textarea {
   min-height: 500px;
   font-size: 0.92rem;
   line-height: 1.7;
-  resize: vertical;
+  resize: none;
+  overflow-y: hidden;
 }
 
 .discurs-textarea:disabled {

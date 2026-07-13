@@ -4,8 +4,8 @@
 // SETĂRI – deschidere / închidere modal
 // ============================================
 function openSettingsModal() {
-  syncSettingsThemeSwitch();
   document.getElementById('settingsModal')?.classList.add('open');
+  if (typeof renderTransferSettings === 'function') renderTransferSettings();
 }
 
 function closeSettingsModal() {
@@ -14,18 +14,12 @@ function closeSettingsModal() {
 
 // ============================================
 // SWITCH TEMĂ (în panoul de Setări)
-// Folosește toggleTheme() deja existentă în theme.js,
-// doar sincronizează poziția cercului alb.
+// Folosește toggleTheme() deja existentă în theme.js.
+// Poziția cercului alb pe pistă e controlată automat de CSS
+// pe baza atributului data-theme (portat din aplicația "index").
 // ============================================
 function toggleSettingsTheme() {
   toggleTheme();
-  syncSettingsThemeSwitch();
-}
-
-function syncSettingsThemeSwitch() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const sw = document.getElementById('settingsThemeSwitch');
-  if (sw) sw.setAttribute('aria-pressed', String(!isDark));
 }
 
 // ============================================

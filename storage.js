@@ -28,6 +28,8 @@ let state = {
   videoMeta: {},
   songs: [],
   lastPlayedSongId: null,
+  myUser: null,      // { id, name } — identitatea folosită la trimiterea cuvântărilor
+  contacts: [],       // [{ id, name }] — persoane cu care s-au trimis/primit cuvântări
 };
 
 /**

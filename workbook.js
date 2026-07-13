@@ -178,10 +178,14 @@ function renderTalk5TalksList() {
         <span class="note-card-title">🎤 ${escHtml(talk.subject)}</span>
         <span class="badge" style="background:#f97b4f22;color:#f97b4f;flex-shrink:0">${escHtml(talk.duration || '5 minute')}</span>
       </div>
+      ${talk.receivedFrom ? `<span class="badge" style="background:var(--accent-glow);color:var(--accent);margin-bottom:6px;display:inline-block">📥 Primit de la ${escHtml(talk.receivedFrom)}</span>` : ''}
       <p class="note-card-body">${escHtml(talk.notes || 'Fără conținut')}</p>
       <div class="note-card-footer">
         <span class="note-card-date">${formatDate(talk.date)}</span>
-        <button class="btn-ghost btn-sm" style="color:var(--red)" onclick="deleteTalk5Talk('${talk.id}', event)">Șterge</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-ghost btn-sm" style="color:var(--accent)" onclick="event.stopPropagation();openSendModal('talk5','${talk.id}')">📤 Trimite</button>
+          <button class="btn-ghost btn-sm" style="color:var(--red)" onclick="event.stopPropagation();deleteTalk5Talk('${talk.id}', event)">Șterge</button>
+        </div>
       </div>
     </div>
   `).join('');

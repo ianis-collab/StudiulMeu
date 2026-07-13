@@ -145,23 +145,9 @@
       <span class="font-scale-value" id="fontScaleValue">14</span>
       <button class="font-scale-btn font-scale-btn-lg" id="fontIncreaseBtn" onclick="changeFontScale(1)" title="Mărește text">A</button>
     </div>
-    <div class="backup-buttons">
-      <button class="backup-btn" onclick="exportData()" title="Export Backup">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Export</span>
-      </button>
-      <button class="backup-btn" onclick="triggerImport()" title="Import Backup">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>Import</span>
-      </button>
-    </div>
-    <button class="theme-btn" id="themeToggle" title="Schimbă tema">
-      <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-      <span id="themeLabel">Mod Luminos</span>
-    </button>
   </div>
 </aside>
+
 
 <!-- BUTON EXTINDERE SIDEBAR (vizibil doar când sidebar e restrâns) -->
 <button class="sidebar-expand-btn" id="sidebarExpandBtn" title="Deschide meniu">
@@ -321,7 +307,7 @@
             <span>Turnul de Veghe – Studiu</span>
             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           </a>
-          <a class="quick-link-item" href="#" onclick="showToast('În curând vom adăuga această funcție.', 'success')">
+          <a class="quick-link-item" href="#" onclick="navigateTo('temacursant')">
             <span class="ql-icon">📝</span>
             <span>Temă pentru cursant</span>
             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
@@ -528,7 +514,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Nume</label>
-            <input type="text" id="tc-nume" class="form-input" placeholder="Numele tău" />
+            <input type="text" id="tc-nume" class="form-input" placeholder="Drăgan Ion" />
           </div>
           <div class="form-group">
             <label>Partener</label>
@@ -557,6 +543,13 @@
           <button class="btn-ghost" id="tcDeleteBtn" onclick="deleteTemaCursant()" style="display:none;color:var(--red)">🗑 Șterge</button>
           <button class="btn-ghost" onclick="resetTemaCursantForm()">↩ Temă nouă</button>
           <button class="btn-primary" onclick="saveTemaCursant()">💾 Salvează Tema</button>
+        </div>
+
+        <div class="tc-note-box" style="margin-top:16px;padding:12px 14px;border-radius:10px;background:var(--bg-secondary,rgba(127,127,127,0.08));font-size:0.82rem;line-height:1.5;color:var(--text-secondary,#666)">
+          <strong>Notă pentru cursant:</strong> Materialul și lecția pentru tema repartizată
+          sunt indicate în Caietul pentru întrunirea „Viața creștină și predicarea”.
+          Când îți pregătești tema, te rugăm să ții cont de Instrucțiunile
+          pentru întrunirea „Viața creștină și predicarea” (S-38).
         </div>
       </div>
 
@@ -1362,10 +1355,12 @@
       </div>
       <div class="settings-row">
         <span class="settings-label">Mod Afișare</span>
-        <button type="button" class="theme-switch" id="settingsThemeSwitch" onclick="toggleSettingsTheme()" title="Comută tema" aria-label="Comută tema întunecat/luminos">
-          <span class="theme-switch-icon theme-switch-icon-moon">🌙</span>
-          <span class="theme-switch-icon theme-switch-icon-sun">☀️</span>
-          <span class="theme-switch-knob"></span>
+        <button type="button" class="theme-toggle-btn" id="settingsThemeSwitch" onclick="toggleSettingsTheme()" title="Comută tema" aria-label="Comută tema întunecat/luminos">
+          <span class="theme-icon-moon">🌙</span>
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+          <span class="theme-icon-sun">☀️</span>
         </button>
       </div>
 
@@ -1384,6 +1379,74 @@
         <svg viewBox="0 0 24 24" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 8 12 3 7 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span>Importă date (JSON)</span>
       </button>
+
+      <div class="settings-section-label">Trimite Cuvântări</div>
+      <div class="t-status-row">
+        <span class="t-status-dot" id="tStatusDot"></span>
+        <span id="tStatusLabel">Neconectat</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Numele meu</span>
+        <span class="settings-value" id="tMyName">—</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">ID-ul meu</span>
+        <button type="button" class="settings-value t-id-copy" id="tMyId" onclick="copyMyId()" title="Copiază ID-ul">—</button>
+      </div>
+      <button type="button" class="settings-action-btn" onclick="openIdentityModal()">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 20h9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+        <span id="tIdentityBtnLabel">Editează numele</span>
+      </button>
+      <div class="t-contacts-settings" id="tContactsSettingsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Identitate (nume + ID pentru trimitere directă) -->
+<div class="modal-overlay" id="identityModal" onclick="if(event.target===this) closeIdentityModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>👤 Identitatea ta</h3>
+      <button class="modal-close" onclick="closeIdentityModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="page-sub" style="margin-top:0">Numele tău va fi văzut de persoana căreia îi trimiți o cuvântare. ID-ul e generat automat și e unic pentru tine.</p>
+      <div class="form-group">
+        <label>Numele tău</label>
+        <input type="text" id="tIdentityName" class="form-input" placeholder="ex: Ion Popescu" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeIdentityModal()">Anulează</button>
+      <button class="btn-primary" onclick="saveMyIdentity()">💾 Salvează</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Trimite cuvântare/discurs direct către alt utilizator -->
+<div class="modal-overlay" id="sendTransferModal" onclick="if(event.target===this) closeSendModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>📤 Trimite</h3>
+      <button class="modal-close" onclick="closeSendModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Contacte recente</label>
+        <div class="t-contacts-list" id="tContactsList"></div>
+      </div>
+      <div class="form-group">
+        <label>Sau introdu direct ID-ul destinatarului</label>
+        <div class="form-row">
+          <input type="text" id="tRecipientId" class="form-input" placeholder="ex: A1B2C3" style="text-transform:uppercase" />
+          <input type="text" id="tRecipientName" class="form-input" placeholder="Numele lui (opțional)" />
+        </div>
+      </div>
+      <p class="page-sub" style="margin-bottom:0">Persoana trebuie să aibă aplicația deschisă chiar acum, ca să primească direct.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeSendModal()">Anulează</button>
+      <button class="btn-primary" onclick="sendFromForm()">📤 Trimite</button>
     </div>
   </div>
 </div>
@@ -1498,6 +1561,9 @@
 <script src="storage.js"></script>
 <script src="utils.js"></script>
 
+<!-- Bibliotecă externă pentru trimitere directă cuvântări (peer-to-peer) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
+
 <!-- Module funcționale (fiecare fișier = o secțiune a aplicației) -->
 <script src="navigation.js"></script>
 <script src="dashboard.js"></script>
@@ -1519,6 +1585,7 @@
 <script src="talkTimer.js"></script>
 <script src="fontScale.js"></script>
 <script src="wordCounter.js"></script>
+<script src="transfer.js"></script>
 
 <!-- Inițializare generală (trebuie încărcat ultimul) -->
 <script src="app.js"></script>

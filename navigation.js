@@ -104,6 +104,7 @@ function closeFullscreenNote() {
     const { textarea, placeholder } = fullscreenNoteState;
     placeholder.parentNode.replaceChild(textarea, placeholder);
     fullscreenNoteState = null;
+    if (typeof autoGrowTextarea === 'function') autoGrowTextarea(textarea);
   }
 }
 

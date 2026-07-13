@@ -93,7 +93,7 @@ function init() {
 
   // Escape – închide modale
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeNoteModal(); closeParagraphModal(); }
+    if (e.key === 'Escape') { closeNoteModal(); closeParagraphModal(); closeIdentityModal(); closeSendModal(); }
   });
 
   // Actualizare salut la fiecare minut
@@ -102,6 +102,9 @@ function init() {
   // Scalare font
   initFontScale();
   initNoteFontSizes();
+
+  // Trimitere directă cuvântări (dacă utilizatorul are deja o identitate salvată)
+  initPeerTransfer();
 
   console.log('%c📖 StudiuMeu – Pregătire Întruniri', 'color:#4f8ef7;font-size:16px;font-weight:bold');
   console.log('%cAplicație personală pentru Martorii lui Iehova', 'color:#8b949e;font-size:12px');
