@@ -1230,6 +1230,7 @@
       <div class="card">
         <div class="card-header">
           <h3>Program pentru Întrunirea de Ieșire pe Teren</h3>
+          <button type="button" class="btn-outline btn-sm" onclick="exportFieldServiceICS()" style="font-size:0.75rem;padding:5px 10px">📅 Exportă în Calendar</button>
         </div>
         <div id="fsScheduleGrid" class="fs-sched-grid"></div>
       </div>
@@ -1390,6 +1391,8 @@
 
         <p><strong>🔔 Notificări program teren.</strong> Pe Chrome/Edge (Android sau calculator, instalată ca aplicație) funcționează și cu aplicația închisă. Pe iPhone (Safari) verificarea se face automat de fiecare dată când deschizi aplicația.</p>
 
+        <p><strong>📅 Exportă în Calendar.</strong> Din pagina Serviciu de Teren poți exporta programul într-un fișier .ics, pe care îl imporți în Google Calendar / Calendar iPhone. Așa primești notificările direct de la telefon (cu o zi înainte și cu 30 minute înainte), garantat, indiferent dacă StudiuMeu e deschis sau nu.</p>
+
         <p style="margin-bottom:8px"><strong>❓ Întrebări frecvente</strong></p>
         <details class="faq-item">
           <summary>De ce nu se trimite cuvântarea?</summary>
@@ -1397,7 +1400,7 @@
         </details>
         <details class="faq-item">
           <summary>De ce nu îmi vin notificările pe iPhone?</summary>
-          <p>Safari pe iPhone nu permite notificări în fundal pentru aplicații web. Vei primi/vedea alertele automat de fiecare dată când deschizi aplicația, dar nu și cât timp e închisă.</p>
+          <p>Safari pe iPhone nu permite notificări în fundal pentru aplicații web. Vei primi/vedea alertele automat de fiecare dată când deschizi aplicația, dar nu și cât timp e închisă. Pentru notificări sigure pe iPhone, folosește exportul de Calendar (.ics) din pagina Serviciu de Teren.</p>
         </details>
         <details class="faq-item">
           <summary>Unde sunt salvate, de fapt, datele mele?</summary>
@@ -1699,6 +1702,7 @@
 <script src="wordCounter.js"></script>
 <script src="transfer.js"></script>
 <script src="notifications.js"></script>
+<script src="icsExport.js"></script>
 
 <!-- Inițializare generală (trebuie încărcat ultimul) -->
 <script src="app.js"></script>
