@@ -13,21 +13,21 @@
 window.FIELD_SERVICE_SEED = {
   // Fiecare linie: ['dată', 'NUME PRENUME']
   marti: [
-    ['28 aprilie', 'POPESCU VALI'], ['5 mai', 'KHILBURG DANIEL'], ['12 mai', 'DRAGAN ION'],
-    ['19 mai', 'PETREA IONEL'], ['26 mai', 'MIHOC PETRE'], ['2 iunie', 'LAZAR VIOREL'],
-    ['9 iunie', 'POINESCU ILIE'], ['16 iunie', 'TRICA LAZAR'], ['23 iunie', 'POPESCU VALI'],
-    ['30 iunie', 'DRAGAN ION'], ['7 iulie', 'OROS SORIN'], ['14 iulie', 'POPESCU VALI'],
+    ['28 aprilie', 'NUME'], ['5 mai', 'NUME'], ['12 mai', 'NUME'],
+    ['19 mai', 'NUME'], ['26 mai', 'NUME'], ['2 iunie', 'NUME'],
+    ['9 iunie', 'NUME'], ['16 iunie', 'NUME'], ['23 iunie', 'NUME'],
+    ['30 iunie', 'NUME'], ['7 iulie', 'NUME'], ['14 iulie', 'NUME'],
   ],
   vineri: [
-    ['1 mai', 'RIJNITA REMUS'], ['8 mai', 'LAZAR VIOREL'], ['15 mai', 'POINESCU ILIE'],
-    ['22 mai', 'TRICA LAZAR'], ['29 mai', 'KHILBURG DANIEL'], ['5 iunie', 'DRAGAN ION'],
-    ['12 iunie', 'OROS SORIN'], ['19 iunie', 'CONGRES INTERNATIONAL'], ['26 iunie', 'PETREA IONEL'],
-    ['3 iulie', 'POINESCU ILIE'], ['10 iulie', 'LAZAR FLAVIUS'], ['17 iulie', 'LAZAR COSMIN'],
+    ['1 mai', 'NUME'], ['8 mai', 'NUME'], ['15 mai', 'NUME'],
+    ['22 mai', 'NUME'], ['29 mai', 'NUME'], ['5 iunie', 'NUME'],
+    ['12 iunie', 'NUME'], ['19 iunie', 'CONGRES INTERNATIONAL'], ['26 iunie', 'NUME'],
+    ['3 iulie', 'NUME'], ['10 iulie', 'NUME'], ['17 iulie', 'NUME'],
   ],
   sambata: [
-    ['2 mai', 'GHEORGHE ILIE'], ['9 mai', 'VILSAN MIRCEA'], ['16 mai', 'MOTRE MIHAI'],
-    ['23 mai', 'LAZAR FLAVIUS'], ['30 mai', 'LAZAR COSMIN'], ['6 iunie', 'RIJNITA REMUS'],
-    ['13 iunie', 'VILSAN MIRCEA'], ['20 iunie', 'CONGRES INTERNATIONAL'], ['27 iunie', 'MIHOC PETRE'],
-    ['4 iulie', 'TRICA LAZAR'], ['11 iulie', 'RIJNITA REMUS'], ['18 iulie', 'MOTRE MIHAI'],
+    ['2 mai', 'NUME'], ['9 mai', 'NUME'], ['16 mai', 'NUME'],
+    ['23 mai', 'NUME'], ['30 mai', 'NUME'], ['6 iunie', 'NUME'],
+    ['13 iunie', 'NUME'], ['20 iunie', 'CONGRES INTERNATIONAL'], ['27 iunie', 'NUME'],
+    ['4 iulie', 'NUME'], ['11 iulie', 'NUME'], ['18 iulie', 'NUME'],
   ],
 };
