@@ -3,6 +3,43 @@
 // ============================================
 // EXPORT / IMPORT BACKUP
 // ============================================
+const LAST_EXPORT_KEY = 'studiuMeu_lastExportAt';
+const BACKUP_REMINDER_KEY = 'studiuMeu_backupReminderShownDate';
+const BACKUP_REMINDER_DAYS = 14; // după câte zile fără export considerăm backup-ul "vechi"
+
+function isBackupStale() {
+  const last = localStorage.getItem(LAST_EXPORT_KEY);
+  if (!last) return true;
+  const days = (Date.now() - new Date(last).getTime()) / 86400000;
+  return days >= BACKUP_REMINDER_DAYS;
+}
+
+/** Actualizează rândul "Ultimul backup" din Setări, dacă e vizibil. */
+function updateBackupStatusUI() {
+  const el = document.getElementById('lastExportLabel');
+  if (!el) return;
+  el.textContent = formatRelativeTime(localStorage.getItem(LAST_EXPORT_KEY));
+  el.classList.toggle('stale-value', isBackupStale());
+}
+
+/**
+ * La pornirea aplicației, dacă nu s-a mai făcut export de peste
+ * BACKUP_REMINDER_DAYS zile (sau niciodată), arată o reamintire discretă —
+ * dar o singură dată pe zi, ca să nu devină enervantă.
+ */
+function checkBackupReminder() {
+  if (!isBackupStale()) return;
+  const today = new Date().toISOString().split('T')[0];
+  if (localStorage.getItem(BACKUP_REMINDER_KEY) === today) return;
+  localStorage.setItem(BACKUP_REMINDER_KEY, today);
+
+  const hasEverExported = !!localStorage.getItem(LAST_EXPORT_KEY);
+  const msg = hasEverExported
+    ? '💾 N-ai mai făcut un backup de ceva vreme. Un export rapid din Setări te ține în siguranță.'
+    : '💾 N-ai făcut încă niciun backup. Recomandăm un export din Setări, ca să nu pierzi datele.';
+  setTimeout(() => showToast(msg, 'warning'), 1200);
+}
+
 function exportData() {
   try {
     // Ne asigurăm că datele din variabila state sunt salvate înainte de export.
@@ -10,9 +47,14 @@ function exportData() {
 
     const backup = {
       app: 'StudiuMeu',
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
-      state: state,
+      // Salvăm întregul obiect state (spread + clonare simplă), ca să nu uităm
+      // niciun câmp nou adăugat vreodată în storage.js. Vezi bug-ul din v1:
+      // exportul vechi salva doar o parte din câmpuri (lipseau discursTalks,
+      // temeCursant, prophecies, myUser, contacts, fieldServiceSchedule,
+      // notifSettings, bibleNotes) și utilizatorii pierdeau date la restaurare.
+      state: JSON.parse(JSON.stringify(state)),
       preferences: {
         theme: localStorage.getItem('studiuMeu_theme') || 'dark',
         yearText: localStorage.getItem('studiuMeu_yearText') || '',
@@ -35,6 +77,10 @@ function exportData() {
     link.remove();
 
     URL.revokeObjectURL(url);
+
+    localStorage.setItem(LAST_EXPORT_KEY, new Date().toISOString());
+    updateBackupStatusUI();
+
     showToast('Backup exportat cu succes! 📦', 'success');
   } catch (error) {
     console.error('Export error:', error);
@@ -91,18 +137,13 @@ function importData(file) {
       );
       if (!shouldImport) return;
 
-      state = {
-        notes: Array.isArray(importedState.notes) ? importedState.notes : [],
-        verses: Array.isArray(importedState.verses) ? importedState.verses : [],
-        wtStudies: Array.isArray(importedState.wtStudies) ? importedState.wtStudies : [],
-        workbooks: Array.isArray(importedState.workbooks) ? importedState.workbooks : [],
-        meetings: Array.isArray(importedState.meetings) ? importedState.meetings : [],
-        streak: Number(importedState.streak) || 0,
-        lastStudyDate: importedState.lastStudyDate || null,
-        bibleNotes: importedState.bibleNotes && typeof importedState.bibleNotes === 'object'
-          ? importedState.bibleNotes
-          : {},
-      };
+      // Reconstruim state pornind de la forma implicită (defaultAppState, din
+      // storage.js) și suprascriem cu tot ce vine din backup. Astfel se
+      // restaurează TOATE câmpurile (inclusiv discursTalks, temeCursant,
+      // prophecies, myUser, contacts, fieldServiceSchedule, notifSettings,
+      // bibleNotes), nu doar o listă fixă aleasă manual — și orice câmp nou
+      // adăugat pe viitor în storage.js se importă automat, fără alt cod aici.
+      state = { ...defaultAppState(), ...importedState };
 
       saveState();
 
@@ -148,5 +189,41 @@ function importData(file) {
   reader.readAsText(file);
 }
 
+
+// ============================================
+// ȘTERGERE COMPLETĂ A DATELOR (zonă periculoasă)
+// ============================================
+/**
+ * Șterge PERMANENT toate datele aplicației de pe acest dispozitiv.
+ * Are un avertisment dublu (confirm + scriere de confirmare), pentru
+ * că este o acțiune ireversibilă și nu există nicio copie "în cloud".
+ */
+function resetAllData() {
+  const step1 = confirm(
+    '⚠️ ATENȚIE: Această acțiune șterge PERMANENT toate datele din aplicație ' +
+    '(notițe, cuvântări, program teren, temă cursant, tot).\n\n' +
+    'Este ireversibilă și nu poate fi anulată.\n\n' +
+    'Ai făcut deja un export/backup? Apasă OK doar dacă ești sigur că vrei să continui.'
+  );
+  if (!step1) return;
+
+  const confirmText = prompt('Pentru confirmare finală, scrie exact ȘTERG (cu majuscule) și apasă OK:');
+  if (confirmText !== 'ȘTERG') {
+    showToast('Ștergere anulată — nimic nu a fost modificat.', 'success');
+    return;
+  }
+
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(LAST_EXPORT_KEY);
+  localStorage.removeItem(BACKUP_REMINDER_KEY);
+
+  // Golește și legăturile către fișierele video salvate (IndexedDB), dacă există.
+  if (typeof deleteAllVideoHandles === 'function') {
+    deleteAllVideoHandles().catch(() => {});
+  }
+
+  showToast('Toate datele au fost șterse. Se reîncarcă aplicația...', 'success');
+  setTimeout(() => location.reload(), 1200);
+}
 
 // ============================================

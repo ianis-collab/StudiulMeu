@@ -1,7 +1,7 @@
 // StudiuMeu — Service Worker
 // Cache-first pentru fisierele aplicatiei = functionare completa offline.
 
-const CACHE_VERSION = 'studiumeu-v4';
+const CACHE_VERSION = 'studiumeu-v5';
 const CACHE_NAME = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -25,6 +25,7 @@ const APP_SHELL = [
   './search.js',
   './storage.js',
   './talkTimer.js',
+  './temacursant.js',
   './theme.js',
   './transfer.js',
   './utils.js',
@@ -41,6 +42,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(APP_SHELL))
+      // field-service-data.local.js e opțional (conține nume reale și nu e pe
+      // GitHub) — îl cache-uim separat ca să nu pice tot instalarea dacă lipsește.
+      .then(() => caches.open(CACHE_NAME).then((cache) =>
+        cache.add('./field-service-data.local.js').catch(() => {})
+      ))
       .then(() => self.skipWaiting())
   );
 });

@@ -44,6 +44,29 @@ function getBibleUrl(slug, capitol) {
   return `https://www.jw.org/ro/biblioteca/biblie/biblia-de-studiu/carti/${slug}/${capitol}/`;
 }
 
+/**
+ * Transformă o dată ISO într-un text relativ, prietenos, ex: „ieri", „acum 3 zile".
+ * Folosită pentru „Ultimul backup" și „Ultima trimitere reușită" din Setări.
+ */
+function formatRelativeTime(dateStr) {
+  if (!dateStr) return 'Niciodată';
+  const then = new Date(dateStr);
+  if (isNaN(then)) return 'Niciodată';
+  const diffMs = Date.now() - then.getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  if (diffMin < 1) return 'chiar acum';
+  if (diffMin < 60) return `acum ${diffMin} minut${diffMin === 1 ? '' : 'e'}`;
+  const diffH = Math.floor(diffMin / 60);
+  if (diffH < 24) return `acum ${diffH} or${diffH === 1 ? 'ă' : 'e'}`;
+  const diffD = Math.floor(diffH / 24);
+  if (diffD === 1) return 'ieri';
+  if (diffD < 30) return `acum ${diffD} zile`;
+  const diffLuni = Math.floor(diffD / 30);
+  if (diffLuni < 12) return `acum ${diffLuni} lun${diffLuni === 1 ? 'ă' : 'i'}`;
+  const diffAni = Math.floor(diffLuni / 12);
+  return `acum ${diffAni} an${diffAni === 1 ? '' : 'i'}`;
+}
+
 // Referință internă la timer-ul toast-ului curent, ca să putem
 // anula afișarea anterioară dacă apare un toast nou rapid.
 let toastTimer = null;

@@ -17,6 +17,19 @@
 
 const T_PEER_PREFIX = 'studiumeu-';
 const T_ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // fără caractere ambigue: 0/O, 1/I/L
+const LAST_SEND_AT_KEY   = 'studiuMeu_lastSendAt';
+const LAST_SEND_NAME_KEY = 'studiuMeu_lastSendName';
+
+/** Actualizează rândul "Ultima trimitere reușită" din Setări, dacă e vizibil. */
+function updateLastSendUI() {
+  const el = document.getElementById('tLastSendLabel');
+  if (!el) return;
+  const last = localStorage.getItem(LAST_SEND_AT_KEY);
+  const name = localStorage.getItem(LAST_SEND_NAME_KEY);
+  el.textContent = last
+    ? `${formatRelativeTime(last)}${name ? ' — către ' + name : ''}`
+    : 'Nicio trimitere încă';
+}
 
 let tPeer = null;
 let tPeerReady = false;
@@ -150,6 +163,7 @@ function saveMyIdentity() {
 // ============================================
 function renderTransferSettings() {
   updateTransferStatusUI(tPeerReady);
+  updateLastSendUI();
 
   const btnLabel = document.getElementById('tIdentityBtnLabel');
   if (btnLabel) btnLabel.textContent = state.myUser?.id ? 'Editează numele' : 'Setează numele tău';
@@ -272,6 +286,9 @@ function sendPendingTo(recipientId, recipientName) {
     conn.send(payload);
     saveContact(recipientId, recipientName);
     renderTransferSettings();
+    localStorage.setItem(LAST_SEND_AT_KEY, new Date().toISOString());
+    localStorage.setItem(LAST_SEND_NAME_KEY, recipientName);
+    updateLastSendUI();
     showToast('Trimis către ' + recipientName + '! ✅', 'success');
     closeSendModal();
   });

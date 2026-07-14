@@ -492,6 +492,83 @@ body {
 }
 .settings-action-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg-hover); }
 
+.info-box {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.info-box p { margin: 0 0 10px; }
+.info-box p:last-child { margin-bottom: 0; }
+.info-box strong { color: var(--text-primary); }
+.info-box ul { margin: 0 0 10px; padding-left: 18px; }
+.info-box li { margin-bottom: 6px; }
+.info-box li:last-child { margin-bottom: 0; }
+
+/* Mini-FAQ (accordion nativ, fără JS) */
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--bg-elevated);
+}
+.faq-item:last-of-type { margin-bottom: 0; }
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  list-style: none;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::before { content: '▸ '; color: var(--accent); }
+.faq-item[open] summary::before { content: '▾ '; }
+.faq-item p { margin: 8px 0 0; color: var(--text-secondary); }
+
+/* Valoare "învechită" (ex: backup vechi) — evidențiată discret */
+.settings-value.stale-value { color: var(--orange); }
+
+/* Link "Ce e nou" lângă versiunea aplicației */
+.changelog-link-btn {
+  margin-left: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  padding: 2px 9px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.changelog-link-btn:hover { background: var(--accent); color: #fff; }
+
+/* Changelog — listă de versiuni */
+.changelog-entry { margin-bottom: 16px; }
+.changelog-entry:last-child { margin-bottom: 0; }
+.changelog-version {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.changelog-date { font-weight: 400; color: var(--text-muted); font-size: 0.75rem; }
+.changelog-entry ul { margin: 0; padding-left: 18px; }
+.changelog-entry li { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 4px; }
+
+/* Zonă periculoasă */
+.settings-danger-label { color: var(--red); }
+.settings-danger-btn {
+  color: var(--red);
+  border-color: rgba(248,81,73,0.35);
+}
+.settings-danger-btn:hover { color: #fff; background: var(--red); border-color: var(--red); }
+
 /* ============================================
    TRIMITE CUVÂNTĂRI (peer-to-peer)
    ============================================ */
@@ -1451,6 +1528,7 @@ select.form-input option { background: var(--bg-elevated); }
 }
 .toast.success { border-color: var(--green); }
 .toast.error { border-color: var(--red); }
+.toast.warning { border-color: var(--orange); }
 
 /* ============================================
    BIBLE READER

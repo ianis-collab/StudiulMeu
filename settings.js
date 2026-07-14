@@ -6,10 +6,59 @@
 function openSettingsModal() {
   document.getElementById('settingsModal')?.classList.add('open');
   if (typeof renderTransferSettings === 'function') renderTransferSettings();
+  if (typeof updateBackupStatusUI === 'function') updateBackupStatusUI();
 }
 
 function closeSettingsModal() {
   document.getElementById('settingsModal')?.classList.remove('open');
+}
+
+// ============================================
+// CE E NOU (changelog) — extensibil: adaugă o intrare nouă în
+// APP_CHANGELOG de fiecare dată când adaugi o funcționalitate.
+// ============================================
+const APP_CHANGELOG = [
+  {
+    version: 'v0.9.0',
+    date: '13 iulie 2026',
+    changes: [
+      'Nouă secțiune „ℹ️ INFORMAȚIE" în Setări, cu explicații complete despre cum funcționează aplicația.',
+      'Reamintire automată de backup, dacă nu ai mai exportat datele de peste 14 zile.',
+      'Acest jurnal „Ce e nou", ca să vezi rapid ce s-a schimbat între versiuni.',
+      'Indicator „Ultima trimitere reușită" la secțiunea Trimite Cuvântări.',
+      'Mini-ghid de întrebări frecvente (FAQ) în secțiunea Informație.',
+      'Buton nou „Șterge toate datele", cu avertisment dublu, pentru un reset curat al aplicației.',
+    ],
+  },
+  {
+    version: 'v0.8.0',
+    date: 'versiune anterioară',
+    changes: [
+      'Trimite/primește cuvântări direct între telefoane, fără WhatsApp sau e-mail.',
+      'Materiale video redate direct din aplicație, cu reconectare automată a fișierului pe Chrome/Edge.',
+      'Notificări pentru programul de ieșire în serviciul de teren.',
+    ],
+  },
+];
+
+function renderChangelog() {
+  const container = document.getElementById('changelogList');
+  if (!container) return;
+  container.innerHTML = APP_CHANGELOG.map(entry => `
+    <div class="changelog-entry">
+      <div class="changelog-version">${escHtml(entry.version)} <span class="changelog-date">— ${escHtml(entry.date)}</span></div>
+      <ul>${entry.changes.map(c => `<li>${escHtml(c)}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+}
+
+function openChangelogModal() {
+  renderChangelog();
+  document.getElementById('changelogModal')?.classList.add('open');
+}
+
+function closeChangelogModal() {
+  document.getElementById('changelogModal')?.classList.remove('open');
 }
 
 // ============================================

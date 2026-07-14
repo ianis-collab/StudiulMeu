@@ -264,6 +264,16 @@ async function deleteHandle(slot) {
     tx.onerror = () => reject(tx.error);
   });
 }
+/** Șterge toate legăturile către fișiere video salvate (folosit la resetarea completă a datelor). */
+async function deleteAllVideoHandles() {
+  const db = await openHandleDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
 
 // videoBlobs[slot] = { name, url } — doar în memorie, niciodată persistat
 const videoBlobs = {};
