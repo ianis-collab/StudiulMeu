@@ -7,6 +7,7 @@ function openSettingsModal() {
   document.getElementById('settingsModal')?.classList.add('open');
   if (typeof renderTransferSettings === 'function') renderTransferSettings();
   if (typeof updateBackupStatusUI === 'function') updateBackupStatusUI();
+  if (typeof renderCollaboratorsSettings === 'function') renderCollaboratorsSettings();
 }
 
 function closeSettingsModal() {
@@ -18,6 +19,14 @@ function closeSettingsModal() {
 // APP_CHANGELOG de fiecare dată când adaugi o funcționalitate.
 // ============================================
 const APP_CHANGELOG = [
+  {
+    version: 'v0.9.1',
+    date: '14 iulie 2026',
+    changes: [
+      'Buton nou „🧠 Sugerează programul" la Program Ieșire pe Teren: propune automat nume pentru rândurile cu dată completată dar fără nume, ținând cont de disponibilitatea fiecărui colaborator (Marți/Vineri/Sâmbătă), distribuind sarcinile echilibrat și evitând ca aceeași persoană să fie primul de două ori la rând. Propunerea nu modifică tabelul automat — se poate edita și apoi confirma cu „✅ Aplică sugestia" sau anula cu „✕ Anulează".',
+      'Secțiune nouă „🚶 Colaboratori Program Teren" în Setări, unde adaugi numele colaboratorilor și bifezi zilele lor de disponibilitate.',
+    ],
+  },
   {
     version: 'v0.9.0',
     date: '13 iulie 2026',

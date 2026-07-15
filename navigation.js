@@ -15,6 +15,7 @@ const pageTitles = {
   biblereader: 'Citește Biblia',
   bibleoffline: 'Biblia – Studiu Offline',
   fieldservice: 'Întrunirea de Serviciu de Teren',
+  preachingassistant: 'Asistent de predicare',
   notes: 'Notițele Mele',
   meetings: 'Programul Meu',
 };
@@ -37,6 +38,9 @@ function navigateTo(page) {
   }
   if (page === 'workbook' || page === 'talk5cuv') {
     document.getElementById('navGroup-workbook')?.classList.add('open');
+  }
+  if (page === 'fieldservice' || page === 'preachingassistant') {
+    document.getElementById('navGroup-fieldservice')?.classList.add('open');
   }
 
   document.getElementById('pageTitle').textContent = pageTitles[page] || page;
@@ -71,6 +75,24 @@ function renderPage(page) {
 
 function toggleNavGroup(id) {
   document.getElementById(`navGroup-${id}`)?.classList.toggle('open');
+}
+
+// ============================================
+// SUBMENIU "Întrunirea de ieșire pe teren" (Panou Principal)
+// ============================================
+function toggleQuickLinkGroup(id, headerEl) {
+  const submenu = document.getElementById(id);
+  if (!submenu) return;
+  const isOpen = submenu.style.display === 'flex';
+  submenu.style.display = isOpen ? 'none' : 'flex';
+  if (headerEl) headerEl.classList.toggle('expanded', !isOpen);
+}
+
+function navigateToFieldServiceSchedule() {
+  navigateTo('fieldservice');
+  setTimeout(() => {
+    document.getElementById('fsScheduleGrid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 60);
 }
 
 // ============================================

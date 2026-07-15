@@ -996,6 +996,32 @@ body {
 .quick-link-item svg { margin-left: auto; flex-shrink: 0; }
 .ql-icon { font-size: 1.1rem; }
 
+.quick-link-expandable { cursor: pointer; user-select: none; }
+.ql-chevron { transition: transform var(--transition); }
+.quick-link-expandable.expanded .ql-chevron { transform: rotate(90deg); }
+
+.quick-link-submenu {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  margin: -2px 0 2px 14px;
+  padding-left: 10px;
+  border-left: 2px solid var(--border);
+}
+.quick-link-subitem {
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.quick-link-subitem:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
 /* Recent list */
 .recent-list { display: flex; flex-direction: column; gap: 8px; }
 .recent-item {
@@ -3336,4 +3362,107 @@ select.form-input option { background: var(--bg-elevated); }
 
 @media (max-width: 640px) {
   .fs-sched-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================
+   COLABORATORI (Setări) + SUGEREAZĂ PROGRAMUL
+   ============================================ */
+.fs-collab-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.fs-collab-row:last-child { border-bottom: none; }
+
+.fs-collab-name {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.fs-collab-days {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fs-collab-day {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.fs-collab-day input[type="checkbox"] { cursor: pointer; }
+
+.fs-collab-del {
+  border: none;
+  background: transparent;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  transition: opacity var(--transition);
+  flex-shrink: 0;
+}
+.fs-collab-del:hover { opacity: 1; }
+
+.fs-suggestion-panel {
+  margin: 4px 4px 16px;
+  padding: 14px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent-glow);
+}
+
+.fs-suggestion-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.fs-suggestion-sub {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.fs-suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.fs-suggestion-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.fs-suggestion-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.fs-suggestion-name { margin-bottom: 4px; }
+
+.fs-suggestion-reason {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin: 0;
 }

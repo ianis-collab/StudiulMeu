@@ -37,6 +37,13 @@ function defaultAppState() {
     // Programul întrunirii de ieșire pe teren (3 coloane: Marți, Vineri, Sâmbătă)
     fieldServiceSchedule: null, // se inițializează cu valori implicite la loadState()
 
+    // Colaboratori pentru "Sugerează programul" — [{ id, name, days: ['marti', ...] }]
+    fieldServiceCollaborators: [],
+
+    // Ține minte cine a fost primul în ultima sugestie APLICATĂ, ca să nu
+    // înceapă următoarea sugestie tot cu aceeași persoană.
+    fieldServiceScheduleMeta: { lastFirstPerson: null },
+
     // Setări notificări (anunț cu o zi înainte / în ziua respectivă)
     notifSettings: { enabled: false },
   };

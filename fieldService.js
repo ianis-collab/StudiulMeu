@@ -151,3 +151,274 @@ function deleteScheduleRow(dayKey, index) {
 }
 
 // ============================================
+// COLABORATORI (Setări) — folosiți de "Sugerează programul"
+// ============================================
+const FS_DAY_LABELS = { marti: 'Marți', vineri: 'Vineri', sambata: 'Sâmbătă' };
+
+function renderCollaboratorsSettings() {
+  const container = document.getElementById('fsCollaboratorsSettings');
+  if (!container) return;
+
+  const list = Array.isArray(state.fieldServiceCollaborators) ? state.fieldServiceCollaborators : [];
+
+  if (list.length === 0) {
+    container.innerHTML = `<p class="empty-state-small">Niciun colaborator adăugat încă.</p>`;
+    return;
+  }
+
+  container.innerHTML = list.map(c => `
+    <div class="fs-collab-row">
+      <input type="text" class="form-input fs-collab-name" placeholder="Nume colaborator"
+        value="${escHtml(c.name || '')}" oninput="updateCollaboratorName('${c.id}', this.value)" />
+      <div class="fs-collab-days">
+        ${Object.keys(FS_DAY_LABELS).map(dayKey => `
+          <label class="fs-collab-day">
+            <input type="checkbox" ${Array.isArray(c.days) && c.days.includes(dayKey) ? 'checked' : ''}
+              onchange="toggleCollaboratorDay('${c.id}', '${dayKey}')" />
+            ${FS_DAY_LABELS[dayKey]}
+          </label>
+        `).join('')}
+      </div>
+      <button type="button" class="fs-collab-del" title="Șterge colaborator" onclick="removeCollaborator('${c.id}')">✕</button>
+    </div>
+  `).join('');
+}
+
+function addCollaborator() {
+  if (!Array.isArray(state.fieldServiceCollaborators)) state.fieldServiceCollaborators = [];
+  state.fieldServiceCollaborators.push({
+    id: Date.now().toString(),
+    name: '',
+    days: ['marti', 'vineri', 'sambata'],
+  });
+  saveState();
+  renderCollaboratorsSettings();
+}
+
+function removeCollaborator(id) {
+  state.fieldServiceCollaborators = (state.fieldServiceCollaborators || []).filter(c => c.id !== id);
+  saveState();
+  renderCollaboratorsSettings();
+}
+
+function updateCollaboratorName(id, value) {
+  const c = (state.fieldServiceCollaborators || []).find(c => c.id === id);
+  if (!c) return;
+  c.name = value;
+  saveState();
+}
+
+function toggleCollaboratorDay(id, dayKey) {
+  const c = (state.fieldServiceCollaborators || []).find(c => c.id === id);
+  if (!c) return;
+  if (!Array.isArray(c.days)) c.days = [];
+  const idx = c.days.indexOf(dayKey);
+  if (idx >= 0) c.days.splice(idx, 1);
+  else c.days.push(dayKey);
+  saveState();
+}
+
+// ============================================
+// SUGEREAZĂ PROGRAMUL — propune nume pentru rândurile
+// care au dată completată dar nume gol. NU modifică
+// tabelul automat; utilizatorul trebuie să apese
+// "Aplică sugestia" (sau poate edita propunerea înainte).
+// ============================================
+let fsCurrentSuggestion = null;
+
+// Încearcă să extragă o dată aproximativă (pentru sortare cronologică)
+// dintr-un text liber de forma "28 aprilie" / "7 iul". Întoarce un
+// timestamp sau null dacă nu poate fi recunoscută.
+function parseRoDateApprox(text) {
+  if (!text) return null;
+  const months = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie',
+    'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
+  const m = text.toLowerCase().match(/(\d{1,2})\s*([a-zăâîșț]+)/i);
+  if (!m) return null;
+
+  const day = parseInt(m[1], 10);
+  const monthText = m[2];
+  const monthIdx = months.findIndex(mo => mo.startsWith(monthText) || monthText.startsWith(mo.slice(0, 3)));
+  if (monthIdx === -1 || !day || day < 1 || day > 31) return null;
+
+  const now = new Date();
+  let candidate = new Date(now.getFullYear(), monthIdx, day);
+  // Dacă data pare cu mult în trecut, presupunem că e vorba de anul următor
+  if ((now - candidate) / 86400000 > 200) {
+    candidate = new Date(now.getFullYear() + 1, monthIdx, day);
+  }
+  return candidate.getTime();
+}
+
+// Adună toate rândurile cu dată completată dar fără nume, din toate cele
+// 3 zile, și le ordonează cronologic (cât se poate deduce din text).
+function collectEmptyScheduleSlots() {
+  const dayKeys = ['marti', 'vineri', 'sambata'];
+  const slots = [];
+
+  dayKeys.forEach(dayKey => {
+    const day = state.fieldServiceSchedule?.[dayKey];
+    if (!day || !Array.isArray(day.rows)) return;
+    day.rows.forEach((row, idx) => {
+      if (row.data && row.data.trim() && (!row.nume || !row.nume.trim())) {
+        slots.push({ dayKey, idx, date: row.data.trim(), parsed: parseRoDateApprox(row.data) });
+      }
+    });
+  });
+
+  slots.sort((a, b) => {
+    if (a.parsed != null && b.parsed != null) return a.parsed - b.parsed;
+    if (a.parsed != null) return -1;
+    if (b.parsed != null) return 1;
+    return 0; // ordine stabilă dacă nu se poate deduce data
+  });
+
+  return slots;
+}
+
+function suggestFieldServiceSchedule() {
+  const collaborators = (state.fieldServiceCollaborators || []).filter(c => c.name && c.name.trim());
+
+  if (collaborators.length === 0) {
+    showToast('Adaugă mai întâi colaboratori din Setări (⚙️) ca să poți genera o sugestie.', 'error');
+    return;
+  }
+
+  const slots = collectEmptyScheduleSlots();
+  if (slots.length === 0) {
+    showToast('Nu există rânduri cu dată completată și nume gol de propus.', 'error');
+    return;
+  }
+
+  // Baza de echilibrare: câte întruniri are deja asignate fiecare colaborator
+  // (numărând rândurile deja completate din tabel).
+  const counts = {};
+  collaborators.forEach(c => { counts[c.id] = 0; });
+  ['marti', 'vineri', 'sambata'].forEach(dayKey => {
+    const day = state.fieldServiceSchedule?.[dayKey];
+    if (!day || !Array.isArray(day.rows)) return;
+    day.rows.forEach(row => {
+      if (row.nume && row.nume.trim()) {
+        const match = collaborators.find(c => c.name.trim().toLowerCase() === row.nume.trim().toLowerCase());
+        if (match) counts[match.id]++;
+      }
+    });
+  });
+
+  const lastFirst = state.fieldServiceScheduleMeta?.lastFirstPerson || null;
+  const suggestion = [];
+
+  slots.forEach((slot, i) => {
+    let candidates = collaborators.filter(c => Array.isArray(c.days) && c.days.includes(slot.dayKey));
+
+    if (candidates.length === 0) {
+      suggestion.push({
+        ...slot,
+        proposedName: '',
+        reason: `Niciun colaborator disponibil ${FS_DAY_LABELS[slot.dayKey]}.`,
+      });
+      return;
+    }
+
+    const reasonParts = [];
+
+    // Regula "nu de două ori primul la rând" se aplică doar primului rând
+    // din sugestia curentă (primul din program), comparat cu ultima
+    // sugestie APLICATĂ anterior.
+    if (i === 0 && lastFirst) {
+      const withoutLast = candidates.filter(c => c.name.trim() !== lastFirst);
+      if (withoutLast.length > 0) {
+        candidates = withoutLast;
+        reasonParts.push(`nu a fost ultima dată primul (ultima dată: ${lastFirst})`);
+      }
+    }
+
+    // Alege colaboratorul cu cele mai puține întruniri asignate până acum
+    // (distribuție echilibrată), păstrând ordinea stabilă la egalitate.
+    candidates.sort((a, b) => (counts[a.id] || 0) - (counts[b.id] || 0));
+    const chosen = candidates[0];
+    counts[chosen.id] = (counts[chosen.id] || 0) + 1;
+
+    reasonParts.push(`disponibil ${FS_DAY_LABELS[slot.dayKey].toLowerCase()}`);
+    reasonParts.push(`echilibrare sarcini (${counts[chosen.id]} întâlniri asignate)`);
+
+    suggestion.push({ ...slot, proposedName: chosen.name.trim(), reason: reasonParts.join(' · ') });
+  });
+
+  fsCurrentSuggestion = suggestion;
+  renderFieldServiceSuggestion();
+}
+
+function renderFieldServiceSuggestion() {
+  const panel = document.getElementById('fsSuggestionPanel');
+  if (!panel) return;
+
+  if (!fsCurrentSuggestion || fsCurrentSuggestion.length === 0) {
+    panel.style.display = 'none';
+    panel.innerHTML = '';
+    return;
+  }
+
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="fs-suggestion-header">
+      <span>🧠 Propunere de program</span>
+      <span class="fs-suggestion-sub">Verifică și, dacă e nevoie, modifică numele înainte să aplici.</span>
+    </div>
+    <div class="fs-suggestion-list">
+      ${fsCurrentSuggestion.map((item, i) => `
+        <div class="fs-suggestion-item">
+          <div class="fs-suggestion-meta">
+            <span class="fs-suggestion-day">${FS_DAY_LABELS[item.dayKey]}</span>
+            <span class="fs-suggestion-date">${escHtml(item.date)}</span>
+          </div>
+          <input type="text" class="form-input fs-suggestion-name" value="${escHtml(item.proposedName)}"
+            placeholder="Nume" oninput="updateSuggestionName(${i}, this.value)" />
+          <p class="fs-suggestion-reason">${escHtml(item.reason)}</p>
+        </div>
+      `).join('')}
+    </div>
+    <div class="action-row">
+      <button class="btn-primary" onclick="applyFieldServiceSuggestion()">✅ Aplică sugestia</button>
+      <button class="btn-outline" onclick="cancelFieldServiceSuggestion()">✕ Anulează</button>
+    </div>
+  `;
+}
+
+function updateSuggestionName(index, value) {
+  if (fsCurrentSuggestion && fsCurrentSuggestion[index]) {
+    fsCurrentSuggestion[index].proposedName = value;
+  }
+}
+
+function applyFieldServiceSuggestion() {
+  if (!fsCurrentSuggestion || fsCurrentSuggestion.length === 0) return;
+
+  fsCurrentSuggestion.forEach(item => {
+    if (!item.proposedName || !item.proposedName.trim()) return; // rând lăsat necompletat, nu se atinge
+    const row = state.fieldServiceSchedule?.[item.dayKey]?.rows?.[item.idx];
+    if (row) row.nume = item.proposedName.trim();
+  });
+
+  // Ține minte cine a fost primul, ca următoarea sugestie să înceapă cu altcineva
+  const first = fsCurrentSuggestion[0];
+  if (first && first.proposedName && first.proposedName.trim()) {
+    if (!state.fieldServiceScheduleMeta) state.fieldServiceScheduleMeta = {};
+    state.fieldServiceScheduleMeta.lastFirstPerson = first.proposedName.trim();
+  }
+
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+
+  fsCurrentSuggestion = null;
+  renderFieldServiceSchedule();
+  renderFieldServiceSuggestion();
+  showToast('Programul sugerat a fost aplicat! ✅', 'success');
+}
+
+function cancelFieldServiceSuggestion() {
+  fsCurrentSuggestion = null;
+  renderFieldServiceSuggestion();
+}
+
+// ============================================
