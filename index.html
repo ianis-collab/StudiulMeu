@@ -1256,10 +1256,22 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button type="button" class="btn-outline btn-sm" onclick="suggestFieldServiceSchedule()" style="font-size:0.75rem;padding:5px 10px">🧠 Sugerează programul</button>
             <button type="button" class="btn-outline btn-sm" onclick="exportFieldServiceICS()" style="font-size:0.75rem;padding:5px 10px">📅 Exportă în Calendar</button>
+            <button type="button" class="btn-outline btn-sm" onclick="saveFieldServiceScheduleManual()" style="font-size:0.75rem;padding:5px 10px">💾 Salvează</button>
+            <button type="button" class="btn-outline btn-sm" onclick="shareFieldServiceScheduleWhatsApp(null)" style="font-size:0.75rem;padding:5px 10px">📲 Trimite pe WhatsApp</button>
           </div>
         </div>
         <div id="fsScheduleGrid" class="fs-sched-grid"></div>
         <div id="fsSuggestionPanel" class="fs-suggestion-panel" style="display:none"></div>
+      </div>
+
+      <!-- TABELE CALENDAR SUPLIMENTARE -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Tabele Calendar Suplimentare</h3>
+          <button type="button" class="btn-outline btn-sm" onclick="addFieldServiceExtraTable()" style="font-size:0.75rem;padding:5px 10px">🗓️ Tabel Calendar Nou</button>
+        </div>
+        <p class="page-sub" style="margin:0 0 10px">Poți crea mai multe tabele (ex: pentru săptămâni sau perioade diferite). Toate rămân vizibile aici, unul sub altul.</p>
+        <div id="fsExtraTables"></div>
       </div>
     </div>
   </section>

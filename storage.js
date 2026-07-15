@@ -37,6 +37,11 @@ function defaultAppState() {
     // Programul întrunirii de ieșire pe teren (3 coloane: Marți, Vineri, Sâmbătă)
     fieldServiceSchedule: null, // se inițializează cu valori implicite la loadState()
 
+    // Tabele calendar suplimentare (create manual cu "Tabel Calendar Nou"),
+    // fiecare cu structura { id, title, marti, vineri, sambata }, la fel ca
+    // fieldServiceSchedule. Rămân toate salvate și vizibile simultan.
+    fieldServiceExtraTables: [],
+
     // Colaboratori pentru "Sugerează programul" — [{ id, name, days: ['marti', ...] }]
     fieldServiceCollaborators: [],
 

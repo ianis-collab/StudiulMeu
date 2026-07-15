@@ -151,6 +151,188 @@ function deleteScheduleRow(dayKey, index) {
 }
 
 // ============================================
+// SALVARE MANUALĂ (buton "💾 Salvează")
+// Datele se salvează oricum automat la fiecare modificare, dar butonul
+// oferă o confirmare vizuală explicită, cerută de utilizator.
+// ============================================
+function saveFieldServiceScheduleManual() {
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  showToast('Program salvat! 💾', 'success');
+}
+
+// ============================================
+// TRIMITE PE WHATSAPP
+// Construiește un text formatat cu toate cele 3 zile (dată + nume) și
+// deschide WhatsApp cu mesajul precompletat.
+// ============================================
+function buildFieldServiceShareText(table) {
+  if (!table) return '';
+  const dayKeys = ['marti', 'vineri', 'sambata'];
+  const parts = [];
+  const title = table.title ? `📅 ${table.title}\n` : '';
+  parts.push(`${title}*Program pentru Întrunirea de Ieșire pe Teren*`);
+
+  dayKeys.forEach(dayKey => {
+    const day = table[dayKey];
+    if (!day) return;
+    parts.push(`\n*${day.label}*`);
+    const rows = Array.isArray(day.rows) ? day.rows.filter(r => (r.data && r.data.trim()) || (r.nume && r.nume.trim())) : [];
+    if (rows.length === 0) {
+      parts.push('—');
+    } else {
+      rows.forEach(row => {
+        const data = row.data && row.data.trim() ? row.data.trim() : '—';
+        const nume = row.nume && row.nume.trim() ? row.nume.trim() : '—';
+        parts.push(`• ${data}: ${nume}`);
+      });
+    }
+  });
+
+  return parts.join('\n');
+}
+
+function shareFieldServiceScheduleWhatsApp(tableId) {
+  const table = tableId ? (state.fieldServiceExtraTables || []).find(t => t.id === tableId) : state.fieldServiceSchedule;
+  if (!table) {
+    showToast('Nu există niciun program de trimis.', 'error');
+    return;
+  }
+  const text = buildFieldServiceShareText(table);
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+// ============================================
+// TABELE CALENDAR SUPLIMENTARE
+// Permit crearea mai multor tabele (ex: pentru perioade diferite), toate
+// vizibile simultan, fără să se suprapună — fiecare e un card separat.
+// ============================================
+function addFieldServiceExtraTable() {
+  const title = prompt('Denumire pentru noul tabel (ex: "Iulie 2026"):', '');
+  if (title === null) return; // utilizatorul a anulat
+
+  if (!Array.isArray(state.fieldServiceExtraTables)) state.fieldServiceExtraTables = [];
+
+  const table = defaultFieldServiceSchedule();
+  table.id = Date.now().toString();
+  table.title = title.trim() || 'Tabel nou';
+
+  state.fieldServiceExtraTables.push(table);
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceExtraTables();
+  showToast('Tabel calendar nou creat! 🗓️', 'success');
+}
+
+function deleteFieldServiceExtraTable(tableId) {
+  if (!confirm('Ștergi acest tabel calendar?')) return;
+  state.fieldServiceExtraTables = (state.fieldServiceExtraTables || []).filter(t => t.id !== tableId);
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceExtraTables();
+  showToast('Tabel calendar șters.', 'success');
+}
+
+function renameFieldServiceExtraTable(tableId, value) {
+  const table = (state.fieldServiceExtraTables || []).find(t => t.id === tableId);
+  if (!table) return;
+  table.title = value;
+  saveState();
+}
+
+function updateExtraScheduleCell(tableId, dayKey, index, field, value) {
+  const table = (state.fieldServiceExtraTables || []).find(t => t.id === tableId);
+  const row = table?.[dayKey]?.rows?.[index];
+  if (!row) return;
+  row[field] = value;
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+}
+
+function addExtraScheduleRow(tableId, dayKey) {
+  const table = (state.fieldServiceExtraTables || []).find(t => t.id === tableId);
+  const day = table?.[dayKey];
+  if (!day) return;
+  day.rows.push({ data: '', nume: '' });
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceExtraTables();
+  requestAnimationFrame(() => {
+    const inputs = document.querySelectorAll(`.fs-extra-table[data-table-id="${tableId}"] .fs-sched-row .fs-sched-cell-data`);
+    const last = inputs[inputs.length - 1];
+    if (last) last.focus();
+  });
+}
+
+function deleteExtraScheduleRow(tableId, dayKey, index) {
+  const table = (state.fieldServiceExtraTables || []).find(t => t.id === tableId);
+  const day = table?.[dayKey];
+  if (!day) return;
+  day.rows.splice(index, 1);
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceExtraTables();
+}
+
+function renderFieldServiceExtraTables() {
+  const container = document.getElementById('fsExtraTables');
+  if (!container) return;
+
+  const tables = Array.isArray(state.fieldServiceExtraTables) ? state.fieldServiceExtraTables : [];
+
+  if (tables.length === 0) {
+    container.innerHTML = `<div class="empty-state full-width"><p>Niciun tabel calendar suplimentar. Apasă „🗓️ Tabel Calendar Nou” ca să adaugi unul.</p></div>`;
+    return;
+  }
+
+  const dayKeys = ['marti', 'vineri', 'sambata'];
+
+  container.innerHTML = tables.map(table => {
+    const gridHtml = dayKeys.map(dayKey => {
+      const day = table[dayKey];
+      if (!day) return '';
+      const rowsHtml = day.rows.map((row, i) => `
+        <div class="fs-sched-row">
+          <input class="fs-sched-cell fs-sched-cell-data" type="text" value="${escHtml(row.data)}"
+            oninput="updateExtraScheduleCell('${table.id}', '${dayKey}', ${i}, 'data', this.value)" />
+          <input class="fs-sched-cell fs-sched-cell-nume" type="text" value="${escHtml(row.nume)}"
+            oninput="updateExtraScheduleCell('${table.id}', '${dayKey}', ${i}, 'nume', this.value)" />
+          <button class="fs-sched-del" onclick="deleteExtraScheduleRow('${table.id}', '${dayKey}', ${i})" title="Șterge rândul">✕</button>
+        </div>
+      `).join('');
+
+      return `
+        <div class="fs-sched-table">
+          <div class="fs-sched-header">
+            <span class="fs-sched-header-label">DATA</span>
+            <span class="fs-sched-header-day" style="background:${day.color}">${escHtml(day.label)}</span>
+          </div>
+          <div class="fs-sched-body">${rowsHtml}</div>
+          <button class="fs-sched-add" onclick="addExtraScheduleRow('${table.id}', '${dayKey}')">+ Adaugă rând</button>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="card fs-extra-table" data-table-id="${table.id}" style="margin-bottom:16px">
+        <div class="card-header">
+          <input type="text" class="form-input" value="${escHtml(table.title || '')}"
+            placeholder="Denumire tabel" style="max-width:220px;font-weight:600"
+            oninput="renameFieldServiceExtraTable('${table.id}', this.value)" />
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn-outline btn-sm" onclick="saveFieldServiceScheduleManual()" style="font-size:0.75rem;padding:5px 10px">💾 Salvează</button>
+            <button type="button" class="btn-outline btn-sm" onclick="shareFieldServiceScheduleWhatsApp('${table.id}')" style="font-size:0.75rem;padding:5px 10px">📲 Trimite pe WhatsApp</button>
+            <button type="button" class="btn-outline btn-sm" onclick="deleteFieldServiceExtraTable('${table.id}')" style="font-size:0.75rem;padding:5px 10px;color:#e53e3e">🗑 Șterge tabel</button>
+          </div>
+        </div>
+        <div class="fs-sched-grid">${gridHtml}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================
 // COLABORATORI (Setări) — folosiți de "Sugerează programul"
 // ============================================
 const FS_DAY_LABELS = { marti: 'Marți', vineri: 'Vineri', sambata: 'Sâmbătă' };

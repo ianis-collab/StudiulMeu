@@ -68,7 +68,7 @@ function renderPage(page) {
     case 'talk5cuv': renderTalk5Page(); break;
     case 'biblereader': initBibleReader(); break;
     case 'bibleoffline': initBibleOffline(); break;
-    case 'fieldservice': renderFieldServiceList(); renderFieldServiceSchedule(); break;
+    case 'fieldservice': renderFieldServiceList(); renderFieldServiceSchedule(); renderFieldServiceExtraTables(); break;
   }
   updateWordCounters();
 }
