@@ -1260,6 +1260,7 @@
             <button type="button" class="btn-outline btn-sm" onclick="shareFieldServiceScheduleWhatsApp(null)" style="font-size:0.75rem;padding:5px 10px">📲 Trimite pe WhatsApp</button>
           </div>
         </div>
+        <div id="fsCoWeekBar" class="fs-coweek-bar"></div>
         <div id="fsScheduleGrid" class="fs-sched-grid"></div>
         <div id="fsSuggestionPanel" class="fs-suggestion-panel" style="display:none"></div>
       </div>
@@ -1412,7 +1413,7 @@
       <div class="settings-row">
         <span class="settings-label">Versiune aplicație</span>
         <span class="settings-value">
-          v0.9.0
+          v0.9.2
           <button type="button" class="changelog-link-btn" onclick="openChangelogModal()">Ce e nou</button>
         </span>
       </div>
@@ -1440,7 +1441,13 @@
           <li><strong>Bibliotecă</strong> — linkuri/PDF-uri de pe jw.org și materiale video redate direct din aplicație; videoclipurile nu sunt niciodată stocate sau încărcate — doar citite de pe calculator, la cerere.</li>
         </ul>
 
-        <p><strong>💾 Backup (Export / Import).</strong> Din Setări poți exporta oricând toate datele într-un fișier JSON, ca să nu le pierzi dacă schimbi telefonul sau ștergi accidental aplicația. Ai și un export separat, în format Word, doar pentru cuvântări. Îți recomand să faci un export din când în când — mai ales înainte de o actualizare majoră a telefonului.</p>
+        <p><strong>🚶 Programul pentru Întrunirea de Ieșire pe Teren — ghid rapid:</strong></p>
+        <ul>
+          <li><strong>💾 Salvează</strong> — salvează explicit programul curent (datele se salvează oricum automat pe măsură ce scrii; butonul doar confirmă vizual).</li>
+          <li><strong>📲 Trimite pe WhatsApp</strong> — trimite tot programul (Marți/Vineri/Sâmbătă, cu dată și nume) ca mesaj gata formatat, printr-un chat WhatsApp la alegere.</li>
+          <li><strong>🗓️ Tabele Calendar Suplimentare</strong> — poți crea oricâte tabele de program vrei, fiecare cu titlul lui (ex: „Iulie 2026"). Toate rămân salvate și vizibile simultan, unul sub altul, fără să se suprapună; fiecare are propriile butoane Salvează / WhatsApp / Șterge.</li>
+          <li><strong>Săptămână cu vizita supraveghetorului de circumscripție</strong> — bifează opțiunea din tabelul principal și introdu manual intervalul de date (De la / Până la). Apare un mesaj informativ, rândurile din acel interval devin needitabile, iar „🧠 Sugerează programul" sare peste acele date.</li>
+        </ul> Din Setări poți exporta oricând toate datele într-un fișier JSON, ca să nu le pierzi dacă schimbi telefonul sau ștergi accidental aplicația. Ai și un export separat, în format Word, doar pentru cuvântări. Îți recomand să faci un export din când în când — mai ales înainte de o actualizare majoră a telefonului.</p>
 
         <p><strong>📤 Trimite Cuvântări.</strong> Poți trimite o cuvântare direct altui utilizator al aplicației, fără WhatsApp sau e-mail. Datele circulă direct între cele două telefoane (conexiune criptată telefon-la-telefon), nu trec prin niciun server care le stochează. Condiție: ambele aplicații trebuie să fie deschise în același timp; dacă destinatarul nu e conectat în acel moment, trimiterea eșuează și ești anunțat imediat.</p>
 

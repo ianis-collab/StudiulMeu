@@ -20,6 +20,15 @@ function closeSettingsModal() {
 // ============================================
 const APP_CHANGELOG = [
   {
+    version: 'v0.9.2',
+    date: '15 iulie 2026',
+    changes: [
+      'Programul pentru Întrunirea de Ieșire pe Teren are acum buton „💾 Salvează" (confirmare vizuală) și buton „📲 Trimite pe WhatsApp", care trimite tot programul (Marți/Vineri/Sâmbătă, cu dată și nume) ca mesaj gata formatat.',
+      'Secțiune nouă „🗓️ Tabele Calendar Suplimentare": poți crea oricâte tabele de program vrei (ex. pentru perioade diferite), fiecare cu propriul titlu editabil și propriile butoane Salvează / Trimite pe WhatsApp / Șterge tabel. Toate tabelele rămân vizibile în același timp, unul sub altul, fără să se suprapună.',
+      'Bifă nouă „Săptămână cu vizita supraveghetorului de circumscripție" la Programul principal: activând-o, introduci manual intervalul de date (De la / Până la), apare un mesaj informativ, rândurile din acel interval devin needitabile, iar „🧠 Sugerează programul" nu mai propune nume pentru acele date.',
+    ],
+  },
+  {
     version: 'v0.9.1',
     date: '14 iulie 2026',
     changes: [

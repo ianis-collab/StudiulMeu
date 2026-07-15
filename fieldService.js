@@ -89,20 +89,30 @@ function renderFieldServiceSchedule() {
   const container = document.getElementById('fsScheduleGrid');
   if (!container) return;
   if (!state.fieldServiceSchedule) return;
+  if (!state.fieldServiceSchedule.coWeek) {
+    state.fieldServiceSchedule.coWeek = { enabled: false, from: '', to: '' };
+  }
 
+  renderFieldServiceCoWeekBar();
+
+  const coWeek = state.fieldServiceSchedule.coWeek;
   const dayKeys = ['marti', 'vineri', 'sambata'];
 
   container.innerHTML = dayKeys.map(dayKey => {
     const day = state.fieldServiceSchedule[dayKey];
-    const rowsHtml = day.rows.map((row, i) => `
-      <div class="fs-sched-row">
-        <input class="fs-sched-cell fs-sched-cell-data" type="text" value="${escHtml(row.data)}"
+    const rowsHtml = day.rows.map((row, i) => {
+      const disabled = coWeek.enabled && isDateInCoWeekRange(row.data);
+      return `
+      <div class="fs-sched-row${disabled ? ' fs-sched-row-disabled' : ''}">
+        <input class="fs-sched-cell fs-sched-cell-data" type="text" value="${escHtml(row.data)}" ${disabled ? 'disabled' : ''}
           oninput="updateScheduleCell('${dayKey}', ${i}, 'data', this.value)" />
-        <input class="fs-sched-cell fs-sched-cell-nume" type="text" value="${escHtml(row.nume)}"
+        <input class="fs-sched-cell fs-sched-cell-nume" type="text" value="${escHtml(row.nume)}" ${disabled ? 'disabled' : ''}
+          placeholder="${disabled ? 'Fără programare (supraveghetor)' : ''}"
           oninput="updateScheduleCell('${dayKey}', ${i}, 'nume', this.value)" />
         <button class="fs-sched-del" onclick="deleteScheduleRow('${dayKey}', ${i})" title="Șterge rândul">✕</button>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     return `
       <div class="fs-sched-table">
@@ -115,6 +125,68 @@ function renderFieldServiceSchedule() {
       </div>
     `;
   }).join('');
+}
+
+// ============================================
+// SĂPTĂMÂNA CU VIZITA SUPRAVEGHETORULUI DE CIRCUMSCRIPȚIE
+// Bifă + interval de date (setat manual), salvată împreună cu programul.
+// Când e activă: se afișează un mesaj informativ, rândurile cu dată în
+// interval sunt dezactivate (nu se pot completa colaboratori), iar
+// "Sugerează programul" sare peste acele date. Restul rămâne neschimbat.
+// ============================================
+function renderFieldServiceCoWeekBar() {
+  const bar = document.getElementById('fsCoWeekBar');
+  if (!bar || !state.fieldServiceSchedule) return;
+  const coWeek = state.fieldServiceSchedule.coWeek || { enabled: false, from: '', to: '' };
+
+  bar.innerHTML = `
+    <label class="fs-coweek-check">
+      <input type="checkbox" ${coWeek.enabled ? 'checked' : ''} onchange="toggleFieldServiceCoWeek(this.checked)" />
+      <span>Săptămână cu vizita supraveghetorului de circumscripție</span>
+    </label>
+    <div class="fs-coweek-dates" style="${coWeek.enabled ? '' : 'display:none'}">
+      <label>De la: <input type="date" value="${escHtml(coWeek.from || '')}" onchange="updateFieldServiceCoWeekDate('from', this.value)" /></label>
+      <label>Până la: <input type="date" value="${escHtml(coWeek.to || '')}" onchange="updateFieldServiceCoWeekDate('to', this.value)" /></label>
+    </div>
+    ${coWeek.enabled ? `
+      <div class="fs-coweek-info">
+        ℹ️ Săptămâna aceasta ne vizitează supraveghetorul de circumscripție — nu se programează colaboratori pentru serviciul de teren.
+      </div>
+    ` : ''}
+  `;
+}
+
+function toggleFieldServiceCoWeek(checked) {
+  if (!state.fieldServiceSchedule) return;
+  if (!state.fieldServiceSchedule.coWeek) state.fieldServiceSchedule.coWeek = { enabled: false, from: '', to: '' };
+  state.fieldServiceSchedule.coWeek.enabled = checked;
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceSchedule();
+}
+
+function updateFieldServiceCoWeekDate(field, value) {
+  if (!state.fieldServiceSchedule?.coWeek) return;
+  state.fieldServiceSchedule.coWeek[field] = value;
+  saveState();
+  if (typeof mirrorScheduleToIdb === 'function') mirrorScheduleToIdb();
+  renderFieldServiceSchedule();
+}
+
+// Verifică dacă textul liber al unui rând (ex: "22 iulie") cade în
+// intervalul [from, to] setat manual pentru săptămâna supraveghetorului.
+function isDateInCoWeekRange(rowDateText) {
+  const coWeek = state.fieldServiceSchedule?.coWeek;
+  if (!coWeek || !coWeek.enabled || !coWeek.from || !coWeek.to) return false;
+
+  const parsed = parseRoDateApprox(rowDateText);
+  if (parsed == null) return false;
+
+  const from = new Date(coWeek.from + 'T00:00:00').getTime();
+  const to = new Date(coWeek.to + 'T23:59:59').getTime();
+  if (isNaN(from) || isNaN(to)) return false;
+
+  return parsed >= from && parsed <= to;
 }
 
 function updateScheduleCell(dayKey, index, field, value) {
@@ -443,6 +515,7 @@ function collectEmptyScheduleSlots() {
     if (!day || !Array.isArray(day.rows)) return;
     day.rows.forEach((row, idx) => {
       if (row.data && row.data.trim() && (!row.nume || !row.nume.trim())) {
+        if (isDateInCoWeekRange(row.data)) return; // săptămâna supraveghetorului — nu se sugerează
         slots.push({ dayKey, idx, date: row.data.trim(), parsed: parseRoDateApprox(row.data) });
       }
     });

@@ -3251,6 +3251,66 @@ select.form-input option { background: var(--bg-elevated); }
 /* ============================================
    PROGRAM ÎNTRUNIRE DE IEȘIRE PE TEREN
    ============================================ */
+.fs-coweek-bar {
+  margin-bottom: 14px;
+}
+
+.fs-coweek-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.fs-coweek-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.fs-coweek-dates {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.fs-coweek-dates label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fs-coweek-dates input[type="date"] {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.fs-coweek-info {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: #f4c43022;
+  border: 1px solid #f4c430;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.fs-sched-row-disabled {
+  opacity: 0.5;
+}
+
+.fs-sched-row-disabled .fs-sched-cell {
+  cursor: not-allowed;
+  background: var(--bg-secondary, rgba(128,128,128,0.08));
+}
+
 .fs-sched-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

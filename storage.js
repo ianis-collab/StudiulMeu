@@ -67,6 +67,10 @@ function defaultFieldServiceSchedule() {
     marti:   { label: 'MARȚI - ora 17 - ZOOM',              color: '#bcd4ea', rows: [] },
     vineri:  { label: 'VINERI - ora 17 - ZOOM',             color: '#f2c4ad', rows: [] },
     sambata: { label: 'SÂMBĂTĂ - ora 9.30 - Sala Regatului', color: '#f4c430', rows: [] },
+    // Săptămâna cu vizita supraveghetorului de circumscripție — dacă e activă,
+    // se afișează un mesaj informativ și se dezactivează programarea
+    // colaboratorilor pentru intervalul de date de mai jos (setat manual).
+    coWeek: { enabled: false, from: '', to: '' },
   };
 }
 
@@ -126,6 +130,11 @@ function loadState() {
       });
     }
     state.fieldServiceSchedule = sch;
+    saveState();
+  } else if (!state.fieldServiceSchedule.coWeek) {
+    // Migrare: programele salvate înainte de introducerea acestei opțiuni
+    // nu au câmpul `coWeek` — îl adăugăm cu valori implicite.
+    state.fieldServiceSchedule.coWeek = { enabled: false, from: '', to: '' };
     saveState();
   }
 }
