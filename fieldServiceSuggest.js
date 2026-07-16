@@ -13,6 +13,23 @@
 // ============================================
 let fsCurrentSuggestion = null;
 
+// Verifică dacă data unui rând (deja parsată în slot.parsed) cade în
+// intervalul de concediu/zi liberă setat pentru un colaborator (opțional,
+// din Setări → Colaboratori). Dacă lipsește `from`/`to`, colaboratorul e
+// mereu disponibil din acest punct de vedere.
+function isCollaboratorUnavailableForSlot(collaborator, slot) {
+  const from = collaborator.unavailableFrom;
+  const to = collaborator.unavailableTo;
+  if (!from && !to) return false;
+  if (slot.parsed == null) return false;
+
+  const fromTime = from ? new Date(from + 'T00:00:00').getTime() : -Infinity;
+  const toTime = to ? new Date(to + 'T23:59:59').getTime() : Infinity;
+  if (isNaN(fromTime) || isNaN(toTime)) return false;
+
+  return slot.parsed >= fromTime && slot.parsed <= toTime;
+}
+
 // Adună toate rândurile cu dată completată dar fără nume, din toate cele
 // 3 zile, și le ordonează cronologic (cât se poate deduce din text).
 function collectEmptyScheduleSlots() {
@@ -74,14 +91,16 @@ function suggestFieldServiceSchedule() {
   const suggestion = [];
 
   slots.forEach((slot, i) => {
-    let candidates = collaborators.filter(c => Array.isArray(c.days) && c.days.includes(slot.dayKey));
+    let candidates = collaborators.filter(c =>
+      Array.isArray(c.days) && c.days.includes(slot.dayKey) && !isCollaboratorUnavailableForSlot(c, slot)
+    );
 
     if (candidates.length === 0) {
-      suggestion.push({
-        ...slot,
-        proposedName: '',
-        reason: `Niciun colaborator disponibil ${FS_DAY_LABELS[slot.dayKey]}.`,
-      });
+      const allForDay = collaborators.filter(c => Array.isArray(c.days) && c.days.includes(slot.dayKey));
+      const reason = allForDay.length > 0
+        ? `Toți colaboratorii disponibili ${FS_DAY_LABELS[slot.dayKey].toLowerCase()} sunt în concediu/indisponibili la ${slot.date}.`
+        : `Niciun colaborator disponibil ${FS_DAY_LABELS[slot.dayKey]}.`;
+      suggestion.push({ ...slot, proposedName: '', reason });
       return;
     }
 

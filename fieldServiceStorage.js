@@ -246,6 +246,8 @@ function addCollaborator() {
     id: Date.now().toString(),
     name: '',
     days: ['marti', 'vineri', 'sambata'],
+    unavailableFrom: '', // concediu / zi liberă — dacă e completat, nu se propune în acest interval
+    unavailableTo: '',
   });
   saveState();
   renderCollaboratorsSettings();
@@ -271,5 +273,16 @@ function toggleCollaboratorDay(id, dayKey) {
   const idx = c.days.indexOf(dayKey);
   if (idx >= 0) c.days.splice(idx, 1);
   else c.days.push(dayKey);
+  saveState();
+}
+
+// O singură zi liberă (ex: o programare) sau o perioadă (ex: o săptămână de
+// concediu) în care colaboratorul NU trebuie propus automat. Pentru o
+// singură zi, `from` și `to` pot fi identice. Câmp opțional — dacă rămâne
+// gol, colaboratorul e disponibil oricând (în funcție doar de zilele bifate).
+function updateCollaboratorUnavailable(id, field, value) {
+  const c = (state.fieldServiceCollaborators || []).find(c => c.id === id);
+  if (!c) return;
+  c[field] = value;
   saveState();
 }

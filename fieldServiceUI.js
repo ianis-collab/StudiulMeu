@@ -288,18 +288,28 @@ function renderCollaboratorsSettings() {
 
   container.innerHTML = list.map(c => `
     <div class="fs-collab-row">
-      <input type="text" class="form-input fs-collab-name" placeholder="Nume colaborator"
-        value="${escHtml(c.name || '')}" oninput="updateCollaboratorName('${c.id}', this.value)" />
-      <div class="fs-collab-days">
-        ${Object.keys(FS_DAY_LABELS).map(dayKey => `
-          <label class="fs-collab-day">
-            <input type="checkbox" ${Array.isArray(c.days) && c.days.includes(dayKey) ? 'checked' : ''}
-              onchange="toggleCollaboratorDay('${c.id}', '${dayKey}')" />
-            ${FS_DAY_LABELS[dayKey]}
-          </label>
-        `).join('')}
+      <div class="fs-collab-main">
+        <input type="text" class="form-input fs-collab-name" placeholder="Nume colaborator"
+          value="${escHtml(c.name || '')}" oninput="updateCollaboratorName('${c.id}', this.value)" />
+        <div class="fs-collab-days">
+          ${Object.keys(FS_DAY_LABELS).map(dayKey => `
+            <label class="fs-collab-day">
+              <input type="checkbox" ${Array.isArray(c.days) && c.days.includes(dayKey) ? 'checked' : ''}
+                onchange="toggleCollaboratorDay('${c.id}', '${dayKey}')" />
+              ${FS_DAY_LABELS[dayKey]}
+            </label>
+          `).join('')}
+        </div>
+        <button type="button" class="fs-collab-del" title="Șterge colaborator" onclick="removeCollaborator('${c.id}')">✕</button>
       </div>
-      <button type="button" class="fs-collab-del" title="Șterge colaborator" onclick="removeCollaborator('${c.id}')">✕</button>
+      <div class="fs-collab-vacation">
+        <span class="fs-collab-vacation-label">🌴 Indisponibil (concediu / o zi liberă):</span>
+        <input type="date" class="form-input fs-collab-date" value="${escHtml(c.unavailableFrom || '')}"
+          onchange="updateCollaboratorUnavailable('${c.id}', 'unavailableFrom', this.value)" />
+        <span class="fs-collab-vacation-sep">–</span>
+        <input type="date" class="form-input fs-collab-date" value="${escHtml(c.unavailableTo || '')}"
+          onchange="updateCollaboratorUnavailable('${c.id}', 'unavailableTo', this.value)" />
+      </div>
     </div>
   `).join('');
 }

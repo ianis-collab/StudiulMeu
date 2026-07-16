@@ -3485,13 +3485,19 @@ select.form-input option { background: var(--bg-elevated); }
    ============================================ */
 .fs-collab-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
   padding: 8px 0;
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
 }
 .fs-collab-row:last-child { border-bottom: none; }
+
+.fs-collab-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
 .fs-collab-name {
   flex: 1 1 140px;
@@ -3526,6 +3532,32 @@ select.form-input option { background: var(--bg-elevated); }
   flex-shrink: 0;
 }
 .fs-collab-del:hover { opacity: 1; }
+
+.fs-collab-vacation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-left: 2px;
+}
+
+.fs-collab-vacation-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.fs-collab-vacation-sep {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.fs-collab-date {
+  flex: 0 1 140px;
+  min-width: 0;
+  font-size: 0.78rem;
+  padding: 4px 6px;
+}
 
 .fs-suggestion-panel {
   margin: 4px 4px 16px;

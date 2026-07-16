@@ -150,6 +150,21 @@ function loadState() {
     state.fieldServiceSchedule.coWeek = { enabled: false, from: '', to: '' };
     saveState();
   }
+
+  // La fel ca la program: dacă nu există deja colaboratori salvați, se
+  // inițializează din field-service-collaborators.local.js (dacă există).
+  // Vezi field-service-collaborators.example.js pentru șablon.
+  if ((!Array.isArray(state.fieldServiceCollaborators) || state.fieldServiceCollaborators.length === 0)
+      && typeof window !== 'undefined' && Array.isArray(window.FIELD_SERVICE_COLLABORATORS_SEED)) {
+    state.fieldServiceCollaborators = window.FIELD_SERVICE_COLLABORATORS_SEED.map((name, i) => ({
+      id: `seed-${Date.now()}-${i}`,
+      name,
+      days: ['marti', 'vineri', 'sambata'],
+      unavailableFrom: '',
+      unavailableTo: '',
+    }));
+    saveState();
+  }
 }
 
 /**
