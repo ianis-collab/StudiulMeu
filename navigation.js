@@ -23,6 +23,11 @@ const pageTitles = {
 let currentPage = 'dashboard';
 
 function navigateTo(page) {
+  // Re-blochează tabelul de program dacă plecăm de pe pagina de serviciu de teren
+  if (currentPage === 'fieldservice' && page !== 'fieldservice' && typeof lockFieldServiceSchedule === 'function') {
+    lockFieldServiceSchedule();
+  }
+
   // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));

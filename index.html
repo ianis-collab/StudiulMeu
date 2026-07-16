@@ -1251,8 +1251,9 @@
 
       <!-- PROGRAM ÎNTRUNIRE DE IEȘIRE PE TEREN -->
       <div class="card">
-        <div class="card-header">
+        <div class="card-header" style="flex-direction:column;align-items:stretch;gap:10px">
           <h3>Program pentru Întrunirea de Ieșire pe Teren</h3>
+          <div id="fsLockBar" class="fs-lock-bar"></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button type="button" class="btn-outline btn-sm" onclick="suggestFieldServiceSchedule()" style="font-size:0.75rem;padding:5px 10px">🧠 Sugerează programul</button>
             <button type="button" class="btn-outline btn-sm" onclick="exportFieldServiceICS()" style="font-size:0.75rem;padding:5px 10px">📅 Exportă în Calendar</button>
@@ -1413,7 +1414,7 @@
       <div class="settings-row">
         <span class="settings-label">Versiune aplicație</span>
         <span class="settings-value">
-          v0.9.2
+          v0.9.3
           <button type="button" class="changelog-link-btn" onclick="openChangelogModal()">Ce e nou</button>
         </span>
       </div>
@@ -1486,6 +1487,13 @@
           <span class="theme-icon-sun">☀️</span>
         </button>
       </div>
+
+      <div class="settings-section-label">🔒 Blocare cu PIN — Program Teren</div>
+      <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:2px;margin-bottom:8px;line-height:1.4;">
+        Fiecare dintre voi doi își pune propriul nume și propriul PIN (cifre și simboluri, ex: 12@3!). Cât timp
+        blocarea e activă, tabelul principal de program se poate edita doar cu unul din cele două PIN-uri.
+      </p>
+      <div id="fsLockSettings"></div>
 
       <div class="settings-section-label">🚶 Colaboratori Program Teren</div>
       <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:2px;margin-bottom:8px;line-height:1.4;">
@@ -1759,6 +1767,10 @@
 <script src="temacursant.js"></script>
 <script src="verses.js"></script>
 <script src="prophecies.js"></script>
+<script src="fieldServiceUtils.js"></script>
+<script src="fieldServiceStorage.js"></script>
+<script src="fieldServiceUI.js"></script>
+<script src="fieldServiceSuggest.js"></script>
 <script src="fieldService.js"></script>
 <script src="library.js"></script>
 <script src="notes.js"></script>

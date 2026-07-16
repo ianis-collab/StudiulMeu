@@ -3251,6 +3251,62 @@ select.form-input option { background: var(--bg-elevated); }
 /* ============================================
    PROGRAM ÎNTRUNIRE DE IEȘIRE PE TEREN
    ============================================ */
+.fs-lock-bar:not(:empty) {
+  margin-bottom: 4px;
+}
+
+.fs-lock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.fs-lock-row-locked {
+  background: #e5393922;
+  border: 1px solid #e53939;
+}
+
+.fs-lock-row-unlocked {
+  background: #22c55e22;
+  border: 1px solid #22c55e;
+}
+
+.fs-lock-icon {
+  font-size: 1rem;
+}
+
+.fs-lock-text {
+  flex: 1;
+  min-width: 140px;
+  font-weight: 600;
+}
+
+.fs-lock-pin-input {
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  max-width: 120px;
+  letter-spacing: 2px;
+}
+
+.fs-lock-settings-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.fs-lock-settings-row .form-input {
+  flex: 1;
+  min-width: 140px;
+}
+
 .fs-coweek-bar {
   margin-bottom: 14px;
 }

@@ -8,6 +8,7 @@ function openSettingsModal() {
   if (typeof renderTransferSettings === 'function') renderTransferSettings();
   if (typeof updateBackupStatusUI === 'function') updateBackupStatusUI();
   if (typeof renderCollaboratorsSettings === 'function') renderCollaboratorsSettings();
+  if (typeof renderFieldServiceLockSettings === 'function') renderFieldServiceLockSettings();
 }
 
 function closeSettingsModal() {
@@ -19,6 +20,14 @@ function closeSettingsModal() {
 // APP_CHANGELOG de fiecare dată când adaugi o funcționalitate.
 // ============================================
 const APP_CHANGELOG = [
+  {
+    version: 'v0.9.3',
+    date: '16 iulie 2026',
+    changes: [
+      'Blocare cu PIN pentru Programul principal de Ieșire pe Teren: din Setări (🔒 Blocare cu PIN — Program Teren) fiecare dintre cei doi colaboratori își setează propriul nume și propriul PIN (cifre și simboluri, ex: @ ! #). Tabelul rămâne blocat până se introduce un PIN corect, iar bara de blocare apare direct sub titlu, deasupra butoanelor.',
+      'Tabelul se re-blochează automat de fiecare dată când pleci de pe pagina de Serviciu de Teren.',
+    ],
+  },
   {
     version: 'v0.9.2',
     date: '15 iulie 2026',

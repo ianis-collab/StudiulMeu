@@ -49,6 +49,19 @@ function defaultAppState() {
     // înceapă următoarea sugestie tot cu aceeași persoană.
     fieldServiceScheduleMeta: { lastFirstPerson: null },
 
+    // Blocare cu PIN a tabelului principal de program (Marți/Vineri/Sâmbătă),
+    // ca să nu poată modifica oricine tabelul. Fiecare din cei doi are
+    // propriul nume + PIN, setate din Setări. Starea „deblocat” NU se
+    // salvează — se resetează automat de fiecare dată când se pleacă de pe
+    // pagină sau se reîncarcă aplicația.
+    fieldServiceLock: {
+      enabled: false,
+      people: [
+        { name: '', pin: '' },
+        { name: '', pin: '' },
+      ],
+    },
+
     // Setări notificări (anunț cu o zi înainte / în ziua respectivă)
     notifSettings: { enabled: false },
   };
