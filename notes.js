@@ -6,80 +6,51 @@
 let editingNoteId = null;
 let activeNotesFilter = 'all';
 
-function _showNotesEditor() {
-  const placeholder = document.getElementById('notesEditorPlaceholder');
-  if (placeholder) placeholder.style.display = 'none';
-  const form = document.getElementById('notesEditorForm');
-  if (form) form.style.display = 'flex';
-}
-
-function _hideNotesEditor() {
-  const placeholder = document.getElementById('notesEditorPlaceholder');
-  if (placeholder) placeholder.style.display = 'flex';
-  const form = document.getElementById('notesEditorForm');
-  if (form) form.style.display = 'none';
-}
-
-function openNewNoteInline() {
+function openNewNoteModal() {
   editingNoteId = null;
-  const label = document.getElementById('notesEditorTitleLabel');
-  if (label) label.textContent = 'Notiță Nouă';
-  const title = document.getElementById('noteTitle');
-  if (title) title.value = '';
-  const content = document.getElementById('noteContent');
-  if (content) content.value = '';
-  const tags = document.getElementById('noteTags');
-  if (tags) tags.value = '';
-  const cat = document.getElementById('noteCategory');
-  if (cat) cat.value = 'general';
-  
+  document.getElementById('noteModalTitle').textContent = 'Notiță Nouă';
+  document.getElementById('noteTitle').value = '';
+  document.getElementById('noteContent').value = '';
+  document.getElementById('noteTags').value = '';
+  document.getElementById('noteCategory').value = 'general';
   const deleteBtn = document.getElementById('deleteNoteBtn');
   if (deleteBtn) deleteBtn.style.display = 'none';
-  _showNotesEditor();
-  if (title) title.focus();
+  document.getElementById('noteModal').classList.add('open');
 }
-
-function openNewNoteModal() { openNewNoteInline(); }
-function closeNoteModal() { _hideNotesEditor(); }
 
 function openNoteCard(id) {
   const note = state.notes.find(n => n.id === id);
   if (!note) return;
   editingNoteId = id;
-  const label = document.getElementById('notesEditorTitleLabel');
-  if (label) label.textContent = 'Editează Notița';
-  const title = document.getElementById('noteTitle');
-  if (title) title.value = note.title;
-  const content = document.getElementById('noteContent');
-  if (content) content.value = note.content;
-  const tags = document.getElementById('noteTags');
-  if (tags) tags.value = (note.tags || []).join(', ');
-  const cat = document.getElementById('noteCategory');
-  if (cat) cat.value = note.category || 'general';
-  
+  document.getElementById('noteModalTitle').textContent = 'Editează Notița';
+  document.getElementById('noteTitle').value = note.title;
+  document.getElementById('noteContent').value = note.content;
+  document.getElementById('noteTags').value = (note.tags || []).join(', ');
+  document.getElementById('noteCategory').value = note.category || 'general';
   const deleteBtn = document.getElementById('deleteNoteBtn');
   if (deleteBtn) deleteBtn.style.display = 'inline-flex';
-  _showNotesEditor();
-  if (title) title.focus();
+  document.getElementById('noteModal').classList.add('open');
 }
 
 function deleteCurrentNote() {
   if (!editingNoteId) return;
-  if (editingNoteId.endsWith('_wt')) {
-    const studyId = editingNoteId.replace('_wt', '');
-    state.wtStudies = state.wtStudies.filter(s => s.id !== studyId);
-  } else if (editingNoteId.endsWith('_wb')) {
-    const wbId = editingNoteId.replace('_wb', '');
-    state.workbooks = state.workbooks.filter(w => w.id !== wbId);
-  }
+  if (confirm('Ștergi această notiță definitiv?')) {
+    // Check if it's linked to a watchtower study or workbook and delete it too
+    if (editingNoteId.endsWith('_wt')) {
+      const studyId = editingNoteId.replace('_wt', '');
+      state.wtStudies = state.wtStudies.filter(s => s.id !== studyId);
+    } else if (editingNoteId.endsWith('_wb')) {
+      const wbId = editingNoteId.replace('_wb', '');
+      state.workbooks = state.workbooks.filter(w => w.id !== wbId);
+    }
 
-  state.notes = state.notes.filter(n => n.id !== editingNoteId);
-  saveState();
-  _hideNotesEditor();
-  editingNoteId = null;
-  renderNotesList();
-  renderDashboard();
-  showToast('Notiță ștearsă. 🗑', 'success');
+    state.notes = state.notes.filter(n => n.id !== editingNoteId);
+    saveState();
+    closeNoteModal();
+    renderNotesList();
+    renderDashboard();
+    showToast('Notiță ștearsă. 🗑', 'success');
+  }
 }
 
 // ============================================
@@ -211,13 +182,15 @@ function saveYearText() {
 }
 
 function deleteYearText() {
-  localStorage.removeItem('studiuMeu_yearText');
-  localStorage.removeItem('studiuMeu_yearColor');
-  localStorage.removeItem('studiuMeu_yearSize');
-  document.getElementById('yearTextEdit').style.display = 'none';
-  document.getElementById('yearTextDisplay').style.display = 'block';
-  loadYearText();
-  showToast('Textul anului șters.', 'success');
+  if (confirm('Ștergi textul anului? (De obicei se schimbă o dată pe an)')) {
+    localStorage.removeItem('studiuMeu_yearText');
+    localStorage.removeItem('studiuMeu_yearColor');
+    localStorage.removeItem('studiuMeu_yearSize');
+    document.getElementById('yearTextEdit').style.display = 'none';
+    document.getElementById('yearTextDisplay').style.display = 'block';
+    loadYearText();
+    showToast('Textul anului șters.', 'success');
+  }
 }
 
 function cancelYearText() {
@@ -230,7 +203,7 @@ function cancelYearText() {
 }
 
 function closeNoteModal() {
-  _hideNotesEditor();
+  document.getElementById('noteModal').classList.remove('open');
   editingNoteId = null;
 }
 
@@ -264,8 +237,7 @@ function saveNote() {
 
   markStudyDay();
   saveState();
-  _hideNotesEditor();
-  editingNoteId = null;
+  closeNoteModal();
   renderNotesList();
   if (currentPage === 'fieldservice') {
     renderFieldServiceList();
@@ -288,32 +260,36 @@ function renderNotesList(filter) {
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div class="empty-state">
-        <svg viewBox="0 0 24 24" width="44" height="44" opacity=".2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      <div class="empty-state full-width">
+        <svg viewBox="0 0 24 24" width="56" height="56" opacity=".25"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
         <p>Nicio notiță în această categorie.</p>
-        <button class="btn-primary" onclick="openNewNoteInline()" style="margin-top:10px">Creează o Notiță</button>
+        <button class="btn-primary" onclick="openNewNoteModal()" style="margin-top:12px">Creează o Notiță</button>
       </div>`;
     return;
   }
 
   const catColors = { watchtower:'#4f8ef7', workbook:'#10c9a0', bible:'#a855f7', general:'#f97b4f', fieldservice:'#ec4899' };
-  const catLabels = { watchtower:'TV', workbook:'VCP', bible:'📖', general:'📝', fieldservice:'🧑‍🤝‍🧑' };
+  const catLabels = { watchtower:'<svg viewBox="0 0 130 60" width="13" height="6" style="vertical-align:middle;margin-right:3px"><path d="M19,56 L19,43 L11,43 L11,36 L2,36 L2,2 L21,2 L21,12 L32,12 L32,2 L46,2 L46,12 L57,12 L57,2 L72,2 L72,12 L83,12 L83,2 L98,2 L98,12 L109,12 L109,2 L127,2 L127,36 L119,36 L119,43 L111,43 L111,56" stroke="currentColor" stroke-width="10" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>TV', workbook:'📋 VCP', bible:'📖 Biblie', general:'📝 General', fieldservice:'🧑‍🤝‍🧑 Serviciu' };
 
   const sorted = [...filtered].sort((a,b) => new Date(b.date) - new Date(a.date));
 
   container.innerHTML = sorted.map(note => `
-    <div class="note-list-item ${editingNoteId === note.id ? 'active' : ''}" onclick="openNoteCard('${note.id}')">
-      <div class="note-list-item-header">
-        <span class="note-list-item-title">${escHtml(note.title)}</span>
-        <span class="note-list-item-badge" style="background:${catColors[note.category]}22;color:${catColors[note.category]}">
+    <div class="note-card" onclick="openNoteCard('${note.id}')">
+      <div class="note-card-header">
+        <span class="note-card-title">${escHtml(note.title)}</span>
+        <span class="badge" style="background:${catColors[note.category]}22;color:${catColors[note.category]};flex-shrink:0">
           ${catLabels[note.category] || '📝'}
         </span>
       </div>
-      <p class="note-list-item-preview">${escHtml((note.content || 'Fără conținut').substring(0, 80))}${note.content && note.content.length > 80 ? '…' : ''}</p>
-      <span class="note-list-item-date">${formatDate(note.date)}</span>
+      <p class="note-card-body">${escHtml(note.content || 'Fără conținut')}</p>
+      <div class="note-card-footer">
+        <span class="note-card-date">${formatDate(note.date)}</span>
+        <div class="note-tags">
+          ${(note.tags || []).slice(0,3).map(t => `<span class="note-tag">#${escHtml(t)}</span>`).join('')}
+        </div>
+      </div>
     </div>
   `).join('');
 }
-
 
 // ============================================

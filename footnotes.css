@@ -1,0 +1,95 @@
+/* ============================================
+   StudiuMeu – FOOTNOTES (stiluri)
+   Marcaje de referință/notă (a, b, c, *) afișate ca superscript
+   interactiv în textul biblic offline, plus popover-ul de notă.
+   Modul separat, nu afectează alte stiluri din style.css.
+   ============================================ */
+
+.bible-read-view {
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.footnote-marker {
+  display: inline-block;
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 0;
+  vertical-align: super;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0 2px;
+  margin-left: 1px;
+  border-radius: 3px;
+  user-select: none;
+}
+
+.footnote-marker:hover,
+.footnote-marker:focus {
+  background: var(--accent-glow);
+  outline: none;
+}
+
+.footnote-marker.has-note {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.footnote-popover {
+  position: absolute;
+  z-index: 3000;
+  width: 280px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  padding: 10px 10px 8px;
+  font-size: 0.82rem;
+}
+
+.footnote-popover-label {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  padding-right: 18px;
+}
+
+.footnote-popover-input {
+  width: 100%;
+  min-height: 68px;
+  font-size: 0.82rem;
+  font-family: var(--font-main);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  resize: vertical;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.footnote-popover-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.footnote-popover-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.footnote-popover-close:hover {
+  color: var(--text-secondary);
+}
