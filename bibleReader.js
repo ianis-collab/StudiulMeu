@@ -105,9 +105,8 @@ function switchTestament(t) {
   brState.testament = t;
   document.getElementById('tab-ot').classList.toggle('active', t === 'ot');
   document.getElementById('tab-nt').classList.toggle('active', t === 'nt');
-  // Reset to book list
+  // Resetează la lista de cărți (fără modal/popup)
   document.getElementById('chapterSelectorCard').style.display = 'none';
-  document.getElementById('chapterNotesCard').style.display = 'none';
   document.getElementById('bibleWelcome').style.display = 'flex';
   document.getElementById('bibleChapterView').style.display = 'none';
   brState.bookSlug = null;
@@ -192,31 +191,35 @@ function openChapter(chapNum) {
   // Build jw.org/ro URL
   const jwUrl = getBibleUrl(brState.bookSlug, chapNum);
 
-  // Show chapter view panel
+  // Ascunde placeholder-ul, arată editorul direct în panou (fără modal/popup)
   document.getElementById('bibleWelcome').style.display = 'none';
   document.getElementById('bibleChapterView').style.display = 'flex';
-  document.getElementById('chapterNotesCard').style.display = 'block';
 
-  // Set title & link
+  // Titlu capitol și link jw.org
   document.getElementById('chapterTitle').textContent = `${brState.bookName} ${chapNum}`;
   const readLink = document.getElementById('jwReadLink');
-  readLink.href = jwUrl;
+  if (readLink) readLink.href = jwUrl;
 
-  // Nav buttons
+  // Butoane navigare
   document.getElementById('btnPrevChap').disabled = chapNum <= 1;
   document.getElementById('btnNextChap').disabled = chapNum >= brState.totalChapters;
 
-  // Notes textarea
-  document.getElementById('chapterNotesText').value = noteData.text || '';
-  document.getElementById('chapterNotesBadge').textContent = `${brState.bookName} ${chapNum}`;
+  // Notițe textarea + badge
+  const notesTextEl = document.getElementById('chapterNotesText');
+  if (notesTextEl) notesTextEl.value = noteData.text || '';
+  const badge = document.getElementById('chapterNotesBadge');
+  if (badge) badge.textContent = `${brState.bookName} ${chapNum}`;
 
-  // Render notes display
+  // Text capitol (scris/lipit de utilizator), salvat separat per capitol
+  if (!state.bibleOfflineText) state.bibleOfflineText = {};
+  const verseTextEl = document.getElementById('chapterVerseText');
+  if (verseTextEl) verseTextEl.value = state.bibleOfflineText[key] || '';
+
+  // Randare notițe salvate și versete marcate
   renderChapterNotesDisplay(noteData);
-
-  // Render marked verses
   renderMarkedVerses(noteData.markedVerses || []);
 
-  // Refresh chapter grid
+  // Reîmprospătare grilă capitole
   refreshChapterButtons();
 }
 
@@ -238,9 +241,9 @@ function openOnJwOrg() {
 
 function backToBooks() {
   document.getElementById('chapterSelectorCard').style.display = 'none';
-  document.getElementById('chapterNotesCard').style.display = 'none';
   brState.bookSlug = null;
   brState.chapter = null;
+  // Arată placeholder-ul, ascunde editorul (fără modal)
   document.getElementById('bibleWelcome').style.display = 'flex';
   document.getElementById('bibleChapterView').style.display = 'none';
   renderBibleBooks(brState.testament);
@@ -264,6 +267,26 @@ function saveChapterNote() {
   markStudyDay();
   refreshChapterButtons();
   renderChapterNotesDisplay(state.bibleNotes[key]);
+}
+
+// Auto-save chapter verse text as user types (debounced)
+let verseTextSaveTimer = null;
+function autoSaveChapterVerseText() {
+  clearTimeout(verseTextSaveTimer);
+  verseTextSaveTimer = setTimeout(saveChapterVerseText, 800);
+}
+
+function saveChapterVerseText() {
+  if (!brState.bookSlug || !brState.chapter) return;
+  if (!state.bibleOfflineText) state.bibleOfflineText = {};
+  const key = `${brState.bookSlug}-${brState.chapter}`;
+  const text = document.getElementById('chapterVerseText').value;
+  if (text.trim()) {
+    state.bibleOfflineText[key] = text;
+  } else {
+    delete state.bibleOfflineText[key];
+  }
+  saveState();
 }
 
 function renderChapterNotesDisplay(noteData) {
@@ -338,133 +361,6 @@ function renderChapterHighlights(list) {
         <a href="${getBibleUrl(brState.bookSlug, brState.chapter)}" target="_blank"
            style="font-size:0.78rem;color:var(--accent);text-decoration:none;font-weight:600">jw.org ↗</a>
       </div>`).join('')}`;
-}
-
-// ============================================
-// BIBLIA – STUDIU OFFLINE
-// Text lipit manual (paste) de utilizator, salvat DOAR local
-// în localStorage (studiuMeu_data → state.bibleOfflineText).
-// Nu este preluat automat de nicăieri și nu urcă pe GitHub;
-// GitHub Pages găzduiește doar codul, nu localStorage-ul.
-// ============================================
-let boState = {
-  testament: 'ot',
-  bookSlug: null,
-  bookName: null,
-  totalChapters: 0,
-  chapter: null,
-};
-
-function initBibleOffline() {
-  if (!state.bibleOfflineText) state.bibleOfflineText = {};
-  renderOfflineBooks(boState.testament);
-  if (boState.bookSlug) renderOfflineChapters();
-}
-
-function switchOfflineTestament(t) {
-  boState.testament = t;
-  document.getElementById('offline-tab-ot').classList.toggle('active', t === 'ot');
-  document.getElementById('offline-tab-nt').classList.toggle('active', t === 'nt');
-  backToOfflineBooks();
-  renderOfflineBooks(t);
-}
-
-function renderOfflineBooks(testament) {
-  const container = document.getElementById('offlineBooksList');
-  if (!container) return;
-  const books = BIBLE_BOOKS[testament];
-  container.innerHTML = books.map(book => `
-    <button class="bible-book-btn ${boState.bookSlug === book.slug ? 'active' : ''}"
-      onclick="selectOfflineBook('${book.slug}', ${book.chapters}, '${testament}')">
-      <span>${escHtml(book.name)}</span>
-      <span class="bible-book-chapters">${book.chapters} cap.</span>
-    </button>
-  `).join('');
-}
-
-function selectOfflineBook(slug, totalChapters, testament) {
-  if (!state.bibleOfflineText) state.bibleOfflineText = {};
-  boState.bookSlug = slug;
-  boState.testament = testament || boState.testament;
-
-  const allBooks = [...BIBLE_BOOKS.ot, ...BIBLE_BOOKS.nt];
-  const book = allBooks.find(b => b.slug === slug);
-  boState.bookName = book ? book.name : slug;
-  boState.totalChapters = book ? book.chapters : totalChapters;
-
-  renderOfflineBooks(boState.testament);
-  document.getElementById('offlineSelectedBookName').textContent = boState.bookName;
-  document.getElementById('offlineChaptersCard').style.display = 'block';
-  renderOfflineChapters();
-}
-
-function renderOfflineChapters() {
-  const container = document.getElementById('offlineChaptersList');
-  if (!container || !boState.bookSlug) return;
-  const buttons = [];
-  for (let i = 1; i <= boState.totalChapters; i++) {
-    const key = `${boState.bookSlug}-${i}`;
-    const hasText = state.bibleOfflineText && state.bibleOfflineText[key] && state.bibleOfflineText[key].trim();
-    buttons.push(`
-      <button class="bible-chapter-btn ${hasText ? 'has-notes' : ''}"
-        onclick="openOfflineChapter(${i})" title="Capitol ${i}${hasText ? ' (text salvat)' : ''}">${i}</button>
-    `);
-  }
-  container.innerHTML = buttons.join('');
-}
-
-function backToOfflineBooks() {
-  document.getElementById('offlineChaptersCard').style.display = 'none';
-  boState.bookSlug = null;
-  boState.chapter = null;
-}
-
-function openOfflineChapter(chapNum) {
-  if (!state.bibleOfflineText) state.bibleOfflineText = {};
-  boState.chapter = chapNum;
-  const key = `${boState.bookSlug}-${chapNum}`;
-  const saved = state.bibleOfflineText[key] || '';
-
-  document.getElementById('offlineModalTitle').textContent = `${boState.bookName} ${chapNum}`;
-  document.getElementById('offlineChapterText').value = saved;
-  document.getElementById('offlineDeleteBtn').style.display = saved ? 'inline-flex' : 'none';
-  // Afișează textul salvat cu marcajele de referință (a, b, c, *) interactive.
-  renderOfflineReadView('offlineChapterReadView', key, saved);
-  document.getElementById('offlineChapterModal').classList.add('open');
-}
-
-function closeOfflineChapterModal() {
-  document.getElementById('offlineChapterModal').classList.remove('open');
-}
-
-function saveOfflineChapter() {
-  if (!boState.bookSlug || !boState.chapter) return;
-  if (!state.bibleOfflineText) state.bibleOfflineText = {};
-  const key = `${boState.bookSlug}-${boState.chapter}`;
-  const text = document.getElementById('offlineChapterText').value.trim();
-  if (text) {
-    state.bibleOfflineText[key] = text;
-  } else {
-    delete state.bibleOfflineText[key];
-  }
-  saveState();
-  renderOfflineReadView('offlineChapterReadView', key, text);
-  closeOfflineChapterModal();
-  renderOfflineChapters();
-  showToast(`${boState.bookName} ${boState.chapter} salvat offline! 📖`, 'success');
-}
-
-function deleteOfflineChapter() {
-  if (!boState.bookSlug || !boState.chapter) return;
-  if (!confirm(`Ștergi textul salvat pentru ${boState.bookName} ${boState.chapter}?`)) return;
-  if (state.bibleOfflineText) {
-    const key = `${boState.bookSlug}-${boState.chapter}`;
-    delete state.bibleOfflineText[key];
-    saveState();
-  }
-  closeOfflineChapterModal();
-  renderOfflineChapters();
-  showToast('Text șters.', 'success');
 }
 
 // ============================================
