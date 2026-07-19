@@ -33,7 +33,6 @@ function defaultAppState() {
     myUser: null,      // { id, name } — identitatea folosită la trimiterea cuvântărilor
     contacts: [],      // [{ id, name }] — persoane cu care s-au trimis/primit cuvântări
     bibleNotes: {},    // notițe/versete marcate per capitol din citirea Bibliei
-    bibleOfflineText: {}, // textul versetelor scris/lipit de utilizator, per capitol (ex. "geneza-1")
 
     // Programul întrunirii de ieșire pe teren (3 coloane: Marți, Vineri, Sâmbătă)
     fieldServiceSchedule: null, // se inițializează cu valori implicite la loadState()
