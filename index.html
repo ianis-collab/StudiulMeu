@@ -347,11 +347,6 @@
             <span>Studiu Biblic Personal</span>
             <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
           </a>
-          <a class="quick-link-item" href="#" onclick="navigateTo('bibleoffline')">
-            <span class="ql-icon">📖</span>
-            <span>Biblia – Studiu Offline</span>
-            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-          </a>
           <a class="quick-link-item" href="https://www.jw.org/ro" target="_blank">
             <span class="ql-icon">🌐</span>
             <span>Deschide jw.org/ro</span>
@@ -408,6 +403,63 @@
           <h3>Paragrafe & Răspunsuri</h3>
           <button class="btn-primary btn-sm" onclick="addWtParagraph()">+ Adaugă Paragraf</button>
         </div>
+
+        <!-- Editor Paragraf Inline (FĂRĂ MODAL, complet funcțional cu AI Assistant) -->
+        <div id="wtParagraphEditor" class="inline-paragraph-editor" style="display:none; margin: 16px; padding: 16px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius)">
+          <div class="card-header" style="padding-top:0">
+            <h4 id="wtParagraphEditorTitle" style="margin:0">Paragraf Nou</h4>
+            <button class="btn-ghost btn-sm" onclick="closeParagraphEditor()">Închide</button>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top: 12px" class="wt-editor-split">
+            <!-- Left inputs -->
+            <div style="display:flex; flex-direction:column; gap:12px">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Număr Paragraf</label>
+                  <input type="number" id="parNumber" class="form-input" placeholder="1" min="1" />
+                </div>
+                <div class="form-group">
+                  <label>Verset(e) asociat(e)</label>
+                  <input type="text" id="parVerse" class="form-input" placeholder="ex: Ioan 13:34" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Idee principală</label>
+                <input type="text" id="parMain" class="form-input" placeholder="Ideea centrală a paragrafului..." />
+              </div>
+              <div class="form-group">
+                <label>Răspunsul meu la întrebare</label>
+                <textarea class="form-textarea" id="parAnswer" placeholder="Răspunsul tău personal, cu cuvintele tale..."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Notițe personale</label>
+                <textarea class="form-textarea" id="parNotes" placeholder="Alte gânduri, conexiuni cu alte scripturi..."></textarea>
+              </div>
+              <div style="display:flex; gap:10px; margin-top:8px">
+                <button class="btn-ghost btn-sm" onclick="closeParagraphEditor()">Anulează</button>
+                <button class="btn-primary btn-sm" onclick="saveParagraph()">Adaugă Paragraf</button>
+              </div>
+            </div>
+
+            <!-- Right AI Assist Panel -->
+            <div class="ai-assistant-panel" style="background:var(--bg-elevated); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border)">
+              <div class="ai-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+                <span class="ai-title" style="font-weight:700; color:var(--text-primary)">🔮 Asistent AI Paragrafe</span>
+                <span class="badge badge-purple">Activ</span>
+              </div>
+              <p class="ai-subtitle" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px">Generează sugestii de răspunsuri și idei de comentarii adaptate la ideea principală.</p>
+              <button type="button" class="btn-primary btn-sm btn-sparkle w-full" onclick="generateParagraphSuggestions()">
+                ✨ Generează Sugestii de Comentariu
+              </button>
+              <div class="ai-suggestions-list" id="aiSuggestionsList" style="margin-top:12px; max-height:220px; overflow-y:auto">
+                <div class="ai-empty-state" style="font-size:0.8rem; color:var(--text-muted)">
+                  Scrie ideea principală în stânga, apoi apasă butonul pentru a primi sugestii.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="wtParagraphsList" class="paragraphs-list">
           <!-- paragraphs added dynamically -->
         </div>
@@ -839,91 +891,80 @@
           <div class="bible-chapters-grid" id="bibleChaptersList"></div>
         </div>
 
-        <!-- Notes for current chapter -->
-        <div class="bible-nav-card" id="chapterNotesCard" style="display:none">
-          <div class="bible-chap-header">
-            <span>📝 Notițe Capitol</span>
-            <span class="badge badge-blue" id="chapterNotesBadge"></span>
-          </div>
-          <textarea class="form-textarea" id="chapterNotesText" placeholder="Scrie notițe, impresii sau versete marcate din acest capitol..."
-            style="min-height:120px" oninput="autoSaveChapterNote()"></textarea>
-          <div class="marked-verses-section">
-            <p class="bible-section-label">Versete marcate</p>
-            <div class="marked-verse-input">
-              <input type="text" id="markedVerseRef" class="form-input" placeholder="ex: v.3, v.16-18" />
-              <button class="btn-primary btn-sm" onclick="addMarkedVerse()">+ Marchează</button>
-            </div>
-            <div id="markedVersesList" class="marked-verses-list"></div>
-          </div>
-        </div>
       </div>
 
-      <!-- RIGHT: Reading panel -->
+      <!-- RIGHT: Editor integrat direct în pagină, fără popup/modal -->
       <div class="bible-reading-panel">
-        <!-- Welcome / no chapter selected -->
-        <div class="bible-welcome" id="bibleWelcome">
-          <div class="bible-welcome-inner">
-            <div class="bible-icon-big">📖</div>
-            
-              
-            </div>
-            <div class="bible-quick-books">
-              
-              </div>
-            </div>
+
+        <!-- Placeholder când nu este selectat niciun capitol -->
+        <div class="bible-inline-placeholder" id="bibleWelcome">
+          <div class="bible-inline-placeholder-inner">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56" opacity="0.25">
+              <path d="M8 56V12a4 4 0 0 1 4-4h28l16 16v32a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4z" stroke="currentColor" stroke-width="2.5"/>
+              <path d="M40 8v16h16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18" y1="32" x2="46" y2="32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="18" y1="40" x2="40" y2="40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p style="color:var(--text-muted);font-size:0.92rem;margin-top:14px;text-align:center">
+              Selectează o carte și un capitol din stânga<br>pentru a deschide editorul de notițe.
+            </p>
           </div>
         </div>
 
-        <!-- Chapter view -->
+        <!-- Editor capitol – apare direct în panou când se selectează un capitol -->
         <div class="bible-chapter-view" id="bibleChapterView" style="display:none">
+
+          <!-- Bara de navigare capitol -->
           <div class="chapter-view-header">
             <div class="chapter-nav-btns">
               <button class="chapter-nav-btn" id="btnPrevChap" onclick="navigateChapter(-1)">‹ Anterior</button>
               <h2 class="chapter-title" id="chapterTitle"></h2>
               <button class="chapter-nav-btn" id="btnNextChap" onclick="navigateChapter(1)">Următor ›</button>
             </div>
-
+            <a id="jwReadLink" href="#" target="_blank" rel="noopener" class="jw-badge" style="margin-top:6px;display:inline-block">
+              Citește pe jw.org ↗
+            </a>
           </div>
 
-          <!-- Saved notes for this chapter -->
+          <!-- Notițe capitol -->
+          <div class="bible-inline-section">
+            <p class="bible-inline-label">📝 Notițe – <span id="chapterNotesBadge"></span></p>
+            <textarea class="form-textarea" id="chapterNotesText"
+              style="min-height:120px"
+              placeholder="Scrie notițe, impresii sau versete marcate din acest capitol..."
+              oninput="autoSaveChapterNote()"></textarea>
+          </div>
+
+          <!-- Versete marcate -->
+          <div class="bible-inline-section">
+            <p class="bible-inline-label">⭐ Versete marcate</p>
+            <div class="marked-verse-input">
+              <input type="text" id="markedVerseRef" class="form-input" placeholder="ex: v.3, v.16-18" />
+              <button class="btn-primary btn-sm" onclick="addMarkedVerse()">+ Marchează</button>
+            </div>
+            <div id="markedVersesList" class="marked-verses-list"></div>
+          </div>
+
+          <!-- Text capitol lipit/scris de utilizator -->
+          <div class="bible-inline-section">
+            <p class="bible-inline-label">📄 Textul capitolului (local)</p>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 8px">
+              Lipește sau scrie textul versetelor. Salvat automat, doar pe acest dispozitiv.
+            </p>
+            <textarea class="form-textarea" id="chapterVerseText"
+              style="min-height:200px;font-size:0.92rem;line-height:1.65"
+              placeholder="Lipește aici textul capitolului..."
+              oninput="autoSaveChapterVerseText()"></textarea>
+          </div>
+
+          <!-- Notițe salvate – afișare -->
           <div class="chapter-notes-display" id="chapterNotesDisplay"></div>
 
-          <!-- Highlights/marked verses -->
+          <!-- Highlights versete marcate -->
           <div class="chapter-highlights" id="chapterHighlights"></div>
+
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- PAGE: BIBLIA - STUDIU OFFLINE -->
-  <section class="page" id="page-bibleoffline">
-    <div class="page-header">
-      <h2>📖 Biblia – Studiu Offline</h2>
-      <p class="page-sub">Lipește (paste) textul capitolelor pentru a le avea offline. Textul este salvat DOAR pe acest dispozitiv (în browser) – nu se urcă pe GitHub.</p>
-    </div>
-
-    <!-- Book list -->
-    <div class="card" id="offlineBooksCard">
-      <div class="card-header">
-        <h3>Alege cartea</h3>
-      </div>
-      <div class="bible-testament-tabs">
-        <button class="testament-tab active" id="offline-tab-ot" onclick="switchOfflineTestament('ot')">Scripturile Ebraice</button>
-        <button class="testament-tab" id="offline-tab-nt" onclick="switchOfflineTestament('nt')">Scripturile Grecești</button>
-      </div>
-      <div class="bible-books-grid" id="offlineBooksList"></div>
-    </div>
-
-    <!-- Chapter grid -->
-    <div class="card" id="offlineChaptersCard" style="display:none;margin-top:16px">
-      <div class="bible-chap-header">
-        <button class="btn-ghost btn-sm" onclick="backToOfflineBooks()">← Înapoi la cărți</button>
-        <span class="bible-book-name" id="offlineSelectedBookName"></span>
-      </div>
-      <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 10px">
-        Capitolele marcate <span style="color:var(--green);font-weight:700">verde</span> au deja text salvat offline. Apasă pe un număr pentru a adăuga sau edita textul.
-      </p>
-      <div class="bible-chapters-grid" id="offlineChaptersList"></div>
     </div>
   </section>
 
@@ -1296,29 +1337,78 @@
 
   <!-- PAGE: NOTES -->
   <section class="page" id="page-notes">
-    <div class="page-header">
-      <h2>📄 Notițele Mele</h2>
-      <p class="page-sub">Toate notițele și studiile salvate</p>
-    </div>
+    <div class="notes-split-layout">
 
-    <div class="notes-toolbar">
-      <div class="filter-tabs" id="notesFilters">
-        <button class="filter-tab active" data-filter="all">Toate</button>
-        <button class="filter-tab" data-filter="watchtower">Turnul de Veghe</button>
-        <button class="filter-tab" data-filter="workbook">Viața creștină</button>
-        <button class="filter-tab" data-filter="bible">Studiu Biblic</button>
-        <button class="filter-tab" data-filter="fieldservice">Serviciu de Teren</button>
-        <button class="filter-tab" data-filter="general">Generale</button>
+      <!-- Panoul stâng: filtre + lista notițelor -->
+      <div class="notes-list-panel">
+        <div class="notes-list-header">
+          <h2>📄 Notițele Mele</h2>
+          <button class="btn-primary btn-sm" onclick="openNewNoteInline()">+ Notiță Nouă</button>
+        </div>
+        <div class="filter-tabs" id="notesFilters" style="flex-wrap:wrap;gap:6px;margin-bottom:12px">
+          <button class="filter-tab active" data-filter="all" onclick="renderNotesList('all')">Toate</button>
+          <button class="filter-tab" data-filter="watchtower" onclick="renderNotesList('watchtower')">TV</button>
+          <button class="filter-tab" data-filter="workbook" onclick="renderNotesList('workbook')">VCP</button>
+          <button class="filter-tab" data-filter="bible" onclick="renderNotesList('bible')">Biblie</button>
+          <button class="filter-tab" data-filter="fieldservice" onclick="renderNotesList('fieldservice')">Teren</button>
+          <button class="filter-tab" data-filter="general" onclick="renderNotesList('general')">Generale</button>
+        </div>
+        <div id="notesList" class="notes-list-stack">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" width="44" height="44" opacity=".2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+            <p>Nicio notiță salvată.</p>
+            <button class="btn-primary" onclick="openNewNoteInline()" style="margin-top:10px">Creează Prima Notiță</button>
+          </div>
+        </div>
       </div>
-      <button class="btn-primary" onclick="openNewNoteModal()">+ Notiță Nouă</button>
-    </div>
 
-    <div id="notesList" class="notes-grid">
-      <div class="empty-state full-width">
-        <svg viewBox="0 0 24 24" width="56" height="56" opacity=".25"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
-        <p>Nicio notiță salvată.</p>
-        <button class="btn-primary" onclick="openNewNoteModal()" style="margin-top:12px">Creează Prima Notiță</button>
+      <!-- Panoul drept: editor inline (fără modal/popup) -->
+      <div class="notes-editor-panel" id="notesEditorPanel">
+        <!-- Placeholder când nicio notiță nu e selectată -->
+        <div class="notes-editor-placeholder" id="notesEditorPlaceholder">
+          <svg viewBox="0 0 24 24" width="52" height="52" opacity=".2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <p style="color:var(--text-muted);font-size:0.9rem;text-align:center;margin-top:12px">
+            Selectează o notiță sau<br>apasă <strong>+ Notiță Nouă</strong>
+          </p>
+        </div>
+
+        <!-- Editor propriu-zis -->
+        <div class="notes-editor-form" id="notesEditorForm" style="display:none">
+          <div class="notes-editor-header">
+            <span class="notes-editor-title-label" id="notesEditorTitleLabel">Notiță Nouă</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn-danger btn-sm" id="deleteNoteBtn" onclick="deleteCurrentNote()" style="display:none">🗑 Șterge</button>
+              <button class="btn-primary btn-sm" onclick="saveNote()">💾 Salvează</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px">
+            <label>Titlu</label>
+            <input type="text" id="noteTitle" class="form-input" placeholder="Titlul notiței..." />
+          </div>
+          <div class="form-row" style="margin-bottom:12px">
+            <div class="form-group">
+              <label>Categoria</label>
+              <select class="form-input" id="noteCategory">
+                <option value="general">Generală</option>
+                <option value="watchtower">Turnul de Veghe</option>
+                <option value="workbook">Viața creștină și predicarea</option>
+                <option value="bible">Studiu Biblic</option>
+                <option value="fieldservice">Serviciu de ieșire pe teren</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Etichete (virgulă)</label>
+              <input type="text" id="noteTags" class="form-input" placeholder="credință, dragoste, speranță" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Conținut</label>
+            <textarea class="form-textarea" id="noteContent" style="min-height:280px" placeholder="Scrie notița ta..."></textarea>
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -1382,27 +1472,6 @@
 
 </main>
 
-<!-- MODAL: Biblia Studiu Offline - text capitol -->
-<div class="modal-overlay" id="offlineChapterModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="offlineModalTitle">Geneza 1</h3>
-      <button class="modal-close" onclick="closeOfflineChapterModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px">
-        Lipește (paste) aici textul capitolului, copiat de pe jw.org sau din altă sursă. Este salvat doar pe acest dispozitiv.
-      </p>
-      <textarea id="offlineChapterText" class="form-textarea" style="min-height:280px;font-size:0.9rem;line-height:1.65" placeholder="Lipește aici textul capitolului..."></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-ghost" onclick="closeOfflineChapterModal()">Anulează</button>
-      <button class="btn-danger" id="offlineDeleteBtn" onclick="deleteOfflineChapter()" style="display:none">🗑 Șterge</button>
-      <button class="btn-primary" onclick="saveOfflineChapter()">💾 Salvează</button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL: Note Editor -->
 <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this) closeSettingsModal()">
   <div class="modal modal-settings">
@@ -1456,6 +1525,37 @@
 
         <p><strong>📅 Exportă în Calendar.</strong> Din pagina Serviciu de Teren poți exporta programul într-un fișier .ics, pe care îl imporți în Google Calendar / Calendar iPhone. Așa primești notificările direct de la telefon (cu o zi înainte și cu 30 minute înainte), garantat, indiferent dacă StudiuMeu e deschis sau nu.</p>
 
+        <p style="margin-bottom:8px"><strong>📲 Cum instalezi aplicația</strong> — o poți adăuga pe ecranul principal, ca pe orice aplicație obișnuită:</p>
+        <div class="install-guide">
+          <div class="install-detected" id="installDetectedBanner">
+            <span class="install-detected-icon" id="installDetectedIcon">📱</span>
+            <span id="installDetectedText">Se detectează dispozitivul…</span>
+          </div>
+          <div class="install-manual-label">Alege manual sistemul de operare mai jos</div>
+          <div class="install-tabs">
+            <button type="button" class="install-tab" id="installBtnAndroid" onclick="showInstallPanel('android')">🤖 Android</button>
+            <button type="button" class="install-tab" id="installBtnIos" onclick="showInstallPanel('ios')">🍎 iPhone</button>
+          </div>
+          <div class="install-panel" id="installPanelAndroid">
+            <ol class="install-steps">
+              <li><span class="install-num">1</span><span>Deschide aplicația în <strong>Google Chrome</strong>.</span></li>
+              <li><span class="install-num">2</span><span>Apasă pe cele <strong>trei puncte</strong> din colțul din dreapta sus.</span></li>
+              <li><span class="install-num">3</span><span>Derulează în jos și alege <strong>Instalează aplicația</strong>.</span></li>
+              <li><span class="install-num">4</span><span>Confirmă apăsând <strong>Instalează</strong> sau <strong>Adaugă</strong> (în funcție de versiunea browserului).</span></li>
+              <li><span class="install-num">5</span><span>Aplicația va apărea pe <strong>ecranul principal</strong> al telefonului.</span></li>
+            </ol>
+          </div>
+          <div class="install-panel" id="installPanelIos">
+            <ol class="install-steps">
+              <li><span class="install-num">1</span><span>Deschide aplicația în <strong>Safari</strong>.</span></li>
+              <li><span class="install-num">2</span><span>Apasă pe butonul <strong>Partajare</strong> (pătratul cu săgeata în sus).</span></li>
+              <li><span class="install-num">3</span><span>Derulează în jos și alege <strong>Adaugă la ecranul principal</strong>.</span></li>
+              <li><span class="install-num">4</span><span>Apasă <strong>Adaugă</strong> pentru confirmare.</span></li>
+              <li><span class="install-num">5</span><span>Aplicația va apărea pe <strong>ecranul principal</strong> al iPhone-ului și se va deschide ca o aplicație.</span></li>
+            </ol>
+          </div>
+        </div>
+
         <p style="margin-bottom:8px"><strong>❓ Întrebări frecvente</strong></p>
         <details class="faq-item">
           <summary>De ce nu se trimite cuvântarea?</summary>
@@ -1475,33 +1575,6 @@
         </details>
 
         <p style="margin-bottom:0;margin-top:10px">Dacă ai sugestii sau observi ceva ce nu funcționează cum trebuie, spune-mi — aplicația e gândită să evolueze pe măsură ce ne este de folos în studiul personal și în pregătirea pentru întruniri.</p>
-      </div>
-
-      <div class="settings-section-label">📲 CUM INSTALEZI APLICAȚIA</div>
-      <div class="install-guide" id="installGuide">
-        <div class="install-detected" id="installDetected">
-          <span id="installDetectedIcon">📱</span>
-          <span id="installDetectedText">Se detectează dispozitivul…</span>
-        </div>
-        <div class="install-tabs">
-          <button type="button" class="install-tab" id="installTabAndroid" onclick="showInstallGuide('android')">🤖 Android</button>
-          <button type="button" class="install-tab" id="installTabIos" onclick="showInstallGuide('ios')">🍎 iPhone</button>
-        </div>
-        <ol class="install-steps" id="installStepsAndroid">
-          <li>Deschide aplicația în <strong>Google Chrome</strong>.</li>
-          <li>Apasă pe cele <strong>trei puncte</strong> din colțul din dreapta sus.</li>
-          <li>Derulează în jos și alege <strong>Instalează aplicația</strong>.</li>
-          <li>Confirmă apăsând <strong>Instalează</strong> sau <strong>Adaugă</strong> (în funcție de versiunea browserului).</li>
-          <li>Aplicația va apărea pe <strong>ecranul principal</strong> al telefonului.</li>
-        </ol>
-        <ol class="install-steps" id="installStepsIos">
-          <li>Deschide aplicația în <strong>Safari</strong>.</li>
-          <li>Apasă pe butonul <strong>Partajare</strong> (pătratul cu săgeata în sus).</li>
-          <li>Derulează în jos și alege <strong>Adaugă la ecranul principal</strong>.</li>
-          <li>Apasă <strong>Adaugă</strong> pentru confirmare.</li>
-          <li>Aplicația va apărea pe <strong>ecranul principal</strong> al iPhone-ului și se va deschide ca o aplicație.</li>
-        </ol>
-        <p class="install-note">💡 Pe Android/Chrome poți folosi și butonul „Instalează aplicația" care apare direct în colțul ecranului.</p>
       </div>
 
       <div class="settings-row">
@@ -1666,108 +1739,6 @@
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeSendModal()">Anulează</button>
       <button class="btn-primary" onclick="sendFromForm()">📤 Trimite</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="noteModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="noteModalTitle">Notiță Nouă</h3>
-      <button class="modal-close" onclick="closeNoteModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Titlu</label>
-          <input type="text" id="noteTitle" class="form-input" placeholder="Titlul notiței..." />
-        </div>
-        <div class="form-group">
-          <label>Categoria</label>
-          <select class="form-input" id="noteCategory">
-            <option value="general">Generală</option>
-            <option value="watchtower">Turnul de Veghe</option>
-            <option value="workbook">Viața creștină și predicarea</option>
-            <option value="bible">Studiu Biblic</option>
-            <option value="fieldservice">Serviciu de iesirea pe teren</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Conținut</label>
-        <textarea class="form-textarea" id="noteContent" style="min-height:200px" placeholder="Scrie notița ta..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Etichete (separate prin virgulă)</label>
-        <input type="text" id="noteTags" class="form-input" placeholder="ex: credință, dragoste, speranță" />
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-ghost" onclick="closeNoteModal()">Anulează</button>
-      <button class="btn-danger" id="deleteNoteBtn" onclick="deleteCurrentNote()" style="display:none">🗑 Șterge</button>
-      <button class="btn-primary" onclick="saveNote()">💾 Salvează</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Watchtower Paragraph Editor -->
-<div class="modal-overlay" id="paragraphModal">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <h3>Paragraf Nou</h3>
-      <button class="modal-close" onclick="closeParagraphModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-body-split">
-        <div class="modal-col-left">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Număr Paragraf</label>
-              <input type="number" id="parNumber" class="form-input" placeholder="1" min="1" />
-            </div>
-            <div class="form-group">
-              <label>Verset(e) asociat(e)</label>
-              <input type="text" id="parVerse" class="form-input" placeholder="ex: Ioan 13:34" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Idee principală</label>
-            <input type="text" id="parMain" class="form-input" placeholder="Ideea centrală a paragrafului..." />
-          </div>
-          <div class="form-group">
-            <label>Răspunsul meu la întrebare</label>
-            <textarea class="form-textarea" id="parAnswer" placeholder="Răspunsul tău personal, cu cuvintele tale..."></textarea>
-          </div>
-          <div class="form-group">
-            <label>Notițe personale</label>
-            <textarea class="form-textarea" id="parNotes" placeholder="Alte gânduri, conexiuni cu alte scripturi..."></textarea>
-          </div>
-        </div>
-        
-        <div class="modal-col-right">
-          <div class="ai-assistant-panel">
-            <div class="ai-header">
-              <span class="ai-title">🔮 Asistent AI Paragrafe</span>
-              <span class="badge badge-purple">Activ</span>
-            </div>
-            <p class="ai-subtitle">Generează sugestii de răspunsuri și idei de comentarii adaptate la ideea principală a paragrafului.</p>
-            
-            <button type="button" class="btn-primary btn-sm btn-sparkle w-full" onclick="generateParagraphSuggestions()">
-              ✨ Generează Sugestii de Comentariu
-            </button>
-            
-            <div class="ai-suggestions-list" id="aiSuggestionsList">
-              <div class="ai-empty-state">
-                Scrie ideea principală a paragrafului în stânga, apoi apasă butonul pentru a primi sugestii de comentarii.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-ghost" onclick="closeParagraphModal()">Anulează</button>
-      <button class="btn-primary" onclick="saveParagraph()">Adaugă Paragraf</button>
     </div>
   </div>
 </div>

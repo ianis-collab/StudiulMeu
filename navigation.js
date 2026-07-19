@@ -13,7 +13,6 @@ const pageTitles = {
   bible: 'Studiu Biblic Personal',
   library: 'Bibliotecă',
   biblereader: 'Citește Biblia',
-  bibleoffline: 'Biblia – Studiu Offline',
   fieldservice: 'Întrunirea de Serviciu de Teren',
   preachingassistant: 'Asistent de predicare',
   notes: 'Notițele Mele',
@@ -72,7 +71,6 @@ function renderPage(page) {
     case 'workbook': break;
     case 'talk5cuv': renderTalk5Page(); break;
     case 'biblereader': initBibleReader(); break;
-    case 'bibleoffline': initBibleOffline(); break;
     case 'fieldservice': renderFieldServiceList(); renderFieldServiceSchedule(); renderFieldServiceExtraTables(); break;
   }
   updateWordCounters();

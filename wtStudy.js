@@ -10,9 +10,10 @@ function addWtParagraph() {
   openParagraphModal();
 }
 
-function openParagraphModal(index = null) {
+function openParagraphEditor(index = null) {
   editingParagraphIndex = index;
-  const modal = document.getElementById('paragraphModal');
+  const editor = document.getElementById('wtParagraphEditor');
+  if (!editor) return;
 
   if (index !== null && wtParagraphs[index]) {
     const p = wtParagraphs[index];
@@ -21,32 +22,41 @@ function openParagraphModal(index = null) {
     document.getElementById('parMain').value = p.main;
     document.getElementById('parAnswer').value = p.answer;
     document.getElementById('parNotes').value = p.notes;
-    modal.querySelector('h3').textContent = 'Editează Paragraf';
+    document.getElementById('wtParagraphEditorTitle').textContent = 'Editează Paragraf';
   } else {
     document.getElementById('parNumber').value = wtParagraphs.length + 1;
     document.getElementById('parVerse').value = '';
     document.getElementById('parMain').value = '';
     document.getElementById('parAnswer').value = '';
     document.getElementById('parNotes').value = '';
-    modal.querySelector('h3').textContent = 'Paragraf Nou';
+    document.getElementById('wtParagraphEditorTitle').textContent = 'Paragraf Nou';
   }
 
   // Reset AI suggestion panel
   const aiList = document.getElementById('aiSuggestionsList');
   if (aiList) {
     aiList.innerHTML = `
-      <div class="ai-empty-state">
-        Scrie ideea principală a paragrafului în stânga, apoi apasă butonul pentru a primi sugestii de comentarii.
+      <div class="ai-empty-state" style="font-size:0.8rem; color:var(--text-muted)">
+        Scrie ideea principală în stânga, apoi apasă butonul pentru a primi sugestii.
       </div>
     `;
   }
 
-  modal.classList.add('open');
+  editor.style.display = 'block';
+}
+
+function openParagraphModal(index = null) {
+  openParagraphEditor(index);
+}
+
+function closeParagraphEditor() {
+  const editor = document.getElementById('wtParagraphEditor');
+  if (editor) editor.style.display = 'none';
+  editingParagraphIndex = null;
 }
 
 function closeParagraphModal() {
-  document.getElementById('paragraphModal').classList.remove('open');
-  editingParagraphIndex = null;
+  closeParagraphEditor();
 }
 
 function saveParagraph() {
@@ -69,7 +79,7 @@ function saveParagraph() {
     wtParagraphs.push(p);
   }
 
-  closeParagraphModal();
+  closeParagraphEditor();
   renderWtParagraphs();
   updateWtProgress();
   showToast('Paragraf salvat! ✅', 'success');

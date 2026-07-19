@@ -9,58 +9,11 @@ function openSettingsModal() {
   if (typeof updateBackupStatusUI === 'function') updateBackupStatusUI();
   if (typeof renderCollaboratorsSettings === 'function') renderCollaboratorsSettings();
   if (typeof renderFieldServiceLockSettings === 'function') renderFieldServiceLockSettings();
-  if (typeof renderInstallGuide === 'function') renderInstallGuide();
+  if (typeof initInstallGuide === 'function') initInstallGuide();
 }
 
 function closeSettingsModal() {
   document.getElementById('settingsModal')?.classList.remove('open');
-}
-
-// ============================================
-// GHID INSTALARE APLICAȚIE (Android / iPhone)
-// Detectează automat sistemul de operare al dispozitivului
-// și afișează pașii corespunzători în Setări. Utilizatorul
-// poate comuta oricând manual între cele două seturi de pași.
-// ============================================
-function detectInstallOS() {
-  const ua = navigator.userAgent || navigator.vendor || window.opera || '';
-  if (/android/i.test(ua)) return 'android';
-  if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
-  // iPadOS 13+ pe Safari se raportează ca Mac, dar are ecran tactil
-  if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) return 'ios';
-  return null;
-}
-
-function showInstallGuide(os) {
-  const tabAndroid = document.getElementById('installTabAndroid');
-  const tabIos = document.getElementById('installTabIos');
-  const stepsAndroid = document.getElementById('installStepsAndroid');
-  const stepsIos = document.getElementById('installStepsIos');
-  if (!tabAndroid || !tabIos || !stepsAndroid || !stepsIos) return;
-
-  tabAndroid.classList.toggle('active', os === 'android');
-  tabIos.classList.toggle('active', os === 'ios');
-  stepsAndroid.classList.toggle('active', os === 'android');
-  stepsIos.classList.toggle('active', os === 'ios');
-}
-
-function renderInstallGuide() {
-  const icon = document.getElementById('installDetectedIcon');
-  const text = document.getElementById('installDetectedText');
-  if (!icon || !text) return;
-
-  const os = detectInstallOS();
-  if (os === 'android') {
-    icon.textContent = '🤖';
-    text.textContent = 'Am detectat un dispozitiv Android — îți arătăm pașii pentru Chrome.';
-  } else if (os === 'ios') {
-    icon.textContent = '🍎';
-    text.textContent = 'Am detectat un iPhone — îți arătăm pașii pentru Safari.';
-  } else {
-    icon.textContent = '💻';
-    text.textContent = 'Nu am putut detecta automat dispozitivul — alege manual mai jos.';
-  }
-  showInstallGuide(os || 'android');
 }
 
 // ============================================
@@ -235,5 +188,49 @@ function exportTalksWord() {
   } catch (error) {
     console.error('Export Word error:', error);
     showToast('Nu s-au putut exporta cuvântările.', 'error');
+  }
+}
+
+// ============================================
+// GHID INSTALARE APLICAȚIE (Android / iPhone) — secțiunea INFORMAȚIE din Setări
+// ============================================
+let _installGuideInitDone = false;
+
+function detectInstallOS() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+  if (/android/i.test(ua)) return 'android';
+  if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+  // iPadOS 13+ pe Safari se maschează ca Mac cu suport touch
+  if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) return 'ios';
+  return null;
+}
+
+function showInstallPanel(os) {
+  document.getElementById('installPanelAndroid')?.classList.toggle('active', os === 'android');
+  document.getElementById('installPanelIos')?.classList.toggle('active', os === 'ios');
+  document.getElementById('installBtnAndroid')?.classList.toggle('active', os === 'android');
+  document.getElementById('installBtnIos')?.classList.toggle('active', os === 'ios');
+}
+
+function initInstallGuide() {
+  if (_installGuideInitDone) return;
+  _installGuideInitDone = true;
+
+  const icon = document.getElementById('installDetectedIcon');
+  const text = document.getElementById('installDetectedText');
+  const detected = detectInstallOS();
+
+  if (detected === 'android') {
+    if (icon) icon.textContent = '🤖';
+    if (text) text.textContent = 'Am detectat un dispozitiv Android — vezi pașii pentru Chrome mai jos.';
+    showInstallPanel('android');
+  } else if (detected === 'ios') {
+    if (icon) icon.textContent = '🍎';
+    if (text) text.textContent = 'Am detectat un iPhone — vezi pașii pentru Safari mai jos.';
+    showInstallPanel('ios');
+  } else {
+    if (icon) icon.textContent = '❔';
+    if (text) text.textContent = 'Nu am putut detecta automat dispozitivul.';
+    showInstallPanel('android');
   }
 }
