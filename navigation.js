@@ -14,6 +14,7 @@ const pageTitles = {
   library: 'Bibliotecă',
   biblereader: 'Citește Biblia',
   fieldservice: 'Întrunirea de Serviciu de Teren',
+  fieldschedulingpreview: 'Programare de ieșire pe teren',
   preachingassistant: 'Asistent de predicare',
   notes: 'Notițele Mele',
   meetings: 'Programul Meu',
@@ -43,7 +44,7 @@ function navigateTo(page) {
   if (page === 'workbook' || page === 'talk5cuv') {
     document.getElementById('navGroup-workbook')?.classList.add('open');
   }
-  if (page === 'fieldservice' || page === 'preachingassistant') {
+  if (page === 'fieldservice' || page === 'preachingassistant' || page === 'fieldschedulingpreview') {
     document.getElementById('navGroup-fieldservice')?.classList.add('open');
   }
 
