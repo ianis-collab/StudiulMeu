@@ -1,7 +1,7 @@
 // StudiuMeu — Service Worker
 // Cache-first pentru fisierele aplicatiei = functionare completa offline.
 
-const CACHE_VERSION = 'studiumeu-v7';
+const CACHE_VERSION = 'studiumeu-v6';
 const CACHE_NAME = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -36,8 +36,7 @@ const APP_SHELL = [
   './wtStudy.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/icon-512-maskable.png',
-  './assets/predicare-din-casa-in-casa.webp'
+  './icons/icon-512-maskable.png'
 ];
 
 self.addEventListener('install', (event) => {
