@@ -3094,6 +3094,15 @@ select.form-input option { background: var(--bg-elevated); }
 }
 .lib-hint strong { color: var(--accent); }
 
+/* ── Iconiță poză MUZICĂ deasupra etichetei "MUZICĂ" (tot pianul vizibil) ── */
+.lib-big-icon-photo { padding: 0; overflow: hidden; }
+.lib-big-icon-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 14px;
+}
+
 /* ── PUBLICAȚII ── */
 .pub-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
 .pub-empty {
