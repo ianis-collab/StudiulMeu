@@ -1,7 +1,7 @@
 // StudiuMeu — Service Worker
 // Cache-first pentru fisierele aplicatiei = functionare completa offline.
 
-const CACHE_VERSION = 'studiumeu-v6';
+const CACHE_VERSION = 'studiumeu-v7';
 const CACHE_NAME = CACHE_VERSION;
 
 const APP_SHELL = [
@@ -9,31 +9,36 @@ const APP_SHELL = [
   './index.html',
   './style.css',
   './manifest.json',
-  './app.js',
-  './bibleReader.js',
-  './dashboard.js',
-  './dataIO.js',
-  './discursTimer.js',
-  './fieldService.js',
-  './library.js',
-  './fontScale.js',
-  './meetings.js',
-  './navigation.js',
-  './notes.js',
-  './notifications.js',
-  './icsExport.js',
-  './prophecies.js',
-  './search.js',
-  './storage.js',
-  './talkTimer.js',
-  './temacursant.js',
-  './theme.js',
-  './transfer.js',
-  './utils.js',
-  './verses.js',
-  './wordCounter.js',
-  './workbook.js',
-  './wtStudy.js',
+  './js/core/app.js',
+  './js/core/dashboard.js',
+  './js/core/dataIO.js',
+  './js/core/fontScale.js',
+  './js/core/navigation.js',
+  './js/core/notifications.js',
+  './js/core/settings.js',
+  './js/core/storage.js',
+  './js/core/theme.js',
+  './js/core/transfer.js',
+  './js/core/utils.js',
+  './js/study/bibleReader.js',
+  './js/study/library.js',
+  './js/study/notes.js',
+  './js/study/prophecies.js',
+  './js/study/search.js',
+  './js/study/temacursant.js',
+  './js/study/verses.js',
+  './js/study/workbook.js',
+  './js/study/wtStudy.js',
+  './js/meetings/discursTimer.js',
+  './js/meetings/icsExport.js',
+  './js/meetings/meetings.js',
+  './js/meetings/talkTimer.js',
+  './js/meetings/wordCounter.js',
+  './js/field-service/fieldService.js',
+  './js/field-service/fieldServiceStorage.js',
+  './js/field-service/fieldServiceSuggest.js',
+  './js/field-service/fieldServiceUI.js',
+  './js/field-service/fieldServiceUtils.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-512-maskable.png'
@@ -46,7 +51,7 @@ self.addEventListener('install', (event) => {
       // field-service-data.local.js e opțional (conține nume reale și nu e pe
       // GitHub) — îl cache-uim separat ca să nu pice tot instalarea dacă lipsește.
       .then(() => caches.open(CACHE_NAME).then((cache) =>
-        cache.add('./field-service-data.local.js').catch(() => {})
+        cache.add('./js/field-service/field-service-data.local.js').catch(() => {})
       ))
       .then(() => self.skipWaiting())
   );

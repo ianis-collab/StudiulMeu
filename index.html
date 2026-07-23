@@ -994,13 +994,11 @@
         <div class="lib-big-icon lib-big-icon-photo">
           <img src="assets/Video.webp" alt="Materiale Video" loading="lazy" />
         </div>
-        <span class="lib-big-label">MATERIALE VIDEO</span>
       </button>
       <button class="lib-big-tab" id="tab-music" data-libtab="music" onclick="switchLibTab('music')">
         <div class="lib-big-icon lib-big-icon-photo">
           <img src="assets/MUZICA.webp" alt="Muzică" loading="lazy" />
         </div>
-        <span class="lib-big-label">MUZICĂ</span>
       </button>
     </div>
 
@@ -1321,7 +1319,7 @@
     <div class="page-header">
       <div style="font-size:2rem;line-height:1;margin-bottom:6px">🖼️</div>
       <h2>Programare de ieșire pe teren</h2>
-      <p class="page-sub">Previzualizare imagine și notiță pentru programare</p>
+      <p class="page-sub">Tabel pentru programarea ieșirilor pe teren</p>
     </div>
 
     <div class="wt-container">
@@ -1332,9 +1330,37 @@
         <div style="display:flex;justify-content:center;margin-bottom:16px">
           <img src="assets/predicare-din-casa-in-casa.webp" alt="Predicare din casă în casă" style="max-width:100%;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,0.15)" />
         </div>
-        <div class="form-group">
-          <label>Notiță</label>
-          <textarea class="form-textarea" id="fieldSchedulingPreviewText" placeholder="Scrie aici o notiță legată de programare..." style="min-height:120px"></textarea>
+      </div>
+
+      <!-- TABEL PROGRAMARE DE IEȘIRE PE TEREN -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Programările mele</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn-outline btn-sm" onclick="addFieldSchedulingRow()" style="font-size:0.75rem;padding:5px 10px">+ Adaugă programare</button>
+            <button type="button" class="btn-outline btn-sm" onclick="saveFieldSchedulingTable()" style="font-size:0.75rem;padding:5px 10px">💾 Salvează</button>
+            <button type="button" class="btn-outline btn-sm" onclick="shareFieldSchedulingWhatsApp()" style="font-size:0.75rem;padding:5px 10px">📲 Trimite pe WhatsApp</button>
+          </div>
+        </div>
+        <p class="page-sub" style="margin:0 0 10px">
+          Fiecare vestitor își programează aici ieșirile. Dacă alegi un coleg cu care ai mai fost programat,
+          apare un avertisment — ca să nu vă programați din nou împreună data viitoare.
+        </p>
+        <div class="fs2-table-wrap">
+          <table class="fs2-table">
+            <thead>
+              <tr>
+                <th>Calendar</th>
+                <th>Ziua</th>
+                <th>Luna</th>
+                <th>Anul</th>
+                <th>Nume vestitor</th>
+                <th>Nume vestitor colaborator</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="fs2TableBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1771,45 +1797,46 @@
 <!-- Date & funcții de bază (fără dependențe) -->
 <!-- Fișier LOCAL, opțional, cu nume reale pentru programul de teren (nu e pe GitHub, vezi .gitignore).
      Dacă nu există, aplicația pornește cu programul gol — nu dă eroare blocantă. -->
-<script src="field-service-data.local.js" onerror="console.info('field-service-data.local.js nu există — programul de teren pornește gol.')"></script>
-<script src="field-service-collaborators.local.js" onerror="console.info('field-service-collaborators.local.js nu există — lista de colaboratori pornește goală.')"></script>
-<script src="storage.js"></script>
-<script src="utils.js"></script>
+<script src="js/field-service/field-service-data.local.js" onerror="console.info('field-service-data.local.js nu există — programul de teren pornește gol.')"></script>
+<script src="js/field-service/field-service-collaborators.local.js" onerror="console.info('field-service-collaborators.local.js nu există — lista de colaboratori pornește goală.')"></script>
+<script src="js/core/storage.js"></script>
+<script src="js/core/utils.js"></script>
 
 <!-- Bibliotecă externă pentru trimitere directă cuvântări (peer-to-peer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js"></script>
 
 <!-- Module funcționale (fiecare fișier = o secțiune a aplicației) -->
-<script src="navigation.js"></script>
-<script src="dashboard.js"></script>
-<script src="wtStudy.js"></script>
-<script src="workbook.js"></script>
-<script src="temacursant.js"></script>
-<script src="verses.js"></script>
-<script src="prophecies.js"></script>
-<script src="fieldServiceUtils.js"></script>
-<script src="fieldServiceStorage.js"></script>
-<script src="fieldServiceUI.js"></script>
-<script src="fieldServiceSuggest.js"></script>
-<script src="fieldService.js"></script>
-<script src="library.js"></script>
-<script src="notes.js"></script>
-<script src="meetings.js"></script>
-<script src="search.js"></script>
-<script src="theme.js"></script>
-<script src="bibleReader.js"></script>
-<script src="dataIO.js"></script>
-<script src="settings.js"></script>
-<script src="discursTimer.js"></script>
-<script src="talkTimer.js"></script>
-<script src="fontScale.js"></script>
-<script src="wordCounter.js"></script>
-<script src="transfer.js"></script>
-<script src="notifications.js"></script>
-<script src="icsExport.js"></script>
+<script src="js/core/navigation.js"></script>
+<script src="js/core/dashboard.js"></script>
+<script src="js/study/wtStudy.js"></script>
+<script src="js/study/workbook.js"></script>
+<script src="js/study/temacursant.js"></script>
+<script src="js/study/verses.js"></script>
+<script src="js/study/prophecies.js"></script>
+<script src="js/field-service/fieldServiceUtils.js"></script>
+<script src="js/field-service/fieldServiceStorage.js"></script>
+<script src="js/field-service/fieldServiceUI.js"></script>
+<script src="js/field-service/fieldServiceSuggest.js"></script>
+<script src="js/field-service/fieldScheduling.js"></script>
+<script src="js/field-service/fieldService.js"></script>
+<script src="js/study/library.js"></script>
+<script src="js/study/notes.js"></script>
+<script src="js/meetings/meetings.js"></script>
+<script src="js/study/search.js"></script>
+<script src="js/core/theme.js"></script>
+<script src="js/study/bibleReader.js"></script>
+<script src="js/core/dataIO.js"></script>
+<script src="js/core/settings.js"></script>
+<script src="js/meetings/discursTimer.js"></script>
+<script src="js/meetings/talkTimer.js"></script>
+<script src="js/core/fontScale.js"></script>
+<script src="js/meetings/wordCounter.js"></script>
+<script src="js/core/transfer.js"></script>
+<script src="js/core/notifications.js"></script>
+<script src="js/meetings/icsExport.js"></script>
 
 <!-- Inițializare generală (trebuie încărcat ultimul) -->
-<script src="app.js"></script>
+<script src="js/core/app.js"></script>
 
 <div id="talk5-toolbar" style="position:fixed;top:10px;right:10px;z-index:9999;">
 
