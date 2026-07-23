@@ -132,6 +132,80 @@ function shareFieldSchedulingWhatsApp() {
 }
 
 // ============================================
+// EXPORTĂ ÎN CALENDAR (.ics)
+// Reutilizează icsPad/icsFormatDate/icsEscape din js/meetings/icsExport.js
+// (scripturile sunt încărcate global, deci funcțiile sunt disponibile la
+// momentul apăsării butonului, indiferent de ordinea fișierelor).
+// ============================================
+function buildFieldSchedulingICS() {
+  const rows = Array.isArray(state.fieldSchedulingRows) ? state.fieldSchedulingRows : [];
+  const withDate = rows.filter(r => r.date);
+  if (withDate.length === 0) return null;
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//StudiuMeu//Programare Ieșire pe Teren//RO',
+    'CALSCALE:GREGORIAN',
+  ];
+
+  withDate.forEach((row, i) => {
+    const [y, m, d] = row.date.split('-').map(Number);
+    const [hh, mm] = (row.time && row.time.trim()) ? row.time.split(':').map(Number) : [9, 0];
+    const start = new Date(y, m - 1, d, hh, mm, 0);
+    const end = new Date(start.getTime() + 60 * 60000);
+
+    const names = [row.vestitor, row.coleg].map(n => (n || '').trim()).filter(Boolean).join(' + ');
+    const summary = names ? `Ieșire pe teren — ${names}` : 'Ieșire pe teren';
+    const uid = `studiumeu-fs2-${row.id || i}@studiumeu.local`;
+
+    lines.push(
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${icsFormatDate(new Date())}Z`,
+      `DTSTART:${icsFormatDate(start)}`,
+      `DTEND:${icsFormatDate(end)}`,
+      `SUMMARY:${icsEscape(summary)}`,
+      `DESCRIPTION:${icsEscape('Programare de ieșire pe teren - StudiuMeu')}`,
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:${icsEscape('Mâine: ' + summary)}`,
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT30M',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:${icsEscape(summary)}`,
+      'END:VALARM',
+      'END:VEVENT'
+    );
+  });
+
+  lines.push('END:VCALENDAR');
+  return { ics: lines.join('\r\n'), count: withDate.length };
+}
+
+function exportFieldSchedulingICS() {
+  const result = buildFieldSchedulingICS();
+  if (!result) {
+    showToast('Nu există nicio programare cu dată completată pentru export.', 'error');
+    return;
+  }
+
+  const blob = new Blob([result.ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'programare-iesire-teren.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast(`Calendar exportat (${result.count} evenimente) 📅 — deschide fișierul ca să-l imporți.`, 'success');
+}
+
+// ============================================
 // RANDARE
 // ============================================
 function renderFieldSchedulingTable() {
