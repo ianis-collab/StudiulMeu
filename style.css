@@ -3783,6 +3783,7 @@ select.form-input option { background: var(--bg-elevated); }
 }
 
 .fs2-cell-date-wrap { min-width: 130px; }
+.fs2-cell-time-wrap { min-width: 90px; }
 
 .fs2-cell-del {
   width: 32px;

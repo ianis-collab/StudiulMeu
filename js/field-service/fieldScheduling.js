@@ -3,7 +3,7 @@
 // ============================================
 // PROGRAMARE DE IEȘIRE PE TEREN
 // Tabel în care fiecare vestitor își programează propriile ieșiri.
-// Fiecare rând = { id, date (yyyy-mm-dd), vestitor, coleg }.
+// Fiecare rând = { id, date (yyyy-mm-dd), time (hh:mm), vestitor, coleg }.
 // Ziua / Luna / Anul afișate în tabel se calculează din `date`, nu se
 // salvează separat — un singur câmp de dată e mai simplu de întreținut
 // și elimină erorile de tastare.
@@ -12,6 +12,9 @@
 // aplicația verifică restul rândurilor salvate: dacă aceeași pereche a
 // mai fost programată împreună, afișează un avertisment sub rând, ca
 // vestitorul să știe și să aleagă alt coleg data viitoare.
+//
+// Fiecare vestitor are datele lui doar pe telefonul/calculatorul propriu
+// (nu există un tabel comun online) — vezi și file-handling din storage.js.
 //
 // Depinde de: state.fieldSchedulingRows (storage.js), saveState(),
 // escHtml() / showToast() (utils.js).
@@ -23,7 +26,7 @@ const FS2_MONTHS = [
 ];
 
 function defaultFieldSchedulingRow() {
-  return { id: Date.now().toString() + Math.random().toString(36).slice(2, 6), date: '', vestitor: '', coleg: '' };
+  return { id: Date.now().toString() + Math.random().toString(36).slice(2, 6), date: '', time: '', vestitor: '', coleg: '' };
 }
 
 // Descompune un string yyyy-mm-dd în { ziua, luna, anul } pentru afișare.
@@ -105,9 +108,10 @@ function shareFieldSchedulingWhatsApp() {
   sorted.forEach(r => {
     const { ziua, luna, anul } = fs2DateParts(r.date);
     const dataText = ziua ? `${ziua} ${luna} ${anul}` : '—';
+    const oraText = r.time && r.time.trim() ? ` ora ${r.time.trim()}` : '';
     const vestitor = r.vestitor && r.vestitor.trim() ? r.vestitor.trim() : '—';
     const coleg = r.coleg && r.coleg.trim() ? r.coleg.trim() : '—';
-    parts.push(`• ${dataText}: ${vestitor} + ${coleg}`);
+    parts.push(`• ${dataText}${oraText}: ${vestitor} + ${coleg}`);
   });
 
   const text = parts.join('\n');
@@ -128,7 +132,7 @@ function renderFieldSchedulingTable() {
   if (rows.length === 0) {
     container.innerHTML = `
       <tr>
-        <td colspan="7" class="fs2-empty">Nicio programare încă. Apasă „+ Adaugă programare”.</td>
+        <td colspan="8" class="fs2-empty">Nicio programare încă. Apasă „+ Adaugă programare”.</td>
       </tr>`;
     return;
   }
@@ -138,7 +142,7 @@ function renderFieldSchedulingTable() {
     const match = fs2FindPairMatch(row.vestitor, row.coleg, row.id);
     const warningRow = match ? `
       <tr class="fs2-warning-row">
-        <td colspan="7">
+        <td colspan="8">
           ⚠️ ${escHtml((row.vestitor || '').trim())} a mai fost programat cu ${escHtml((row.coleg || '').trim())}
           ${match.date ? `pe ${escHtml(fs2DateParts(match.date).ziua)} ${escHtml(fs2DateParts(match.date).luna)} ${escHtml(fs2DateParts(match.date).anul)}` : 'anterior'}.
           Alege alt coleg data aceasta, dacă se poate.
@@ -154,6 +158,10 @@ function renderFieldSchedulingTable() {
         <td class="fs2-cell fs2-cell-part">${ziua || '—'}</td>
         <td class="fs2-cell fs2-cell-part">${luna || '—'}</td>
         <td class="fs2-cell fs2-cell-part">${anul || '—'}</td>
+        <td class="fs2-cell fs2-cell-time-wrap">
+          <input type="time" class="fs2-cell-input fs2-cell-time" value="${escHtml(row.time || '')}"
+            onchange="updateFieldSchedulingCell('${row.id}', 'time', this.value)" />
+        </td>
         <td class="fs2-cell">
           <input type="text" class="fs2-cell-input" placeholder="Nume vestitor" value="${escHtml(row.vestitor || '')}"
             oninput="updateFieldSchedulingCell('${row.id}', 'vestitor', this.value)" />
