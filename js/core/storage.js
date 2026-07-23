@@ -71,6 +71,7 @@ function defaultAppState() {
     // `date` e un string yyyy-mm-dd (din <input type="date">); ziua/luna/
     // anul afișate în tabel se calculează din el, nu se salvează separat.
     fieldSchedulingRows: [],
+    standSchedulingRows: [],
   };
 }
 

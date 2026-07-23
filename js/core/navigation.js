@@ -15,6 +15,7 @@ const pageTitles = {
   biblereader: 'Citește Biblia',
   fieldservice: 'Întrunirea de Serviciu de Teren',
   fieldschedulingpreview: 'Programare de ieșire pe teren',
+  standscheduling: 'Programare de ieșire cu standul',
   preachingassistant: 'Asistent de predicare',
   notes: 'Notițele Mele',
   meetings: 'Programul Meu',
@@ -44,7 +45,7 @@ function navigateTo(page) {
   if (page === 'workbook' || page === 'talk5cuv') {
     document.getElementById('navGroup-workbook')?.classList.add('open');
   }
-  if (page === 'fieldservice' || page === 'preachingassistant' || page === 'fieldschedulingpreview') {
+  if (page === 'fieldservice' || page === 'preachingassistant' || page === 'fieldschedulingpreview' || page === 'standscheduling') {
     document.getElementById('navGroup-fieldservice')?.classList.add('open');
   }
 
@@ -74,6 +75,7 @@ function renderPage(page) {
     case 'biblereader': initBibleReader(); break;
     case 'fieldservice': renderFieldServiceList(); renderFieldServiceSchedule(); renderFieldServiceExtraTables(); break;
     case 'fieldschedulingpreview': renderFieldSchedulingTable(); break;
+    case 'standscheduling': renderStandSchedulingTable(); break;
   }
   updateWordCounters();
 }

@@ -146,6 +146,10 @@
           <span class="nav-subitem-dot">🖼️</span>
           Programare de ieșire pe teren
         </a>
+        <a href="#" class="nav-item nav-subitem" data-page="standscheduling" id="nav-standscheduling">
+          <span class="nav-subitem-dot">🖼️</span>
+          Programare de ieșire cu standul
+        </a>
         <a href="#" class="nav-item nav-subitem" data-page="preachingassistant" id="nav-preachingassistant">
           <span class="nav-subitem-dot">🗣️</span>
           Asistent de predicare
@@ -1367,6 +1371,59 @@
     </div>
   </section>
 
+  <!-- PAGE: PROGRAMARE DE IEȘIRE CU STANDUL (previzualizare poză + tabel) -->
+  <section class="page" id="page-standscheduling">
+    <div class="page-header">
+      <div style="font-size:2rem;line-height:1;margin-bottom:6px">🖼️</div>
+      <h2>Programare de ieșire cu standul</h2>
+      <p class="page-sub">Tabel pentru programarea ieșirilor cu standul</p>
+    </div>
+
+    <div class="wt-container">
+      <div class="card">
+        <div class="card-header">
+          <h3>Imagine</h3>
+        </div>
+        <div style="display:flex;justify-content:center;margin-bottom:16px">
+          <img src="assets/Predicare%20cu%20standu.webp" alt="Predicare cu standul" style="max-width:100%;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,0.15)" />
+        </div>
+      </div>
+
+      <!-- TABEL PROGRAMARE DE IEȘIRE CU STANDUL -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Programările mele</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn-outline btn-sm" onclick="addStandSchedulingRow()" style="font-size:0.75rem;padding:5px 10px">+ Adaugă programare</button>
+            <button type="button" class="btn-outline btn-sm" onclick="saveStandSchedulingTable()" style="font-size:0.75rem;padding:5px 10px">💾 Salvează</button>
+            <button type="button" class="btn-outline btn-sm" onclick="shareStandSchedulingWhatsApp()" style="font-size:0.75rem;padding:5px 10px">📲 Trimite pe WhatsApp</button>
+          </div>
+        </div>
+        <p class="page-sub" style="margin:0 0 10px">
+          Fiecare vestitor își programează aici ieșirile cu standul. Dacă alegi un coleg cu care ai mai fost programat,
+          apare un avertisment — ca să nu vă programați din nou împreună data viitoare.
+        </p>
+        <div class="fs2-table-wrap">
+          <table class="fs2-table">
+            <thead>
+              <tr>
+                <th>Calendar</th>
+                <th>Ziua</th>
+                <th>Luna</th>
+                <th>Anul</th>
+                <th>Ora</th>
+                <th>Nume vestitor</th>
+                <th>Nume vestitor colaborator</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="standTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- PAGE: ASISTENT DE PREDICARE (în lucru) -->
   <section class="page" id="page-preachingassistant">
     <div class="page-header">
@@ -1820,6 +1877,7 @@
 <script src="js/field-service/fieldServiceUI.js"></script>
 <script src="js/field-service/fieldServiceSuggest.js"></script>
 <script src="js/field-service/fieldScheduling.js"></script>
+<script src="js/field-service/standScheduling.js"></script>
 <script src="js/field-service/fieldService.js"></script>
 <script src="js/study/library.js"></script>
 <script src="js/study/notes.js"></script>
