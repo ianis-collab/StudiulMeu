@@ -191,9 +191,6 @@ const FS_DAY_LABELS = {
 };
 
 async function swCheckScheduleAndNotify() {
-  const schedule = await nmIdbGet('schedule');
-  if (!schedule) return;
-
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(now.getDate() + 1);
@@ -202,20 +199,63 @@ async function swCheckScheduleAndNotify() {
   let ledger = await nmIdbGet('notifSent');
   if (!ledger || ledger.date !== todayStr) ledger = { date: todayStr, keys: [] };
 
-  for (const dayKey of Object.keys(FS_DAY_LABELS)) {
-    const day = schedule[dayKey];
-    if (!day || !Array.isArray(day.rows)) continue;
+  const schedule = await nmIdbGet('schedule');
+  if (schedule) {
+    for (const dayKey of Object.keys(FS_DAY_LABELS)) {
+      const day = schedule[dayKey];
+      if (!day || !Array.isArray(day.rows)) continue;
 
-    for (let i = 0; i < day.rows.length; i++) {
-      const row = day.rows[i];
-      const parsed = parseRoDate(row.data);
-      if (!parsed) continue;
+      for (let i = 0; i < day.rows.length; i++) {
+        const row = day.rows[i];
+        const parsed = parseRoDate(row.data);
+        if (!parsed) continue;
 
-      if (parsed.day === now.getDate() && parsed.month === now.getMonth()) {
-        const key = `${dayKey}-${i}-today`;
+        if (parsed.day === now.getDate() && parsed.month === now.getMonth()) {
+          const key = `${dayKey}-${i}-today`;
+          if (!ledger.keys.includes(key)) {
+            await self.registration.showNotification(`Astăzi: ${FS_DAY_LABELS[dayKey]}`, {
+              body: `${row.nume || '—'} este programat/ă astăzi.`,
+              icon: './icons/icon-192.png',
+              badge: './icons/icon-192.png',
+              tag: key,
+            });
+            ledger.keys.push(key);
+          }
+        }
+
+        if (parsed.day === tomorrow.getDate() && parsed.month === tomorrow.getMonth()) {
+          const key = `${dayKey}-${i}-tomorrow`;
+          if (!ledger.keys.includes(key)) {
+            await self.registration.showNotification(`Mâine: ${FS_DAY_LABELS[dayKey]}`, {
+              body: `Anunță-l/o pe ${row.nume || '—'} pentru mâine.`,
+              icon: './icons/icon-192.png',
+              badge: './icons/icon-192.png',
+              tag: key,
+            });
+            ledger.keys.push(key);
+          }
+        }
+      }
+    }
+  }
+
+  // Tabelul personal "Programare de ieșire pe teren"
+  const schedulingRows = await nmIdbGet('fieldSchedulingRows');
+  if (Array.isArray(schedulingRows)) {
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    for (const row of schedulingRows) {
+      if (!row.date) continue;
+      const vestitor = (row.vestitor || '').trim();
+      const coleg = (row.coleg || '').trim();
+      const cu = coleg ? `Cu ${coleg}.` : '';
+      const body = [vestitor, cu].filter(Boolean).join(' — ');
+
+      if (row.date === todayStr) {
+        const key = `fs2-${row.id}-today`;
         if (!ledger.keys.includes(key)) {
-          await self.registration.showNotification(`Astăzi: ${FS_DAY_LABELS[dayKey]}`, {
-            body: `${row.nume || '—'} este programat/ă astăzi.`,
+          await self.registration.showNotification('Astăzi ai ieșire pe teren', {
+            body: body || 'Ai o ieșire programată astăzi.',
             icon: './icons/icon-192.png',
             badge: './icons/icon-192.png',
             tag: key,
@@ -224,11 +264,11 @@ async function swCheckScheduleAndNotify() {
         }
       }
 
-      if (parsed.day === tomorrow.getDate() && parsed.month === tomorrow.getMonth()) {
-        const key = `${dayKey}-${i}-tomorrow`;
+      if (row.date === tomorrowStr) {
+        const key = `fs2-${row.id}-tomorrow`;
         if (!ledger.keys.includes(key)) {
-          await self.registration.showNotification(`Mâine: ${FS_DAY_LABELS[dayKey]}`, {
-            body: `Anunță-l/o pe ${row.nume || '—'} pentru mâine.`,
+          await self.registration.showNotification('Mâine ai ieșire pe teren', {
+            body: body || 'Ai o ieșire programată mâine.',
             icon: './icons/icon-192.png',
             badge: './icons/icon-192.png',
             tag: key,

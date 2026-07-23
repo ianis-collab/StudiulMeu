@@ -87,6 +87,7 @@ function deleteFieldSchedulingRow(id) {
 
 function saveFieldSchedulingTable() {
   saveState();
+  if (typeof checkScheduleNotifications === 'function') checkScheduleNotifications();
   showToast('Programare salvată! 💾', 'success');
 }
 

@@ -83,6 +83,7 @@ async function requestNotifPermission() {
     state.notifSettings.enabled = true;
     saveState();
     await mirrorScheduleToIdb();
+    await mirrorSchedulingToIdb();
     await registerPeriodicSync();
     checkScheduleNotifications();
     showToast('Notificări activate! 🔔', 'success');
@@ -146,6 +147,13 @@ async function mirrorScheduleToIdb() {
   } catch (e) { console.error('Notif idb mirror error:', e); }
 }
 
+// La fel, dar pentru tabelul personal "Programare de ieșire pe teren".
+async function mirrorSchedulingToIdb() {
+  try {
+    await nmIdbSet('fieldSchedulingRows', state.fieldSchedulingRows || []);
+  } catch (e) { console.error('Notif idb mirror error:', e); }
+}
+
 async function getSentLedger() {
   const todayStr = new Date().toISOString().split('T')[0];
   let ledger = await nmIdbGet('notifSent');
@@ -164,9 +172,9 @@ const FS_DAY_LABELS = {
 async function checkScheduleNotifications() {
   if (!isNotifEnabled()) return;
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
-  if (!state.fieldServiceSchedule) return;
 
   await mirrorScheduleToIdb();
+  await mirrorSchedulingToIdb();
 
   const now = new Date();
   const tomorrow = new Date(now);
@@ -174,41 +182,85 @@ async function checkScheduleNotifications() {
 
   const ledger = await getSentLedger();
 
-  for (const dayKey of Object.keys(FS_DAY_LABELS)) {
-    const day = state.fieldServiceSchedule[dayKey];
-    if (!day || !Array.isArray(day.rows)) continue;
+  if (state.fieldServiceSchedule) {
+    for (const dayKey of Object.keys(FS_DAY_LABELS)) {
+      const day = state.fieldServiceSchedule[dayKey];
+      if (!day || !Array.isArray(day.rows)) continue;
 
-    day.rows.forEach((row, i) => {
-      const parsed = parseRoDate(row.data);
-      if (!parsed) return;
+      day.rows.forEach((row, i) => {
+        const parsed = parseRoDate(row.data);
+        if (!parsed) return;
 
-      if (parsed.day === now.getDate() && parsed.month === now.getMonth()) {
-        const key = `${dayKey}-${i}-today`;
-        if (!ledger.keys.includes(key)) {
-          showScheduleNotification(
-            `Astăzi: ${FS_DAY_LABELS[dayKey]}`,
-            `${row.nume || '—'} este programat/ă astăzi.`,
-            key
-          );
-          ledger.keys.push(key);
+        if (parsed.day === now.getDate() && parsed.month === now.getMonth()) {
+          const key = `${dayKey}-${i}-today`;
+          if (!ledger.keys.includes(key)) {
+            showScheduleNotification(
+              `Astăzi: ${FS_DAY_LABELS[dayKey]}`,
+              `${row.nume || '—'} este programat/ă astăzi.`,
+              key
+            );
+            ledger.keys.push(key);
+          }
         }
-      }
 
-      if (parsed.day === tomorrow.getDate() && parsed.month === tomorrow.getMonth()) {
-        const key = `${dayKey}-${i}-tomorrow`;
-        if (!ledger.keys.includes(key)) {
-          showScheduleNotification(
-            `Mâine: ${FS_DAY_LABELS[dayKey]}`,
-            `Anunță-l/o pe ${row.nume || '—'} pentru mâine.`,
-            key
-          );
-          ledger.keys.push(key);
+        if (parsed.day === tomorrow.getDate() && parsed.month === tomorrow.getMonth()) {
+          const key = `${dayKey}-${i}-tomorrow`;
+          if (!ledger.keys.includes(key)) {
+            showScheduleNotification(
+              `Mâine: ${FS_DAY_LABELS[dayKey]}`,
+              `Anunță-l/o pe ${row.nume || '—'} pentru mâine.`,
+              key
+            );
+            ledger.keys.push(key);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
+  checkFieldSchedulingNotifications(ledger, now, tomorrow);
+
   await nmIdbSet('notifSent', ledger);
+}
+
+// Notificare pentru tabelul personal "Programare de ieșire pe teren":
+// îl anunță pe vestitorul care și-a scris numele, pe telefonul lui, azi
+// și cu o zi înainte de ieșirea programată.
+function checkFieldSchedulingNotifications(ledger, now, tomorrow) {
+  const rows = Array.isArray(state.fieldSchedulingRows) ? state.fieldSchedulingRows : [];
+  const todayStr = now.toISOString().split('T')[0];
+  const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+  rows.forEach((row) => {
+    if (!row.date) return;
+    const vestitor = (row.vestitor || '').trim();
+    const coleg = (row.coleg || '').trim();
+    const cu = coleg ? `Cu ${coleg}.` : '';
+
+    if (row.date === todayStr) {
+      const key = `fs2-${row.id}-today`;
+      if (!ledger.keys.includes(key)) {
+        showScheduleNotification(
+          'Astăzi ai ieșire pe teren',
+          [vestitor, cu].filter(Boolean).join(' — ') || 'Ai o ieșire programată astăzi.',
+          key
+        );
+        ledger.keys.push(key);
+      }
+    }
+
+    if (row.date === tomorrowStr) {
+      const key = `fs2-${row.id}-tomorrow`;
+      if (!ledger.keys.includes(key)) {
+        showScheduleNotification(
+          'Mâine ai ieșire pe teren',
+          [vestitor, cu].filter(Boolean).join(' — ') || 'Ai o ieșire programată mâine.',
+          key
+        );
+        ledger.keys.push(key);
+      }
+    }
+  });
 }
 
 async function showScheduleNotification(title, body, tag) {
