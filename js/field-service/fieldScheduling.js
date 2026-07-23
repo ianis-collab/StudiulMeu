@@ -77,6 +77,17 @@ function updateFieldSchedulingCell(id, field, value) {
   renderFieldSchedulingTable();
 }
 
+// Folosită la fiecare literă tastată în câmpurile de nume: salvează
+// valoarea dar NU redesenează tabelul (redesenarea ar distruge input-ul
+// și te-ar scoate din câmp după fiecare literă). Tabelul se redesenează
+// abia când ieși din câmp (blur), ca să se recalculeze avertismentul.
+function updateFieldSchedulingCellSilent(id, field, value) {
+  const row = (state.fieldSchedulingRows || []).find(r => r.id === id);
+  if (!row) return;
+  row[field] = value;
+  saveState();
+}
+
 function deleteFieldSchedulingRow(id) {
   if (!confirm('Ștergi această programare?')) return;
   state.fieldSchedulingRows = (state.fieldSchedulingRows || []).filter(r => r.id !== id);
@@ -165,11 +176,13 @@ function renderFieldSchedulingTable() {
         </td>
         <td class="fs2-cell">
           <input type="text" class="fs2-cell-input" placeholder="Nume vestitor" value="${escHtml(row.vestitor || '')}"
-            oninput="updateFieldSchedulingCell('${row.id}', 'vestitor', this.value)" />
+            oninput="updateFieldSchedulingCellSilent('${row.id}', 'vestitor', this.value)"
+            onblur="renderFieldSchedulingTable()" />
         </td>
         <td class="fs2-cell">
           <input type="text" class="fs2-cell-input" placeholder="Nume vestitor colaborator" value="${escHtml(row.coleg || '')}"
-            oninput="updateFieldSchedulingCell('${row.id}', 'coleg', this.value)" />
+            oninput="updateFieldSchedulingCellSilent('${row.id}', 'coleg', this.value)"
+            onblur="renderFieldSchedulingTable()" />
         </td>
         <td class="fs2-cell fs2-cell-del">
           <button class="fs-sched-del" onclick="deleteFieldSchedulingRow('${row.id}')" title="Șterge programarea">✕</button>
