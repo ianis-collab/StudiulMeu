@@ -3,10 +3,12 @@
 // ============================================
 // PROGRAMARE DE IEȘIRE CU STANDUL
 // Tabel în care fiecare vestitor își programează propriile ieșiri cu standul.
-// Fiecare rând = { id, date (yyyy-mm-dd), time (hh:mm), vestitor, coleg }.
-// Structură identică cu fieldScheduling.js (programarea de ieșire pe teren),
-// dar cu propriul state (state.standSchedulingRows) și propriul tabel
-// (#standTableBody), ca cele două programări să rămână independente.
+// Fiecare rând = { id, date (yyyy-mm-dd), time (hh:mm), vestitor, coleg, coleg2 }.
+// Spre deosebire de fieldScheduling.js (programarea de ieșire pe teren, doar
+// 2 vestitori), aici sunt până la 3 vestitori (vestitor + coleg + coleg2),
+// conform noilor reglementări pentru ieșirile cu standul. Propriul state
+// (state.standSchedulingRows) și propriul tabel (#standTableBody), ca cele
+// două programări să rămână independente.
 //
 // Depinde de: state.standSchedulingRows (storage.js), saveState(),
 // escHtml() / showToast() (utils.js).
@@ -18,7 +20,7 @@ const STAND_MONTHS = [
 ];
 
 function defaultStandSchedulingRow() {
-  return { id: Date.now().toString() + Math.random().toString(36).slice(2, 6), date: '', time: '', vestitor: '', coleg: '' };
+  return { id: Date.now().toString() + Math.random().toString(36).slice(2, 6), date: '', time: '', vestitor: '', coleg: '', coleg2: '' };
 }
 
 // Descompune un string yyyy-mm-dd în { ziua, luna, anul } pentru afișare.
@@ -29,22 +31,40 @@ function standDateParts(dateStr) {
   return { ziua: String(d), luna: STAND_MONTHS[m - 1] || '', anul: String(y) };
 }
 
-// Caută, printre celelalte rânduri salvate, o programare anterioară cu
-// aceeași pereche vestitor + coleg (comparație fără spații/majuscule,
-// nesensibilă la ordine). Întoarce rândul găsit sau null.
-function standFindPairMatch(vestitor, coleg, excludeId) {
-  const v = (vestitor || '').trim().toLowerCase();
-  const c = (coleg || '').trim().toLowerCase();
-  if (!v || !c) return null;
+// Construiește toate perechile posibile (neordonate) dintr-o listă de
+// nume, ignorând câmpurile goale. Ex: [Ion, Maria, Vasile] -> perechile
+// Ion+Maria, Ion+Vasile, Maria+Vasile. Folosit la stand, unde acum ies
+// până la 3 vestitori odată (conform noilor reglementări).
+function standNamePairs(names) {
+  const clean = names.map(n => (n || '').trim()).filter(Boolean);
+  const pairs = [];
+  for (let i = 0; i < clean.length; i++) {
+    for (let j = i + 1; j < clean.length; j++) {
+      const key = [clean[i].toLowerCase(), clean[j].toLowerCase()].sort().join('|');
+      pairs.push({ key, a: clean[i], b: clean[j] });
+    }
+  }
+  return pairs;
+}
+
+// Caută, printre celelalte rânduri salvate, o programare anterioară în
+// care oricare DOI dintre vestitorii rândului curent (vestitor, coleg,
+// coleg2) au mai fost programați împreună — indiferent cu cine altcineva
+// erau atunci. Întoarce { row, a, b } (rândul găsit + numele perechii
+// care se repetă) sau null.
+function standFindPairMatch(vestitor, coleg, coleg2, excludeId) {
+  const pairs = standNamePairs([vestitor, coleg, coleg2]);
+  if (pairs.length === 0) return null;
 
   const rows = Array.isArray(state.standSchedulingRows) ? state.standSchedulingRows : [];
-  return rows.find(r => {
-    if (r.id === excludeId) return false;
-    const rv = (r.vestitor || '').trim().toLowerCase();
-    const rc = (r.coleg || '').trim().toLowerCase();
-    if (!rv || !rc) return false;
-    return (rv === v && rc === c) || (rv === c && rc === v);
-  }) || null;
+  for (const r of rows) {
+    if (r.id === excludeId) continue;
+    const rPairs = standNamePairs([r.vestitor, r.coleg, r.coleg2]);
+    if (rPairs.length === 0) continue;
+    const found = pairs.find(p => rPairs.some(rp => rp.key === p.key));
+    if (found) return { row: r, a: found.a, b: found.b };
+  }
+  return null;
 }
 
 function addStandSchedulingRow() {
@@ -110,7 +130,8 @@ function shareStandSchedulingWhatsApp() {
     const oraText = r.time && r.time.trim() ? ` ora ${r.time.trim()}` : '';
     const vestitor = r.vestitor && r.vestitor.trim() ? r.vestitor.trim() : '—';
     const coleg = r.coleg && r.coleg.trim() ? r.coleg.trim() : '—';
-    parts.push(`• ${dataText}${oraText}: ${vestitor} + ${coleg}`);
+    const coleg2 = r.coleg2 && r.coleg2.trim() ? ` + ${r.coleg2.trim()}` : '';
+    parts.push(`• ${dataText}${oraText}: ${vestitor} + ${coleg}${coleg2}`);
   });
 
   const text = parts.join('\n');
@@ -131,20 +152,20 @@ function renderStandSchedulingTable() {
   if (rows.length === 0) {
     container.innerHTML = `
       <tr>
-        <td colspan="8" class="fs2-empty">Nicio programare încă. Apasă „+ Adaugă programare”.</td>
+        <td colspan="9" class="fs2-empty">Nicio programare încă. Apasă „+ Adaugă programare”.</td>
       </tr>`;
     return;
   }
 
   container.innerHTML = rows.map(row => {
     const { ziua, luna, anul } = standDateParts(row.date);
-    const match = standFindPairMatch(row.vestitor, row.coleg, row.id);
+    const match = standFindPairMatch(row.vestitor, row.coleg, row.coleg2, row.id);
     const warningRow = match ? `
       <tr class="fs2-warning-row">
-        <td colspan="8">
-          ⚠️ ${escHtml((row.vestitor || '').trim())} a mai fost programat cu ${escHtml((row.coleg || '').trim())}
-          ${match.date ? `pe ${escHtml(standDateParts(match.date).ziua)} ${escHtml(standDateParts(match.date).luna)} ${escHtml(standDateParts(match.date).anul)}` : 'anterior'}.
-          Alege alt coleg data aceasta, dacă se poate.
+        <td colspan="9">
+          ⚠️ ${escHtml(match.a)} a mai fost programat cu ${escHtml(match.b)}
+          ${match.row.date ? `pe ${escHtml(standDateParts(match.row.date).ziua)} ${escHtml(standDateParts(match.row.date).luna)} ${escHtml(standDateParts(match.row.date).anul)}` : 'anterior'}.
+          Alege altă combinație data aceasta, dacă se poate.
         </td>
       </tr>` : '';
 
@@ -169,6 +190,11 @@ function renderStandSchedulingTable() {
         <td class="fs2-cell">
           <input type="text" class="fs2-cell-input" placeholder="Nume vestitor colaborator" value="${escHtml(row.coleg || '')}"
             oninput="updateStandSchedulingCellSilent('${row.id}', 'coleg', this.value)"
+            onblur="renderStandSchedulingTable()" />
+        </td>
+        <td class="fs2-cell">
+          <input type="text" class="fs2-cell-input" placeholder="Nume vestitor colaborator 2" value="${escHtml(row.coleg2 || '')}"
+            oninput="updateStandSchedulingCellSilent('${row.id}', 'coleg2', this.value)"
             onblur="renderStandSchedulingTable()" />
         </td>
         <td class="fs2-cell fs2-cell-del">
