@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#2b5797" />
 <link rel="icon" href="icons/icon-192.png" type="image/png" />
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -152,7 +152,7 @@
         </a>
         <a href="#" class="nav-item nav-subitem" data-page="preachingassistant" id="nav-preachingassistant">
           <span class="nav-subitem-dot">🗣️</span>
-          Asistent de predicare
+          Asistent de predicare (raport)
         </a>
       </div>
     </div>
@@ -185,6 +185,9 @@
   <!-- TOP BAR -->
   <header class="topbar">
     <button class="hamburger" id="hamburger" title="Meniu">
+      <svg viewBox="0 0 24 24" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="hamburger" id="identityBtn" onclick="openIdentityModal()" title="Numele tău">
       <svg viewBox="0 0 24 24" width="22" height="22"><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
     <h1 class="topbar-title" id="pageTitle">Panou Principal</h1>
@@ -1432,17 +1435,24 @@
     </div>
   </section>
 
-  <!-- PAGE: ASISTENT DE PREDICARE (în lucru) -->
+  <!-- PAGE: ASISTENT DE PREDICARE (RAPORT) -->
   <section class="page" id="page-preachingassistant">
     <div class="page-header">
       <div style="font-size:2rem;line-height:1;margin-bottom:6px">🗣️</div>
-      <h2>Asistent de predicare</h2>
-      <p class="page-sub">Această funcție este în pregătire.</p>
+      <h2>Asistent de predicare (raport)</h2>
+      <p class="page-sub">Cronometrează timpul petrecut în predicare, pentru raportul lunar.</p>
     </div>
     <div class="wt-container">
       <div class="card">
-        <div class="empty-state full-width">
-          <p>Spune-mi ce date vrei să apară aici și o construim împreună.</p>
+        <div class="card-header">
+          <h3>⏱️ Cronometru</h3>
+        </div>
+        <div class="preach-timer-wrap">
+          <button type="button" class="preach-timer-toggle" id="preachTimerToggleBtn" onclick="preachTimerToggle()" aria-label="Pornește cronometrul">▶</button>
+          <div class="preach-timer-value" id="preachTimerValue">00:00:00</div>
+        </div>
+        <div class="preach-timer-actions">
+          <button type="button" class="btn-ghost btn-sm" onclick="preachTimerReset()">↺ Resetează</button>
         </div>
       </div>
     </div>
@@ -1812,7 +1822,7 @@
 <div class="modal-overlay" id="identityModal" onclick="if(event.target===this) closeIdentityModal()">
   <div class="modal">
     <div class="modal-header">
-      <h3>👤 Identitatea ta</h3>
+      <h3>Identitatea ta</h3>
       <button class="modal-close" onclick="closeIdentityModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -1886,6 +1896,7 @@
 <script src="js/field-service/fieldServiceSuggest.js"></script>
 <script src="js/field-service/fieldScheduling.js"></script>
 <script src="js/field-service/standScheduling.js"></script>
+<script src="js/field-service/preachingTimer.js"></script>
 <script src="js/field-service/fieldService.js"></script>
 <script src="js/study/library.js"></script>
 <script src="js/study/notes.js"></script>

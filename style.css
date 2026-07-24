@@ -2829,6 +2829,69 @@ select.form-input option { background: var(--bg-elevated); }
 }
 
 /* ============================================
+   ASISTENT DE PREDICARE (RAPORT) - cronometru
+   Buton play/pauză circular în mijloc, cifrele afișate în dreapta.
+   ============================================ */
+.preach-timer-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px 16px;
+  flex-wrap: wrap;
+}
+
+.preach-timer-toggle {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+.preach-timer-toggle:active {
+  transform: scale(0.92);
+}
+.preach-timer-toggle.is-running {
+  background: var(--orange);
+}
+
+.preach-timer-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  min-width: 160px;
+  text-align: left;
+}
+
+.preach-timer-actions {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 480px) {
+  .preach-timer-wrap {
+    justify-content: center;
+  }
+  .preach-timer-value {
+    text-align: center;
+    min-width: 0;
+  }
+}
+
+
+/* ============================================
    TABEL PROFEȚII
    ============================================ */
 .prophecy-table {
